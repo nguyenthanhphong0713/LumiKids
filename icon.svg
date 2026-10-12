@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD166"/>
+      <stop offset="50%" stop-color="#FF9F43"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded App Icon Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Outer Glow Ring -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="12"/>
+
+  <!-- Star & Chest Illustration in center -->
+  <g filter="url(#shadow)">
+    <!-- Main Star Graphic -->
+    <path d="M256,60 L308,185 L445,193 L339,280 L373,415 L256,340 L139,415 L173,280 L67,193 L204,185 Z" 
+          fill="#FFFDF0" stroke="#FFFFFF" stroke-width="14" stroke-linejoin="round"/>
+    
+    <!-- Cheerful Face inside Star for Toddlers -->
+    <!-- Eyes -->
+    <circle cx="216" cy="245" r="14" fill="#2D3748"/>
+    <circle cx="296" cy="245" r="14" fill="#2D3748"/>
+    <!-- Eye Sparkles -->
+    <circle cx="221" cy="240" r="4" fill="#FFFFFF"/>
+    <circle cx="301" cy="240" r="4" fill="#FFFFFF"/>
+    <!-- Rosy Cheeks -->
+    <ellipse cx="195" cy="265" rx="14" ry="9" fill="#FF80BF" opacity="0.8"/>
+    <ellipse cx="317" cy="265" rx="14" ry="9" fill="#FF80BF" opacity="0.8"/>
+    <!-- Big Smile -->
+    <path d="M228,272 Q256,305 284,272" fill="none" stroke="#2D3748" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Sparkles -->
+  <circle cx="105" cy="115" r="12" fill="#FFFFFF"/>
+  <circle cx="410" cy="120" r="16" fill="#FFFFFF"/>
+  <circle cx="405" cy="385" r="12" fill="#FFFFFF"/>
+</svg>

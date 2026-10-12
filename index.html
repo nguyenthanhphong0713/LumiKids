@@ -8,8 +8,14 @@
   <!-- Web App Capabilities & Mobile App Styling -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LumiKids">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#FFD166">
+
+  <!-- PWA Manifest & App Icons -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon-192.png">
 
   <!-- Google Font Fredoka for rounded toddler-friendly typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1150,11 +1156,24 @@
     });
 
     /* ============================================================
-       INITIALIZE
+       INITIALIZE & SERVICE WORKER REGISTRATION (PWABUILDER READY)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderWordCards();
       updateProgressUI();
+
+      // Register Service Worker for PWA installability & offline support
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then((registration) => {
+              console.log('LumiKids PWA ServiceWorker registered with scope:', registration.scope);
+            })
+            .catch((error) => {
+              console.warn('LumiKids ServiceWorker registration failed:', error);
+            });
+        });
+      }
     });
   </script>
 </body>
