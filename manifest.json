@@ -4,7 +4,7 @@
   "description": "Fun, cheerful, toddler-first English word learning with speech, animations, and treasure rewards.",
   "start_url": "./index.html",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "any",
   "background_color": "#FFF9E6",
   "theme_color": "#FFD166",
