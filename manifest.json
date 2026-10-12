@@ -1,10 +1,11 @@
 {
   "name": "LumiKids - Toddler First Words",
   "short_name": "LumiKids",
-  "description": "Fun, cheerful, toddler-first English word learning with speech, animations, and treasure rewards.",
+  "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone", "window-controls-overlay"],
   "orientation": "any",
   "background_color": "#FFF9E6",
   "theme_color": "#FFD166",
