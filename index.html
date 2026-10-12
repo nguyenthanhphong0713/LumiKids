@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>LumiKids - 100 Toddler First Words</title>
+  
+  <!-- Web App Capabilities & Mobile App Styling -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#FFD166">
+
+  <!-- Google Font Fredoka for rounded toddler-friendly typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* ============================================================
+       1. GLOBAL RESET & TODDLER-PROOF TOUCH STYLING
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    :root {
+      --bg-gradient: linear-gradient(135deg, #FFF9E6 0%, #E3FAFC 50%, #FFF0F5 100%);
+      --font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, cursive, sans-serif;
+      --card-border-radius: 26px;
+      --primary-star: #FFD166;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: var(--font-family);
+      background: var(--bg-gradient);
+      color: #333;
+    }
+
+    /* Fullscreen app layout */
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Ambient background bubbles */
+    .bg-bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      filter: blur(8px);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatSlow 8s ease-in-out infinite alternate;
+    }
+    .bubble-1 { width: 140px; height: 140px; top: -20px; left: -20px; background: rgba(255, 182, 193, 0.35); }
+    .bubble-2 { width: 180px; height: 180px; bottom: 5%; right: -30px; background: rgba(147, 197, 253, 0.35); }
+
+    @keyframes floatSlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(15px, 20px) scale(1.1); }
+    }
+
+    /* ============================================================
+       2. MINIMAL ULTRA-COMPACT HEADER & REWARD TRACKER
+       ============================================================ */
+    header {
+      position: relative;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 2px solid #FFEAA7;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: clamp(4px, 1vh, 8px) clamp(10px, 2.5vw, 18px);
+      padding-top: max(clamp(4px, 1vh, 8px), env(safe-area-inset-top));
+      padding-left: max(clamp(10px, 2.5vw, 18px), env(safe-area-inset-left));
+      padding-right: max(clamp(10px, 2.5vw, 18px), env(safe-area-inset-right));
+      flex-shrink: 0;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .brand-title {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #FF6B6B;
+      text-shadow: 1px 1px 0px #FFE3E3;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .brand-title .logo-sparkle {
+      animation: spinBounce 3s ease-in-out infinite;
+      display: inline-block;
+      font-size: 1.1em;
+    }
+
+    @keyframes spinBounce {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(15deg) scale(1.2); }
+    }
+
+    /* Minimal Compact Reward Tracker */
+    .reward-tracker {
+      background: #FFFFFF;
+      border: 2px solid #FFD166;
+      border-radius: 20px;
+      padding: 2px 8px 2px 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px var(--shadow-color);
+      position: relative;
+    }
+
+    .chest-badge {
+      font-size: clamp(1.2rem, 3.2vw, 1.55rem);
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.15));
+      animation: chestPulse 2s infinite ease-in-out;
+      transform-origin: center bottom;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    @keyframes chestPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15) rotate(-4deg); }
+      75% { transform: scale(1.15) rotate(4deg); }
+    }
+
+    .progress-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 80px;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #718096;
+      text-transform: uppercase;
+    }
+
+    .counter-pill {
+      color: #E28743;
+      font-weight: 800;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #EDF2F7;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #CBD5E0;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #FF9F43 0%, #FFD166 60%, #10B981 100%);
+      border-radius: 6px;
+      transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 6px rgba(255, 209, 102, 0.8);
+    }
+
+    .sound-toggle {
+      background: #FFFFFF;
+      border: 2px solid #CBD5E0;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s ease;
+    }
+    .sound-toggle:active {
+      transform: scale(0.9);
+    }
+
+    /* ============================================================
+       3. RESPONSIVE 10-PICTURE GRID (FULLSCREEN FIT)
+       ============================================================ */
+    main {
+      flex: 1;
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      padding: clamp(6px, 1.2vh, 12px) clamp(8px, 1.8vw, 16px);
+      padding-bottom: max(clamp(6px, 1.2vh, 12px), env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .word-grid {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      /* Mobile portrait: 2 columns x 5 rows for 10 cards */
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: clamp(6px, 1.2vh, 12px);
+    }
+
+    /* Tablets / Landscape / Wide Screens: 5 columns x 2 rows */
+    @media (min-width: 640px) and (orientation: landscape), (min-width: 860px) {
+      .word-grid {
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      }
+      .progress-wrapper {
+        min-width: 120px;
+      }
+    }
+
+    /* Tablet Portrait: 3 or 4 columns */
+    @media (min-width: 600px) and (orientation: portrait) {
+      .word-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+      }
+      .word-grid .word-card:nth-child(10) {
+        grid-column: 2;
+      }
+      .progress-wrapper {
+        min-width: 110px;
+      }
+    }
+
+    /* ============================================================
+       4. TODDLER WORD CARD DESIGN & ANIMATIONS
+       ============================================================ */
+    .word-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      padding: clamp(4px, 1.2vh, 12px);
+      background: #FFFFFF;
+      border-radius: var(--card-border-radius);
+      border: clamp(3px, 0.7vw, 5px) solid var(--card-border, #FFD166);
+      box-shadow: 0 4px 0 var(--card-shadow, #E2B23F), 0 8px 14px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      overflow: hidden;
+      outline: none;
+      touch-action: manipulation;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease;
+      will-change: transform;
+    }
+
+    .word-card:active {
+      transform: translateY(4px) scale(0.96);
+      box-shadow: 0 2px 0 var(--card-shadow, #E2B23F), 0 4px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Card bounce keyframes triggered on tap */
+    .word-card.anim-bounce {
+      animation: cardPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes cardPop {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.14) rotate(-3deg); }
+      65% { transform: scale(0.95) rotate(2deg); }
+      85% { transform: scale(1.04) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    /* Thematic Color Palette Classes */
+    .theme-red     { --card-border: #FF5A5F; --card-shadow: #D9383D; background: linear-gradient(180deg, #FFF6F6 0%, #FFE9E9 100%); }
+    .theme-pink    { --card-border: #FF80BF; --card-shadow: #D84F93; background: linear-gradient(180deg, #FFF0F7 0%, #FFE2F1 100%); }
+    .theme-blue    { --card-border: #4D96FF; --card-shadow: #256EDB; background: linear-gradient(180deg, #F0F6FF 0%, #DCE9FE 100%); }
+    .theme-green   { --card-border: #6BCB77; --card-shadow: #41A14E; background: linear-gradient(180deg, #F2FBF4 0%, #DCF6E0 100%); }
+    .theme-orange  { --card-border: #FF793F; --card-shadow: #D9541C; background: linear-gradient(180deg, #FFF3EE 0%, #FFE3D8 100%); }
+    .theme-yellow  { --card-border: #F7B731; --card-shadow: #D49514; background: linear-gradient(180deg, #FFFAEB 0%, #FFF3CE 100%); }
+    .theme-teal    { --card-border: #00C2CB; --card-shadow: #00939A; background: linear-gradient(180deg, #EFFDFE 0%, #D6F9FA 100%); }
+    .theme-purple  { --card-border: #A367DC; --card-shadow: #7C40B8; background: linear-gradient(180deg, #F9F4FD 0%, #EFE5FC 100%); }
+    .theme-amber   { --card-border: #FFAA00; --card-shadow: #D68800; background: linear-gradient(180deg, #FFFDF0 0%, #FFF8D4 100%); }
+    .theme-emerald { --card-border: #2ECC71; --card-shadow: #229954; background: linear-gradient(180deg, #F0FAF3 0%, #D8F5E1 100%); }
+
+    /* Emoji / Graphic */
+    .word-emoji {
+      font-size: clamp(2.6rem, 7vw, 4.2rem);
+      line-height: 1.1;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12));
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .word-card:active .word-emoji {
+      transform: scale(1.18);
+    }
+
+    /* Word Text */
+    .word-label {
+      font-size: clamp(1.15rem, 3.2vw, 1.7rem);
+      font-weight: 700;
+      color: #2D3748;
+      letter-spacing: 0.5px;
+      margin-top: clamp(4px, 0.8vh, 8px);
+      text-transform: capitalize;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    /* Floating Touch Ripple Particles */
+    .touch-ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+      transform: translate(-50%, -50%) scale(0);
+      pointer-events: none;
+      animation: rippleEffect 0.6s ease-out forwards;
+      z-index: 5;
+    }
+
+    @keyframes rippleEffect {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+    }
+
+    /* Floating Tap Star Particles */
+    .floating-star {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      font-size: 2rem;
+      animation: floatUpFade 0.8s ease-out forwards;
+    }
+
+    @keyframes floatUpFade {
+      0% { transform: translate(-50%, -50%) scale(0.5) rotate(0deg); opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% - 70px)) scale(1.4) rotate(45deg); opacity: 0; }
+    }
+
+    /* ============================================================
+       5. REWARD CELEBRATION MODAL & CHEST ANIMATION
+       ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 36px;
+      border: 8px solid #FFD166;
+      padding: clamp(24px, 4.5vw, 40px);
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      transform: scale(0.7) translateY(40px);
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .treasure-chest-box {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chest-glow {
+      position: absolute;
+      inset: -15px;
+      background: radial-gradient(circle, #FFEAA7 20%, rgba(255,234,167,0) 70%);
+      border-radius: 50%;
+      animation: chestGlow 1.4s ease-in-out infinite alternate;
+      z-index: 1;
+    }
+
+    @keyframes chestGlow {
+      0% { transform: scale(0.9); opacity: 0.5; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .chest-graphic {
+      font-size: 5.5rem;
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2));
+      animation: chestPopOpen 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes chestPopOpen {
+      0% { transform: scale(0.3) rotate(-15deg); }
+      50% { transform: scale(1.25) rotate(10deg); }
+      75% { transform: scale(0.95) rotate(-5deg); }
+      100% { transform: scale(1.1) rotate(0deg); }
+    }
+
+    .modal-card h2 {
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 800;
+      color: #FF5A5F;
+      text-shadow: 2px 2px 0 #FFE0E0;
+    }
+
+    .modal-card p {
+      font-size: clamp(1.05rem, 3.2vw, 1.3rem);
+      color: #4A5568;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .btn-claim {
+      background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+      color: #FFFFFF;
+      font-family: var(--font-family);
+      font-size: clamp(1.25rem, 3.6vw, 1.6rem);
+      font-weight: 800;
+      padding: clamp(12px, 2vh, 18px) clamp(28px, 6vw, 42px);
+      border-radius: 28px;
+      border: 4px solid #6EE7B7;
+      box-shadow: 0 6px 0 #047857, 0 10px 18px rgba(16, 185, 129, 0.4);
+      cursor: pointer;
+      outline: none;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .btn-claim:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #047857, 0 4px 8px rgba(16, 185, 129, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background decorative elements -->
+  <div class="bg-bubble bubble-1"></div>
+  <div class="bg-bubble bubble-2"></div>
+
+  <div id="app">
+    <!-- Minimal Header & Reward Tracker -->
+    <header>
+      <div class="top-bar">
+        <div class="brand-title" id="brandHeader">
+          <span class="logo-sparkle">✨</span> LumiKids
+        </div>
+        
+        <!-- Reward Bar for Toddler & Parent -->
+        <div class="reward-tracker" id="rewardTracker" title="Reward Chest">
+          <div class="chest-badge" id="chestIcon">🎁</div>
+          <div class="progress-wrapper">
+            <div class="progress-labels">
+              <span>Stars</span>
+              <span class="counter-pill" id="counterText">0 / 10</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+          </div>
+          <button class="sound-toggle" id="soundToggle" aria-label="Toggle Sound" title="Toggle Speech Sound">🔊</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 10 Pictures Grid Container -->
+    <main>
+      <div class="word-grid" id="wordGrid">
+        <!-- 10 Word Cards hydrated dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Celebration Modal (Reward Chest) -->
+  <div class="modal-overlay" id="celebrationModal">
+    <div class="modal-card">
+      <div class="treasure-chest-box">
+        <div class="chest-glow"></div>
+        <div class="chest-graphic" id="modalChestGraphic">💎</div>
+      </div>
+      <h2>Super Star! 🌟</h2>
+      <p>Yay! You tapped 10 words!<br>Here is your magic treasure!</p>
+      <button class="btn-claim" id="claimBtn">
+        <span>Play Again!</span> 🎈
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       100 COMPLETE TODDLER WORDS (CURATED WITH FAMILIAR EMOJIS & THEMES)
+       ============================================================ */
+    const WORDS = [
+      // Animals (20)
+      { word: 'Cat', emoji: '🐱', theme: 'theme-pink' },
+      { word: 'Dog', emoji: '🐶', theme: 'theme-blue' },
+      { word: 'Bear', emoji: '🐻', theme: 'theme-amber' },
+      { word: 'Lion', emoji: '🦁', theme: 'theme-orange' },
+      { word: 'Tiger', emoji: '🐯', theme: 'theme-yellow' },
+      { word: 'Monkey', emoji: '🐵', theme: 'theme-amber' },
+      { word: 'Duck', emoji: '🦆', theme: 'theme-green' },
+      { word: 'Pig', emoji: '🐷', theme: 'theme-pink' },
+      { word: 'Cow', emoji: '🐮', theme: 'theme-teal' },
+      { word: 'Sheep', emoji: '🐑', theme: 'theme-blue' },
+      { word: 'Horse', emoji: '🐴', theme: 'theme-orange' },
+      { word: 'Rabbit', emoji: '🐰', theme: 'theme-pink' },
+      { word: 'Elephant', emoji: '🐘', theme: 'theme-blue' },
+      { word: 'Giraffe', emoji: '🦒', theme: 'theme-yellow' },
+      { word: 'Panda', emoji: '🐼', theme: 'theme-teal' },
+      { word: 'Frog', emoji: '🐸', theme: 'theme-green' },
+      { word: 'Fish', emoji: '🐟', theme: 'theme-teal' },
+      { word: 'Whale', emoji: '🐳', theme: 'theme-blue' },
+      { word: 'Bird', emoji: '🐦', theme: 'theme-blue' },
+      { word: 'Bee', emoji: '🐝', theme: 'theme-yellow' },
+
+      // Food & Fruits (18)
+      { word: 'Apple', emoji: '🍎', theme: 'theme-red' },
+      { word: 'Banana', emoji: '🍌', theme: 'theme-yellow' },
+      { word: 'Orange', emoji: '🍊', theme: 'theme-orange' },
+      { word: 'Strawberry', emoji: '🍓', theme: 'theme-red' },
+      { word: 'Grapes', emoji: '🍇', theme: 'theme-purple' },
+      { word: 'Watermelon', emoji: '🍉', theme: 'theme-green' },
+      { word: 'Carrot', emoji: '🥕', theme: 'theme-orange' },
+      { word: 'Corn', emoji: '🌽', theme: 'theme-yellow' },
+      { word: 'Tomato', emoji: '🍅', theme: 'theme-red' },
+      { word: 'Bread', emoji: '🍞', theme: 'theme-amber' },
+      { word: 'Cheese', emoji: '🧀', theme: 'theme-yellow' },
+      { word: 'Egg', emoji: '🥚', theme: 'theme-yellow' },
+      { word: 'Milk', emoji: '🥛', theme: 'theme-blue' },
+      { word: 'Water', emoji: '💧', theme: 'theme-teal' },
+      { word: 'Cookie', emoji: '🍪', theme: 'theme-amber' },
+      { word: 'Cake', emoji: '🍰', theme: 'theme-pink' },
+      { word: 'Ice Cream', emoji: '🍦', theme: 'theme-pink' },
+      { word: 'Pizza', emoji: '🍕', theme: 'theme-orange' },
+
+      // Vehicles & Transport (12)
+      { word: 'Car', emoji: '🚗', theme: 'theme-red' },
+      { word: 'Bus', emoji: '🚌', theme: 'theme-yellow' },
+      { word: 'Train', emoji: '🚆', theme: 'theme-blue' },
+      { word: 'Airplane', emoji: '✈️', theme: 'theme-teal' },
+      { word: 'Boat', emoji: '⛵', theme: 'theme-blue' },
+      { word: 'Bicycle', emoji: '🚲', theme: 'theme-green' },
+      { word: 'Helicopter', emoji: '🚁', theme: 'theme-orange' },
+      { word: 'Truck', emoji: '🚚', theme: 'theme-amber' },
+      { word: 'Fire Truck', emoji: '🚒', theme: 'theme-red' },
+      { word: 'Rocket', emoji: '🚀', theme: 'theme-purple' },
+      { word: 'Taxi', emoji: '🚕', theme: 'theme-yellow' },
+      { word: 'Scooter', emoji: '🛴', theme: 'theme-emerald' },
+
+      // Nature & World (14)
+      { word: 'Sun', emoji: '☀️', theme: 'theme-yellow' },
+      { word: 'Moon', emoji: '🌙', theme: 'theme-yellow' },
+      { word: 'Star', emoji: '⭐', theme: 'theme-amber' },
+      { word: 'Cloud', emoji: '☁️', theme: 'theme-blue' },
+      { word: 'Rain', emoji: '🌧️', theme: 'theme-teal' },
+      { word: 'Rainbow', emoji: '🌈', theme: 'theme-pink' },
+      { word: 'Flower', emoji: '🌸', theme: 'theme-pink' },
+      { word: 'Tree', emoji: '🌳', theme: 'theme-green' },
+      { word: 'Leaf', emoji: '🍃', theme: 'theme-emerald' },
+      { word: 'Snow', emoji: '❄️', theme: 'theme-blue' },
+      { word: 'Fire', emoji: '🔥', theme: 'theme-red' },
+      { word: 'Mountain', emoji: '⛰️', theme: 'theme-emerald' },
+      { word: 'Sea', emoji: '🌊', theme: 'theme-teal' },
+      { word: 'Earth', emoji: '🌍', theme: 'theme-blue' },
+
+      // Toys & Play (12)
+      { word: 'Ball', emoji: '⚽', theme: 'theme-green' },
+      { word: 'Doll', emoji: '🪆', theme: 'theme-pink' },
+      { word: 'Balloon', emoji: '🎈', theme: 'theme-red' },
+      { word: 'Kite', emoji: '🪁', theme: 'theme-purple' },
+      { word: 'Teddy Bear', emoji: '🧸', theme: 'theme-amber' },
+      { word: 'Drum', emoji: '🥁', theme: 'theme-orange' },
+      { word: 'Guitar', emoji: '🎸', theme: 'theme-red' },
+      { word: 'Bell', emoji: '🔔', theme: 'theme-yellow' },
+      { word: 'Book', emoji: '📖', theme: 'theme-blue' },
+      { word: 'Crayon', emoji: '🖍️', theme: 'theme-orange' },
+      { word: 'Puzzle', emoji: '🧩', theme: 'theme-teal' },
+      { word: 'Gift', emoji: '🎁', theme: 'theme-pink' },
+
+      // Body & Family (10)
+      { word: 'Eye', emoji: '👁️', theme: 'theme-blue' },
+      { word: 'Nose', emoji: '👃', theme: 'theme-orange' },
+      { word: 'Ear', emoji: '👂', theme: 'theme-amber' },
+      { word: 'Mouth', emoji: '👄', theme: 'theme-pink' },
+      { word: 'Hand', emoji: '🖐️', theme: 'theme-yellow' },
+      { word: 'Foot', emoji: '🦶', theme: 'theme-teal' },
+      { word: 'Baby', emoji: '👶', theme: 'theme-yellow' },
+      { word: 'Mom', emoji: '👩', theme: 'theme-pink' },
+      { word: 'Dad', emoji: '👨', theme: 'theme-blue' },
+      { word: 'Smile', emoji: '😊', theme: 'theme-yellow' },
+
+      // Clothes & Home (14)
+      { word: 'House', emoji: '🏠', theme: 'theme-red' },
+      { word: 'Door', emoji: '🚪', theme: 'theme-amber' },
+      { word: 'Bed', emoji: '🛏️', theme: 'theme-blue' },
+      { word: 'Chair', emoji: '🪑', theme: 'theme-amber' },
+      { word: 'Clock', emoji: '⏰', theme: 'theme-red' },
+      { word: 'Lamp', emoji: '💡', theme: 'theme-yellow' },
+      { word: 'Cup', emoji: '🥤', theme: 'theme-orange' },
+      { word: 'Spoon', emoji: '🥄', theme: 'theme-teal' },
+      { word: 'Shirt', emoji: '👕', theme: 'theme-blue' },
+      { word: 'Pants', emoji: '👖', theme: 'theme-blue' },
+      { word: 'Shoe', emoji: '👟', theme: 'theme-red' },
+      { word: 'Sock', emoji: '🧦', theme: 'theme-pink' },
+      { word: 'Hat', emoji: '🧢', theme: 'theme-blue' },
+      { word: 'Umbrella', emoji: '☂️', theme: 'theme-purple' }
+    ];
+
+    const REWARD_GOAL = 10;
+    const CHEST_REWARDS = ['💎', '👑', '🚀', '🦄', '🦖', '🏆', '🎉', '🌟', '🍭', '🧸'];
+
+    /* State */
+    let tapCount = 0;
+    let isSoundEnabled = true;
+    let audioContext = null;
+    let synth = window.speechSynthesis;
+    let englishFemaleVoice = null;
+    let audioUnlocked = false;
+
+    // Track active 10 pictures and previous 10 pictures to prevent duplicates
+    let activeWords = [];
+    let lastWordNames = new Set();
+
+    /* DOM Elements */
+    const wordGrid = document.getElementById('wordGrid');
+    const counterText = document.getElementById('counterText');
+    const progressBar = document.getElementById('progressBar');
+    const chestIcon = document.getElementById('chestIcon');
+    const celebrationModal = document.getElementById('celebrationModal');
+    const modalChestGraphic = document.getElementById('modalChestGraphic');
+    const claimBtn = document.getElementById('claimBtn');
+    const soundToggle = document.getElementById('soundToggle');
+    const brandHeader = document.getElementById('brandHeader');
+
+    /* ============================================================
+       1. WEB AUDIO API SYNTHESIZER (CUTE CHIMES & POP SOUNDS)
+       Zero external audio dependencies. Instant response.
+       ============================================================ */
+    function initAudioContext() {
+      if (!audioContext) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          audioContext = new AudioCtx();
+        }
+      }
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    // Unlock both Web Audio and SpeechSynthesis on first touch (vital on iOS & Android)
+    function unlockAudio() {
+      if (audioUnlocked) return;
+      initAudioContext();
+      if (synth) {
+        synth.resume();
+        // Silent instant utterance to warm up mobile speech engine
+        try {
+          const warmUp = new SpeechSynthesisUtterance('');
+          warmUp.volume = 0;
+          synth.speak(warmUp);
+        } catch (e) {}
+      }
+      audioUnlocked = true;
+    }
+
+    function playChime(freq = 523.25, type = 'sine') {
+      if (!isSoundEnabled) return;
+      initAudioContext();
+      if (!audioContext) return;
+
+      try {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioContext.currentTime + 0.1);
+
+        gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.22);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.24);
+      } catch (e) {}
+    }
+
+    function playVictoryFanfare() {
+      if (!isSoundEnabled) return;
+      initAudioContext();
+      if (!audioContext) return;
+
+      const notes = [440, 554.37, 659.25, 880];
+      notes.forEach((freq, idx) => {
+        setTimeout(() => {
+          try {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.45);
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.48);
+          } catch (e) {}
+        }, idx * 120);
+      });
+    }
+
+    /* ============================================================
+       2. HIGH-QUALITY FEMALE SPEECH SYNTHESIS ENGINE
+       Optimized for instant zero-lag response on Mobile & Tablet
+       ============================================================ */
+    const FEMALE_VOICE_PREFERENCES = [
+      // Natural & Neural Female Voices (Mobile iOS, Android, macOS, Windows)
+      'Google US English',
+      'Samantha',
+      'Ava',
+      'Allison',
+      'Victoria',
+      'Karen',
+      'Moira',
+      'Zira',
+      'Jenny',
+      'Aria',
+      'Microsoft Zira',
+      'Microsoft Jenny Online',
+      'Microsoft Aria Online',
+      'en-US-Neural2-F',
+      'en-US-Standard-C',
+      'en-US-Standard-E'
+    ];
+
+    function selectBestFemaleVoice() {
+      if (!synth) return;
+      const voices = synth.getVoices();
+      if (!voices || voices.length === 0) return;
+
+      const englishVoices = voices.filter(v => v.lang && v.lang.startsWith('en'));
+
+      // 1. Look for known top-tier female voices
+      for (const pref of FEMALE_VOICE_PREFERENCES) {
+        const found = englishVoices.find(v => v.name && v.name.toLowerCase().includes(pref.toLowerCase()));
+        if (found) {
+          englishFemaleVoice = found;
+          return;
+        }
+      }
+
+      // 2. Look for any voice with 'female' or woman in the name/description
+      const genericFemale = englishVoices.find(v => {
+        const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
+        return n.includes('female') || n.includes('woman') || n.includes('girl');
+      });
+      if (genericFemale) {
+        englishFemaleVoice = genericFemale;
+        return;
+      }
+
+      // 3. Look for any en-US voice
+      const usVoice = englishVoices.find(v => v.lang === 'en-US' || v.lang === 'en_US');
+      if (usVoice) {
+        englishFemaleVoice = usVoice;
+        return;
+      }
+
+      // 4. Fallback to any english voice
+      englishFemaleVoice = englishVoices[0] || voices[0];
+    }
+
+    if (synth) {
+      selectBestFemaleVoice();
+      if (synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = selectBestFemaleVoice;
+      }
+    }
+
+    function speakWord(text) {
+      if (!isSoundEnabled || !synth) return;
+
+      unlockAudio();
+
+      // Ensure voices are matched
+      if (!englishFemaleVoice) {
+        selectBestFemaleVoice();
+      }
+
+      // Cancel any stuck speech immediately and resume synth to eliminate latency
+      synth.cancel();
+      if (synth.paused) {
+        synth.resume();
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (englishFemaleVoice) {
+        utterance.voice = englishFemaleVoice;
+      }
+
+      // Optimized for natural, crisp, immediate female voice
+      utterance.lang = 'en-US';
+      utterance.rate = 0.95;   // Lively & crisp (avoids sluggish robot pauses)
+      utterance.pitch = 1.3;   // Cheerful, gentle, clear female pitch
+      utterance.volume = 1.0;
+
+      // Workaround for mobile browsers where synth can go dormant
+      utterance.onerror = (e) => {
+        if (e.error !== 'interrupted' && e.error !== 'canceled') {
+          console.warn('Speech error:', e);
+        }
+      };
+
+      synth.speak(utterance);
+    }
+
+    /* ============================================================
+       3. NON-DUPLICATING 10-PICTURE SELECTION & CARD RENDERING
+       Randomly pick 10 words out of 100 with ZERO duplicate from the last 10
+       ============================================================ */
+    function getRandom10Words() {
+      // Exclude previous batch words from candidate pool
+      let candidates = WORDS.filter(w => !lastWordNames.has(w.word));
+
+      // Fallback safeguard in case pool is small
+      if (candidates.length < 10) {
+        candidates = [...WORDS];
+      }
+
+      // Fisher-Yates shuffle
+      const shuffled = [...candidates];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      const selected = shuffled.slice(0, 10);
+
+      // Record selected words into lastWordNames set for next cycle
+      lastWordNames = new Set(selected.map(w => w.word));
+      activeWords = selected;
+
+      return selected;
+    }
+
+    function renderWordCards() {
+      wordGrid.innerHTML = '';
+      const currentBatch = getRandom10Words();
+
+      currentBatch.forEach((item) => {
+        const card = document.createElement('button');
+        card.className = `word-card ${item.theme}`;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', item.word);
+        card.dataset.word = item.word;
+
+        card.innerHTML = `
+          <span class="word-emoji">${item.emoji}</span>
+          <span class="word-label">${item.word}</span>
+        `;
+
+        // Handle tap / touch
+        card.addEventListener('pointerdown', (e) => handleCardTap(e, card, item));
+
+        wordGrid.appendChild(card);
+      });
+    }
+
+    function handleCardTap(event, cardElement, wordItem) {
+      // Audio & Speech
+      playChime(320 + (Math.random() * 220));
+      speakWord(wordItem.word);
+
+      // Bounce card animation
+      cardElement.classList.remove('anim-bounce');
+      void cardElement.offsetWidth; // Force reflow
+      cardElement.classList.add('anim-bounce');
+
+      // Visual ripples & particle stars
+      createRipple(event, cardElement);
+      createFloatingStar(event.clientX, event.clientY);
+
+      // Gamification progress
+      incrementProgress();
+    }
+
+    function createRipple(e, card) {
+      const rect = card.getBoundingClientRect();
+      const ripple = document.createElement('div');
+      ripple.className = 'touch-ripple';
+
+      const x = (e.clientX || rect.left + rect.width / 2) - rect.left;
+      const y = (e.clientY || rect.top + rect.height / 2) - rect.top;
+      const size = Math.max(rect.width, rect.height) * 1.5;
+
+      ripple.style.width = `${size}px`;
+      ripple.style.height = `${size}px`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+
+      card.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    function createFloatingStar(x, y) {
+      if (!x || !y) return;
+      const star = document.createElement('div');
+      star.className = 'floating-star';
+      const icons = ['⭐', '✨', '💛', '🌟', '🎈'];
+      star.textContent = icons[Math.floor(Math.random() * icons.length)];
+      star.style.left = `${x}px`;
+      star.style.top = `${y}px`;
+      star.style.setProperty('--dx', `${(Math.random() - 0.5) * 80}px`);
+
+      document.body.appendChild(star);
+      setTimeout(() => star.remove(), 800);
+    }
+
+    /* ============================================================
+       4. REWARD CHEST PROGRESSION & 10-WORD ROTATION
+       ============================================================ */
+    function incrementProgress() {
+      tapCount++;
+      updateProgressUI();
+
+      if (tapCount >= REWARD_GOAL) {
+        setTimeout(triggerCelebration, 300);
+      }
+    }
+
+    function updateProgressUI() {
+      const progressPercent = Math.min((tapCount / REWARD_GOAL) * 100, 100);
+      progressBar.style.width = `${progressPercent}%`;
+      counterText.textContent = `${tapCount} / ${REWARD_GOAL}`;
+
+      if (tapCount > 0 && tapCount % 3 === 0) {
+        chestIcon.style.transform = 'scale(1.35) rotate(10deg)';
+        setTimeout(() => {
+          chestIcon.style.transform = '';
+        }, 250);
+      }
+    }
+
+    function triggerCelebration() {
+      const randomPrize = CHEST_REWARDS[Math.floor(Math.random() * CHEST_REWARDS.length)];
+      modalChestGraphic.textContent = randomPrize;
+
+      celebrationModal.classList.add('active');
+      playVictoryFanfare();
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 90,
+          spread: 75,
+          origin: { y: 0.6 },
+          colors: ['#FF5A5F', '#FFD166', '#06D6A0', '#118AB2', '#9B5DE5']
+        });
+
+        const interval = setInterval(() => {
+          if (!celebrationModal.classList.contains('active')) {
+            clearInterval(interval);
+            return;
+          }
+          confetti({ particleCount: 30, angle: 60, spread: 55, origin: { x: 0 } });
+          confetti({ particleCount: 30, angle: 120, spread: 55, origin: { x: 1 } });
+        }, 450);
+
+        setTimeout(() => clearInterval(interval), 3000);
+      }
+
+      setTimeout(() => {
+        speakWord('Awesome job! You did it!');
+      }, 500);
+    }
+
+    function resetProgress() {
+      tapCount = 0;
+      updateProgressUI();
+      celebrationModal.classList.remove('active');
+      playChime(650);
+
+      // Randomize the next 10 pictures with ZERO duplicate from the last 10
+      renderWordCards();
+    }
+
+    /* ============================================================
+       5. EVENT LISTENERS
+       ============================================================ */
+    claimBtn.addEventListener('click', resetProgress);
+
+    soundToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isSoundEnabled = !isSoundEnabled;
+      soundToggle.textContent = isSoundEnabled ? '🔊' : '🔇';
+      soundToggle.style.borderColor = isSoundEnabled ? '#CBD5E0' : '#FF5A5F';
+    });
+
+    chestIcon.addEventListener('click', () => {
+      playChime(580);
+      speakWord(`${tapCount} stars`);
+    });
+
+    // Clicking header brand logo randomizes pictures manually anytime
+    brandHeader.addEventListener('click', () => {
+      playChime(520);
+      renderWordCards();
+    });
+
+    // Prevent pinch-to-zoom gestures
+    document.addEventListener('gesturestart', (e) => e.preventDefault());
+
+    // Pre-warm audio engine on very first user interaction anywhere
+    window.addEventListener('pointerdown', unlockAudio, { once: true });
+    window.addEventListener('touchstart', unlockAudio, { once: true });
+
+    /* ============================================================
+       INITIALIZE
+       ============================================================ */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderWordCards();
+      updateProgressUI();
+    });
+  </script>
+</body>
+</html>
