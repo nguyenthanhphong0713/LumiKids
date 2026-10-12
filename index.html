@@ -739,15 +739,10 @@
 
     // Unlock both Web Audio and SpeechSynthesis on first touch (vital on iOS & Android)
     function unlockAudio() {
-      if (audioUnlocked) return;
       initAudioContext();
       if (synth) {
-        synth.resume();
-        // Silent instant utterance to warm up mobile speech engine
         try {
-          const warmUp = new SpeechSynthesisUtterance('');
-          warmUp.volume = 0;
-          synth.speak(warmUp);
+          if (synth.paused) synth.resume();
         } catch (e) {}
       }
       audioUnlocked = true;
@@ -759,6 +754,9 @@
       if (!audioContext) return;
 
       try {
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
 
@@ -766,7 +764,7 @@
         osc.frequency.setValueAtTime(freq, audioContext.currentTime);
         osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioContext.currentTime + 0.1);
 
-        gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.22);
 
         osc.connect(gain);
@@ -786,11 +784,12 @@
       notes.forEach((freq, idx) => {
         setTimeout(() => {
           try {
+            if (audioContext.state === 'suspended') audioContext.resume();
             const osc = audioContext.createOscillator();
             const gain = audioContext.createGain();
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.setValueAtTime(0.35, audioContext.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.45);
             osc.connect(gain);
             gain.connect(audioContext.destination);
@@ -802,24 +801,19 @@
     }
 
     /* ============================================================
-       2. HIGH-QUALITY FEMALE SPEECH SYNTHESIS ENGINE
-       Optimized for instant zero-lag response on Mobile & Tablet
+       2. HIGH-QUALITY FEMALE SPEECH SYNTHESIS ENGINE (MOBILE OPTIMIZED)
        ============================================================ */
     const FEMALE_VOICE_PREFERENCES = [
-      // Natural & Neural Female Voices (Mobile iOS, Android, macOS, Windows)
-      'Google US English',
       'Samantha',
       'Ava',
       'Allison',
       'Victoria',
       'Karen',
       'Moira',
-      'Zira',
+      'Google US English',
       'Jenny',
       'Aria',
-      'Microsoft Zira',
-      'Microsoft Jenny Online',
-      'Microsoft Aria Online',
+      'Zira',
       'en-US-Neural2-F',
       'en-US-Standard-C',
       'en-US-Standard-E'
@@ -830,9 +824,9 @@
       const voices = synth.getVoices();
       if (!voices || voices.length === 0) return;
 
-      const englishVoices = voices.filter(v => v.lang && v.lang.startsWith('en'));
+      const englishVoices = voices.filter(v => v.lang && (v.lang.startsWith('en') || v.lang.startsWith('en_')));
 
-      // 1. Look for known top-tier female voices
+      // 1. Known top female voices
       for (const pref of FEMALE_VOICE_PREFERENCES) {
         const found = englishVoices.find(v => v.name && v.name.toLowerCase().includes(pref.toLowerCase()));
         if (found) {
@@ -841,7 +835,7 @@
         }
       }
 
-      // 2. Look for any voice with 'female' or woman in the name/description
+      // 2. Any voice tagged female / woman
       const genericFemale = englishVoices.find(v => {
         const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
         return n.includes('female') || n.includes('woman') || n.includes('girl');
@@ -851,14 +845,14 @@
         return;
       }
 
-      // 3. Look for any en-US voice
+      // 3. Any en-US voice
       const usVoice = englishVoices.find(v => v.lang === 'en-US' || v.lang === 'en_US');
       if (usVoice) {
         englishFemaleVoice = usVoice;
         return;
       }
 
-      // 4. Fallback to any english voice
+      // 4. Fallback
       englishFemaleVoice = englishVoices[0] || voices[0];
     }
 
@@ -877,16 +871,16 @@
 
       unlockAudio();
 
-      // Cancel previous speech immediately so the new word starts instantly without delay
-      synth.cancel();
-
       if (!englishFemaleVoice) {
         selectBestFemaleVoice();
       }
 
-      if (synth.paused) {
-        synth.resume();
-      }
+      // Fix mobile iOS/Android: ensure synth is not paused
+      try {
+        if (synth.paused) {
+          synth.resume();
+        }
+      } catch (e) {}
 
       const utterance = new SpeechSynthesisUtterance(text);
       if (englishFemaleVoice) {
@@ -894,7 +888,7 @@
       }
 
       utterance.lang = 'en-US';
-      utterance.rate = 0.95;   // Crisp, immediate, natural female pronunciation
+      utterance.rate = 0.92;   // Natural, clear, friendly female cadence
       utterance.pitch = 1.3;   // Cheerful, friendly pitch
       utterance.volume = 1.0;
 
@@ -914,17 +908,22 @@
       };
 
       utterance.onerror = (e) => {
-        if (e.error !== 'interrupted' && e.error !== 'canceled') {
-          console.warn('Speech error:', e);
-        }
         completeOnce();
       };
 
-      // Safeguard timer tailored to word length in case mobile browser drops onend
-      const maxDuration = Math.max(800, text.length * 110 + 400);
+      // Mobile safeguard timer in case browser ignores onend
+      const maxDuration = Math.max(900, text.length * 120 + 450);
       safetyTimer = setTimeout(completeOnce, maxDuration);
 
-      synth.speak(utterance);
+      try {
+        synth.speak(utterance);
+        // Mobile iOS Safari bug workaround: trigger resume immediately after speak
+        if (synth.paused) {
+          synth.resume();
+        }
+      } catch (e) {
+        completeOnce();
+      }
     }
 
     /* ============================================================
@@ -932,15 +931,12 @@
        Randomly pick 10 words out of 100 with ZERO duplicate from the last 10
        ============================================================ */
     function getRandom10Words() {
-      // Exclude previous batch words from candidate pool
       let candidates = WORDS.filter(w => !lastWordNames.has(w.word));
 
-      // Fallback safeguard in case pool is small
       if (candidates.length < 10) {
         candidates = [...WORDS];
       }
 
-      // Fisher-Yates shuffle
       const shuffled = [...candidates];
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -948,8 +944,6 @@
       }
 
       const selected = shuffled.slice(0, 10);
-
-      // Record selected words into lastWordNames set for next cycle
       lastWordNames = new Set(selected.map(w => w.word));
       activeWords = selected;
 
@@ -964,6 +958,7 @@
       currentBatch.forEach((item) => {
         const card = document.createElement('button');
         card.className = `word-card ${item.theme}`;
+        card.setAttribute('type', 'button');
         card.setAttribute('role', 'button');
         card.setAttribute('aria-label', item.word);
         card.dataset.word = item.word;
@@ -973,20 +968,22 @@
           <span class="word-label">${item.word}</span>
         `;
 
-        // Handle tap / touch
-        card.addEventListener('pointerdown', (e) => handleCardTap(e, card, item));
+        // Direct 'click' event counts as a genuine User Activation Gesture on mobile browsers
+        card.addEventListener('click', (e) => handleCardTap(e, card, item));
 
         wordGrid.appendChild(card);
       });
     }
 
     function handleCardTap(event, cardElement, wordItem) {
-      // Ignore if card is already played or hidden
       if (cardElement.classList.contains('anim-disappear') || cardElement.classList.contains('is-hidden')) {
         return;
       }
 
-      // Temporarily pause other cards from being clicked until this word finishes speaking
+      // Ensure audioContext and SpeechSynthesis are fully unlocked on this user tap
+      unlockAudio();
+
+      // Temporarily pause other cards until current word finishes speaking
       wordGrid.style.pointerEvents = 'none';
 
       // Visual ripples & particle stars
@@ -1001,8 +998,7 @@
       // Audio pop chime
       playChime(320 + (Math.random() * 220));
 
-      // Instant speech: speak current word immediately without delay,
-      // and pause clicking of other cards until speech finishes
+      // Speak word, wait for voice to completely finish, then poof and hide the picture
       speakWord(wordItem.word, () => {
         // Trigger disappear poof animation on current card
         cardElement.classList.add('anim-disappear');
@@ -1017,7 +1013,7 @@
           // Increment progress after word is learned
           incrementProgress();
 
-          // Re-enable clicking for remaining cards now that sound is finished!
+          // Re-enable clicking for remaining cards
           wordGrid.style.pointerEvents = 'auto';
         }, 360);
       });
@@ -1148,9 +1144,10 @@
     // Prevent pinch-to-zoom gestures
     document.addEventListener('gesturestart', (e) => e.preventDefault());
 
-    // Pre-warm audio engine on very first user interaction anywhere
-    window.addEventListener('pointerdown', unlockAudio, { once: true });
-    window.addEventListener('touchstart', unlockAudio, { once: true });
+    // Pre-warm audio engine on very first user interaction anywhere (satisfies mobile autoplay security)
+    ['click', 'touchstart', 'touchend', 'pointerdown'].forEach((evt) => {
+      window.addEventListener(evt, unlockAudio, { once: true, passive: true });
+    });
 
     /* ============================================================
        INITIALIZE
