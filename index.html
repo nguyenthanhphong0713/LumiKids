@@ -12,18 +12,23 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#58CC02">
 
-  <!-- PWA Manifest & App Icons -->
-  <link rel="manifest" href="./manifest.json">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg">
-  <link rel="apple-touch-icon" href="./icon-192.png">
+  <!-- Cache-Control & Versioning Meta to Prevent Stale HTML Caching -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- PWA Manifest & App Icons with Version Query -->
+  <link rel="manifest" href="./manifest.json?v=2.0.0">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.0.0">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=2.0.0">
 
   <!-- Google Font Fredoka & Nunito for vibrant Duolingo aesthetic -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.0.0" rel="stylesheet">
 
-  <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Canvas Confetti CDN with Version Query -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.0.0"></script>
 
   <style>
     /* ============================================================
@@ -1691,7 +1696,7 @@
     });
 
     /* ============================================================
-       INITIALIZE & SERVICE WORKER
+       INITIALIZE & SERVICE WORKER (AUTO-PURGE CACHE & VERSIONING)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderSteppingStonesMap();
@@ -1700,8 +1705,22 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
+          // Register with cache-busting version query
+          navigator.serviceWorker.register('./sw.js?v=2.0.0')
+            .then((registration) => {
+              // Immediately check for SW update on server
+              registration.update();
+            })
             .catch(() => {});
+
+          // When new Service Worker activates and takes control, reload page to get newest assets
+          let refreshing = false;
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+              refreshing = true;
+              window.location.reload();
+            }
+          });
         });
       }
     });
