@@ -3,31 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>LumiKids - 100 Toddler First Words</title>
+  <title>LumiKids</title>
   
   <!-- Web App Capabilities & Mobile App Styling -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="LumiKids">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#FFD166">
+  <meta name="theme-color" content="#58CC02">
 
   <!-- PWA Manifest & App Icons -->
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="apple-touch-icon" href="./icon-192.png">
 
-  <!-- Google Font Fredoka for rounded toddler-friendly typography -->
+  <!-- Google Font Fredoka & Nunito for vibrant Duolingo aesthetic -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 
   <!-- Canvas Confetti CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
     /* ============================================================
-       1. GLOBAL RESET & TODDLER-PROOF TOUCH STYLING
+       1. DUOLINGO DESIGN SYSTEM & RESET (TODDLER-PROOF TOUCH)
        ============================================================ */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -40,11 +40,26 @@
     }
 
     :root {
-      --bg-gradient: linear-gradient(135deg, #FFF9E6 0%, #E3FAFC 50%, #FFF0F5 100%);
-      --font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, cursive, sans-serif;
-      --card-border-radius: 26px;
-      --primary-star: #FFD166;
-      --shadow-color: rgba(0, 0, 0, 0.1);
+      /* Duolingo signature palette */
+      --duo-green: #58CC02;
+      --duo-green-dark: #46A302;
+      --duo-blue: #1CB0F6;
+      --duo-blue-dark: #1899D6;
+      --duo-yellow: #FFC800;
+      --duo-yellow-dark: #E5A500;
+      --duo-orange: #FF9600;
+      --duo-orange-dark: #E08500;
+      --duo-red: #FF4B4B;
+      --duo-red-dark: #EA2B2B;
+      --duo-purple: #CE82FF;
+      --duo-purple-dark: #A55EEA;
+      --duo-gray: #E5E5E5;
+      --duo-gray-dark: #AFAFAF;
+      --duo-card-bg: #FFFFFF;
+      --duo-text: #4B4B4B;
+      --duo-bg: #F7F7F7;
+      
+      --font-family: 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, cursive, sans-serif;
     }
 
     html, body {
@@ -59,8 +74,8 @@
       -webkit-overflow-scrolling: auto;
       touch-action: manipulation;
       font-family: var(--font-family);
-      background: var(--bg-gradient);
-      color: #333;
+      background: #F4FBF1;
+      color: var(--duo-text);
     }
 
     /* Fullscreen app layout */
@@ -75,41 +90,21 @@
       flex-direction: column;
       overflow: hidden;
       overscroll-behavior: none;
-    }
-
-    /* Ambient background bubbles */
-    .bg-bubble {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.6);
-      filter: blur(8px);
-      pointer-events: none;
-      z-index: 0;
-      animation: floatSlow 8s ease-in-out infinite alternate;
-    }
-    .bubble-1 { width: 140px; height: 140px; top: -20px; left: -20px; background: rgba(255, 182, 193, 0.35); }
-    .bubble-2 { width: 180px; height: 180px; bottom: 5%; right: -30px; background: rgba(147, 197, 253, 0.35); }
-
-    @keyframes floatSlow {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(15px, 20px) scale(1.1); }
+      background: linear-gradient(180deg, #F0F9ED 0%, #FFFFFF 100%);
     }
 
     /* ============================================================
-       2. MINIMAL ULTRA-COMPACT HEADER & REWARD TRACKER
+       2. DUOLINGO-STYLE HEADER: STREAK, XP, SOUND & MASCOT
        ============================================================ */
     header {
       position: relative;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-bottom: 2px solid #FFEAA7;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      padding: clamp(4px, 1vh, 8px) clamp(10px, 2.5vw, 18px);
-      padding-top: max(clamp(4px, 1vh, 8px), env(safe-area-inset-top));
-      padding-left: max(clamp(10px, 2.5vw, 18px), env(safe-area-inset-left));
-      padding-right: max(clamp(10px, 2.5vw, 18px), env(safe-area-inset-right));
+      background: #FFFFFF;
+      border-bottom: 3px solid #E5E5E5;
+      padding: clamp(6px, 1.2vh, 10px) clamp(10px, 2.5vw, 20px);
+      padding-top: max(clamp(6px, 1.2vh, 10px), env(safe-area-inset-top));
+      padding-left: max(clamp(10px, 2.5vw, 20px), env(safe-area-inset-left));
+      padding-right: max(clamp(10px, 2.5vw, 20px), env(safe-area-inset-right));
       flex-shrink: 0;
     }
 
@@ -117,305 +112,545 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      max-width: 1280px;
+      max-width: 600px;
       margin: 0 auto;
+      gap: 10px;
     }
 
-    .brand-title {
-      font-size: clamp(1rem, 2.5vw, 1.35rem);
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      color: #FF6B6B;
-      text-shadow: 1px 1px 0px #FFE3E3;
+    /* Brand Logo / Mascot Pill */
+    .brand-pill {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
+      font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+      font-weight: 800;
+      color: var(--duo-green);
       cursor: pointer;
     }
 
-    .brand-title .logo-sparkle {
-      animation: spinBounce 3s ease-in-out infinite;
+    .brand-pill .owl-avatar {
+      font-size: 1.6rem;
+      animation: cuteWiggle 3s ease-in-out infinite;
       display: inline-block;
-      font-size: 1.1em;
     }
 
-    @keyframes spinBounce {
+    @keyframes cuteWiggle {
       0%, 100% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(15deg) scale(1.2); }
+      15% { transform: rotate(-8deg) scale(1.1); }
+      30% { transform: rotate(8deg) scale(1.1); }
+      45% { transform: rotate(0deg) scale(1); }
     }
 
-    /* Minimal Compact Reward Tracker */
-    .reward-tracker {
-      background: #FFFFFF;
-      border: 2px solid #FFD166;
-      border-radius: 20px;
-      padding: 2px 8px 2px 4px;
+    /* Duolingo Stat Chips */
+    .stats-row {
       display: flex;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 6px var(--shadow-color);
-      position: relative;
+      gap: 10px;
     }
 
-    .chest-badge {
-      font-size: clamp(1.2rem, 3.2vw, 1.55rem);
-      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.15));
-      animation: chestPulse 2s infinite ease-in-out;
-      transform-origin: center bottom;
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #FFFFFF;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: clamp(0.85rem, 2.2vw, 1rem);
+      border: 2px solid #E5E5E5;
+      box-shadow: 0 2px 0 #E5E5E5;
+    }
+
+    .chip-streak {
+      color: var(--duo-orange);
+      border-color: #FFE5B4;
+      background: #FFF8EE;
+      box-shadow: 0 2px 0 #FCD89C;
+    }
+
+    .chip-gems {
+      color: var(--duo-blue);
+      border-color: #D8F2FD;
+      background: #F1FAFF;
+      box-shadow: 0 2px 0 #B9E6FA;
+    }
+
+    .sound-toggle-btn {
+      background: #FFFFFF;
+      border: 2.5px solid #E5E5E5;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.1rem;
       cursor: pointer;
+      box-shadow: 0 3px 0 #D5D5D5;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .sound-toggle-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #D5D5D5;
     }
 
-    @keyframes chestPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15) rotate(-4deg); }
-      75% { transform: scale(1.15) rotate(4deg); }
-    }
-
-    .progress-wrapper {
+    /* ============================================================
+       3. DUOLINGO WINDING LEARNING PATH (VIEWPORT CONTAINER)
+       ============================================================ */
+    .view-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 1px;
-      min-width: 80px;
     }
 
-    .progress-labels {
+    /* Section 1: The Winding Stepping-Stone Map */
+    #pathScreen {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
       display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      font-weight: 800;
-      color: #718096;
-      text-transform: uppercase;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 16px 80px 16px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    .counter-pill {
-      color: #E28743;
-      font-weight: 800;
+    #pathScreen.hidden-screen {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.95);
     }
 
-    .progress-bar-bg {
+    /* Section Banner */
+    .unit-banner {
       width: 100%;
-      height: 8px;
-      background: #EDF2F7;
-      border-radius: 6px;
-      overflow: hidden;
+      max-width: 440px;
+      background: var(--duo-green);
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 14px 18px;
+      box-shadow: 0 6px 0 var(--duo-green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+
+    .unit-info h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .unit-info h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .unit-badge {
+      font-size: 2.2rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    }
+
+    /* The Winding Stepping-Stones Path */
+    .stepping-stones-path {
       position: relative;
-      border: 1px solid #CBD5E0;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      margin: 10px 0 40px 0;
     }
 
-    .progress-bar-fill {
-      width: 0%;
+    /* SVG Connecting Curves between stones */
+    .path-svg-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, #FF9F43 0%, #FFD166 60%, #10B981 100%);
-      border-radius: 6px;
-      transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 0 6px rgba(255, 209, 102, 0.8);
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .sound-toggle {
-      background: #FFFFFF;
-      border: 2px solid #CBD5E0;
+    .stone-node {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Winding offsets for snake-like stepping path */
+    .stone-node.offset-left-lg  { transform: translateX(-80px); }
+    .stone-node.offset-left-sm  { transform: translateX(-42px); }
+    .stone-node.offset-center   { transform: translateX(0px); }
+    .stone-node.offset-right-sm { transform: translateX(42px); }
+    .stone-node.offset-right-lg { transform: translateX(80px); }
+
+    .stone-button {
+      position: relative;
+      width: clamp(76px, 19vw, 92px);
+      height: clamp(76px, 19vw, 92px);
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      background: #FFFFFF;
+      border: 4px solid var(--duo-gray);
+      box-shadow: 0 8px 0 var(--duo-gray-dark), 0 10px 20px rgba(0,0,0,0.06);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.95rem;
+      font-size: clamp(2rem, 5.5vw, 2.6rem);
+      outline: none;
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-      transition: transform 0.15s ease;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
-    .sound-toggle:active {
+
+    .stone-button:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 var(--node-dark, var(--duo-gray-dark));
+    }
+
+    /* Completed state */
+    .stone-node.completed .stone-button {
+      background: var(--duo-yellow);
+      border-color: #FFF3C4;
+      box-shadow: 0 8px 0 var(--duo-yellow-dark), 0 10px 20px rgba(255, 200, 0, 0.3);
+      --node-dark: var(--duo-yellow-dark);
+    }
+
+    /* Current active unlocked lesson */
+    .stone-node.current .stone-button {
+      background: var(--duo-green);
+      border-color: #D7F5B6;
+      box-shadow: 0 8px 0 var(--duo-green-dark), 0 12px 24px rgba(88, 204, 2, 0.4);
+      --node-dark: var(--duo-green-dark);
+      animation: pulseActive 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseActive {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    /* Locked state */
+    .stone-node.locked .stone-button {
+      background: #E5E5E5;
+      border-color: #F0F0F0;
+      box-shadow: 0 8px 0 #C4C4C4;
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+
+    /* Animated Mascot Sitting on Current Level */
+    .mascot-follower {
+      position: absolute;
+      top: -38px;
+      right: -24px;
+      font-size: 2.4rem;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+      animation: mascotHover 2.2s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    @keyframes mascotHover {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(6deg); }
+    }
+
+    /* Floating Speech Bubble from Mascot */
+    .mascot-bubble {
+      position: absolute;
+      bottom: 100%;
+      background: #FFFFFF;
+      border: 3px solid #E5E5E5;
+      border-radius: 16px;
+      padding: 6px 12px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--duo-text);
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      margin-bottom: 8px;
+    }
+    .mascot-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #FFFFFF transparent transparent transparent;
+    }
+
+    /* Lesson Label Under Stepping-Stone */
+    .stone-title {
+      margin-top: 10px;
+      font-weight: 800;
+      font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+      color: #3C3C3C;
+      text-align: center;
+      background: #FFFFFF;
+      padding: 3px 12px;
+      border-radius: 14px;
+      border: 2px solid #E5E5E5;
+      box-shadow: 0 2px 0 #E5E5E5;
+      white-space: nowrap;
+    }
+
+    /* Chest Milestone Node */
+    .stone-node.chest-node .stone-button {
+      background: var(--duo-purple);
+      border-color: #F1D9FF;
+      box-shadow: 0 8px 0 var(--duo-purple-dark), 0 10px 20px rgba(206, 130, 255, 0.35);
+      --node-dark: var(--duo-purple-dark);
+    }
+
+    /* ============================================================
+       4. DUOLINGO LESSON SESSION (INTERACTIVE CARDS & WORDS)
+       ============================================================ */
+    #lessonScreen {
+      position: absolute;
+      inset: 0;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(10px, 2vh, 18px);
+      padding-top: max(clamp(10px, 2vh, 18px), env(safe-area-inset-top));
+      padding-bottom: max(clamp(12px, 2.5vh, 20px), env(safe-area-inset-bottom));
+      z-index: 200;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    #lessonScreen.active-lesson {
+      transform: translateY(0);
+    }
+
+    /* Lesson Top Bar with Duolingo Green Progress Bar */
+    .lesson-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+
+    .btn-close-lesson {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #AFAFAF;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+    }
+    .btn-close-lesson:active {
+      color: #4B4B4B;
       transform: scale(0.9);
     }
 
-    /* ============================================================
-       3. RESPONSIVE 10-PICTURE GRID (FULLSCREEN FIT)
-       ============================================================ */
-    main {
+    .lesson-progress-bg {
       flex: 1;
-      position: relative;
-      z-index: 10;
+      height: 16px;
+      background: #E5E5E5;
+      border-radius: 12px;
       overflow: hidden;
-      padding: clamp(6px, 1.2vh, 12px) clamp(8px, 1.8vw, 16px);
-      padding-bottom: max(clamp(6px, 1.2vh, 12px), env(safe-area-inset-bottom));
+      position: relative;
+    }
+
+    .lesson-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--duo-green);
+      border-radius: 12px;
+      box-shadow: 0 -2px 0 rgba(0,0,0,0.1) inset;
+      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .lesson-hearts {
       display: flex;
       align-items: center;
-      justify-content: center;
-      min-height: 0;
+      gap: 4px;
+      font-weight: 800;
+      color: var(--duo-red);
+      font-size: 1.2rem;
     }
 
-    .word-grid {
+    /* Lesson Header Instruction & Mascot */
+    .lesson-instruction {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 680px;
+      margin: 6px auto;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .lesson-mascot {
+      font-size: 2.6rem;
+      animation: cuteWiggle 3.5s ease-in-out infinite;
+    }
+
+    .instruction-bubble {
+      background: #F7F7F7;
+      border: 3px solid #E5E5E5;
+      border-radius: 18px;
+      padding: 8px 16px;
+      font-weight: 800;
+      font-size: clamp(1.1rem, 3.2vw, 1.35rem);
+      color: #3C3C3C;
+      position: relative;
+      flex: 1;
+    }
+    .instruction-bubble::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: transparent #E5E5E5 transparent transparent;
+    }
+
+    /* Word Cards Grid inside Lesson (2x2 or 2x3 large friendly cards) */
+    .lesson-cards-container {
+      flex: 1;
       display: grid;
       width: 100%;
-      height: 100%;
-      max-width: 1200px;
+      max-width: 680px;
       margin: 0 auto;
-      /* Mobile portrait: 2 columns x 5 rows for 10 cards */
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(5, 1fr);
-      gap: clamp(6px, 1.2vh, 12px);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(10px, 2vh, 16px);
+      align-items: stretch;
+      min-height: 0;
+      padding: 6px 0;
     }
 
-    /* Tablets / Landscape / Wide Screens: 5 columns x 2 rows */
-    @media (min-width: 640px) and (orientation: landscape), (min-width: 860px) {
-      .word-grid {
-        grid-template-columns: repeat(5, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-      }
-      .progress-wrapper {
-        min-width: 120px;
-      }
-    }
-
-    /* Tablet Portrait: 3 or 4 columns */
-    @media (min-width: 600px) and (orientation: portrait) {
-      .word-grid {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-      }
-      .word-grid .word-card:nth-child(10) {
-        grid-column: 2;
-      }
-      .progress-wrapper {
-        min-width: 110px;
-      }
-    }
-
-    /* ============================================================
-       4. TODDLER WORD CARD DESIGN & ANIMATIONS
-       ============================================================ */
-    .word-card {
+    /* Chunky Duolingo Button Cards */
+    .duo-card {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      height: 100%;
-      min-height: 0;
-      padding: clamp(4px, 1.2vh, 12px);
       background: #FFFFFF;
-      border-radius: var(--card-border-radius);
-      border: clamp(3px, 0.7vw, 5px) solid var(--card-border, #FFD166);
-      box-shadow: 0 4px 0 var(--card-shadow, #E2B23F), 0 8px 14px rgba(0, 0, 0, 0.08);
+      border: 4px solid var(--duo-gray);
+      border-radius: 26px;
+      box-shadow: 0 6px 0 var(--duo-gray-dark);
       cursor: pointer;
-      overflow: hidden;
       outline: none;
       touch-action: manipulation;
-      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease;
-      will-change: transform;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      overflow: hidden;
+      padding: 8px;
     }
 
-    .word-card:active {
-      transform: translateY(4px) scale(0.96);
-      box-shadow: 0 2px 0 var(--card-shadow, #E2B23F), 0 4px 8px rgba(0, 0, 0, 0.06);
+    .duo-card:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--duo-gray-dark);
     }
 
-    /* Card bounce keyframes triggered on tap */
-    .word-card.anim-bounce {
-      animation: cardPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Correct Tapped State */
+    .duo-card.card-success {
+      border-color: var(--duo-green);
+      background: #F2FCED;
+      box-shadow: 0 6px 0 var(--duo-green-dark);
     }
 
-    /* Picture Poof & Hide Animation after word finishes speaking */
-    .word-card.anim-disappear {
-      animation: cardPoofOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    /* Disappear animation after sound finishes */
+    .duo-card.anim-poof {
+      animation: cardPoofOut 0.24s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       pointer-events: none;
     }
 
-    .word-card.is-hidden {
+    .duo-card.is-hidden {
       visibility: hidden;
       opacity: 0;
       pointer-events: none;
     }
 
-    @keyframes cardPop {
-      0% { transform: scale(1); }
-      35% { transform: scale(1.14) rotate(-3deg); }
-      65% { transform: scale(0.95) rotate(2deg); }
-      85% { transform: scale(1.04) rotate(-1deg); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
-
     @keyframes cardPoofOut {
-      0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-      40% { transform: scale(1.18); opacity: 0.9; filter: brightness(1.2); }
-      100% { transform: scale(0.1) rotate(15deg); opacity: 0; filter: blur(4px); }
+      0% { transform: scale(1); opacity: 1; }
+      40% { transform: scale(1.12); opacity: 0.9; }
+      100% { transform: scale(0.1) rotate(10deg); opacity: 0; filter: blur(4px); }
     }
 
-    /* Thematic Color Palette Classes */
-    .theme-red     { --card-border: #FF5A5F; --card-shadow: #D9383D; background: linear-gradient(180deg, #FFF6F6 0%, #FFE9E9 100%); }
-    .theme-pink    { --card-border: #FF80BF; --card-shadow: #D84F93; background: linear-gradient(180deg, #FFF0F7 0%, #FFE2F1 100%); }
-    .theme-blue    { --card-border: #4D96FF; --card-shadow: #256EDB; background: linear-gradient(180deg, #F0F6FF 0%, #DCE9FE 100%); }
-    .theme-green   { --card-border: #6BCB77; --card-shadow: #41A14E; background: linear-gradient(180deg, #F2FBF4 0%, #DCF6E0 100%); }
-    .theme-orange  { --card-border: #FF793F; --card-shadow: #D9541C; background: linear-gradient(180deg, #FFF3EE 0%, #FFE3D8 100%); }
-    .theme-yellow  { --card-border: #F7B731; --card-shadow: #D49514; background: linear-gradient(180deg, #FFFAEB 0%, #FFF3CE 100%); }
-    .theme-teal    { --card-border: #00C2CB; --card-shadow: #00939A; background: linear-gradient(180deg, #EFFDFE 0%, #D6F9FA 100%); }
-    .theme-purple  { --card-border: #A367DC; --card-shadow: #7C40B8; background: linear-gradient(180deg, #F9F4FD 0%, #EFE5FC 100%); }
-    .theme-amber   { --card-border: #FFAA00; --card-shadow: #D68800; background: linear-gradient(180deg, #FFFDF0 0%, #FFF8D4 100%); }
-    .theme-emerald { --card-border: #2ECC71; --card-shadow: #229954; background: linear-gradient(180deg, #F0FAF3 0%, #D8F5E1 100%); }
-
-    /* Emoji / Graphic */
-    .word-emoji {
-      font-size: clamp(2.6rem, 7vw, 4.2rem);
+    .duo-card .card-emoji {
+      font-size: clamp(3.2rem, 9.5vw, 4.8rem);
       line-height: 1.1;
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12));
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.12));
       pointer-events: none;
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .word-card:active .word-emoji {
-      transform: scale(1.18);
+    .duo-card:active .card-emoji {
+      transform: scale(1.15);
     }
 
-    /* Word Text */
-    .word-label {
-      font-size: clamp(1.15rem, 3.2vw, 1.7rem);
-      font-weight: 700;
-      color: #2D3748;
+    .duo-card .card-label {
+      font-size: clamp(1.2rem, 3.8vw, 1.8rem);
+      font-weight: 800;
+      color: #3C3C3C;
       letter-spacing: 0.5px;
-      margin-top: clamp(4px, 0.8vh, 8px);
+      margin-top: 6px;
       text-transform: capitalize;
       pointer-events: none;
       text-align: center;
     }
 
-    /* Floating Touch Ripple Particles */
-    .touch-ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
-      transform: translate(-50%, -50%) scale(0);
-      pointer-events: none;
-      animation: rippleEffect 0.6s ease-out forwards;
-      z-index: 5;
+    /* Lesson Bottom Bar */
+    .lesson-footer {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
     }
 
-    @keyframes rippleEffect {
-      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
-      100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+    .speaker-replay-btn {
+      background: var(--duo-blue);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 20px;
+      padding: 12px 24px;
+      font-family: var(--font-family);
+      font-size: 1.15rem;
+      font-weight: 800;
+      box-shadow: 0 5px 0 var(--duo-blue-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
     }
-
-    /* Floating Tap Star Particles */
-    .floating-star {
-      position: fixed;
-      pointer-events: none;
-      z-index: 999;
-      font-size: 2rem;
-      animation: floatUpFade 0.8s ease-out forwards;
-    }
-
-    @keyframes floatUpFade {
-      0% { transform: translate(-50%, -50%) scale(0.5) rotate(0deg); opacity: 1; }
-      100% { transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% - 70px)) scale(1.4) rotate(45deg); opacity: 0; }
+    .speaker-replay-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 var(--duo-blue-dark);
     }
 
     /* ============================================================
-       5. REWARD CELEBRATION MODAL & CHEST ANIMATION
+       5. DUOLINGO VICTORY & REWARD CHEST MODAL
        ============================================================ */
     .modal-overlay {
       position: fixed;
@@ -438,308 +673,523 @@
       pointer-events: auto;
     }
 
-    .modal-card {
+    .duo-modal-card {
       background: #FFFFFF;
       border-radius: 36px;
-      border: 8px solid #FFD166;
-      padding: clamp(24px, 4.5vw, 40px);
+      border: 8px solid var(--duo-green);
+      padding: clamp(20px, 4vw, 36px);
       width: 100%;
       max-width: 440px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       transform: scale(0.7) translateY(40px);
       transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .modal-overlay.active .modal-card {
+    .modal-overlay.active .duo-modal-card {
       transform: scale(1) translateY(0);
     }
 
-    .treasure-chest-box {
+    .mascot-celebrate {
+      font-size: 5rem;
+      animation: cheerJump 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes cheerJump {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-16px) scale(1.15); }
+    }
+
+    .duo-modal-card h2 {
+      font-size: clamp(1.8rem, 5.5vw, 2.3rem);
+      font-weight: 800;
+      color: var(--duo-green);
+      line-height: 1.1;
+    }
+
+    .duo-modal-card p {
+      font-size: clamp(1.05rem, 3.2vw, 1.25rem);
+      font-weight: 700;
+      color: #777777;
+    }
+
+    /* XP & Gem Reward Badges */
+    .reward-badges-row {
+      display: flex;
+      gap: 12px;
+      margin: 6px 0;
+    }
+
+    .reward-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #F7F7F7;
+      border: 3px solid #E5E5E5;
+      border-radius: 18px;
+      padding: 8px 16px;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .badge-xp {
+      color: var(--duo-orange);
+      border-color: #FFE5B4;
+      background: #FFF8EE;
+    }
+
+    .badge-gem {
+      color: var(--duo-blue);
+      border-color: #D8F2FD;
+      background: #F1FAFF;
+    }
+
+    /* Interactive 3-Tap Duolingo Treasure Chest */
+    .interactive-chest-box {
       position: relative;
-      width: 130px;
-      height: 130px;
-      margin: 0 auto;
+      width: 140px;
+      height: 140px;
+      margin: 4px auto 8px auto;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
-    .chest-glow {
+    .chest-sunburst-glow {
       position: absolute;
-      inset: -15px;
-      background: radial-gradient(circle, #FFEAA7 20%, rgba(255,234,167,0) 70%);
+      inset: -25px;
       border-radius: 50%;
-      animation: chestGlow 1.4s ease-in-out infinite alternate;
+      background: radial-gradient(circle, #FFE58F 20%, rgba(255, 214, 102, 0) 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.4s ease;
       z-index: 1;
+      pointer-events: none;
     }
 
-    @keyframes chestGlow {
-      0% { transform: scale(0.9); opacity: 0.5; }
-      100% { transform: scale(1.3); opacity: 1; }
+    .interactive-chest-box.opened .chest-sunburst-glow {
+      opacity: 1;
+      animation: rotateGlow 8s linear infinite;
     }
 
-    .chest-graphic {
+    @keyframes rotateGlow {
+      from { transform: rotate(0deg) scale(1.2); }
+      to { transform: rotate(360deg) scale(1.2); }
+    }
+
+    .chest-3d-graphic {
       font-size: 5.5rem;
       position: relative;
       z-index: 2;
       filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2));
-      animation: chestPopOpen 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: inline-block;
+    }
+
+    /* Chest tap shaking & cracking animations */
+    .interactive-chest-box.tap-1 .chest-3d-graphic {
+      animation: chestShake1 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    .interactive-chest-box.tap-2 .chest-3d-graphic {
+      animation: chestShake2 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    .interactive-chest-box.opened .chest-3d-graphic {
+      animation: chestPopOpen 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes chestShake1 {
+      0%, 100% { transform: scale(1.08) rotate(0deg); }
+      20% { transform: scale(1.15) rotate(-8deg); }
+      40% { transform: scale(1.15) rotate(8deg); }
+      60% { transform: scale(1.12) rotate(-5deg); }
+      80% { transform: scale(1.1) rotate(5deg); }
+    }
+
+    @keyframes chestShake2 {
+      0%, 100% { transform: scale(1.15) rotate(0deg); }
+      15% { transform: scale(1.25) rotate(-14deg); }
+      30% { transform: scale(1.25) rotate(14deg); }
+      45% { transform: scale(1.2) rotate(-10deg); }
+      60% { transform: scale(1.2) rotate(10deg); }
+      75% { transform: scale(1.18) rotate(-4deg); }
     }
 
     @keyframes chestPopOpen {
-      0% { transform: scale(0.3) rotate(-15deg); }
-      50% { transform: scale(1.25) rotate(10deg); }
-      75% { transform: scale(0.95) rotate(-5deg); }
-      100% { transform: scale(1.1) rotate(0deg); }
+      0% { transform: scale(1.1) rotate(0deg); }
+      35% { transform: scale(1.35) rotate(-8deg); }
+      65% { transform: scale(0.9) rotate(4deg); }
+      100% { transform: scale(1.2) rotate(0deg); }
     }
 
-    .modal-card h2 {
-      font-size: clamp(1.8rem, 5vw, 2.4rem);
+    /* 3 Tap Indicator Dots */
+    .chest-tap-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 4px 0 10px 0;
+    }
+
+    .tap-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #E5E5E5;
+      border: 2px solid #D0D0D0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .tap-dot.active {
+      background: var(--duo-yellow);
+      border-color: var(--duo-yellow-dark);
+      transform: scale(1.35);
+      box-shadow: 0 0 10px rgba(255, 200, 0, 0.6);
+    }
+
+    .chest-tap-instruction {
       font-weight: 800;
-      color: #FF5A5F;
-      text-shadow: 2px 2px 0 #FFE0E0;
+      color: #FF9600;
+      font-size: 1.15rem;
+      letter-spacing: 0.3px;
+      animation: pulseInstruction 1.8s infinite ease-in-out;
     }
 
-    .modal-card p {
-      font-size: clamp(1.05rem, 3.2vw, 1.3rem);
-      color: #4A5568;
-      font-weight: 600;
-      line-height: 1.4;
+    @keyframes pulseInstruction {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
     }
 
-    .btn-claim {
-      background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+    .btn-continue {
+      width: 100%;
+      background: var(--duo-green);
       color: #FFFFFF;
       font-family: var(--font-family);
-      font-size: clamp(1.25rem, 3.6vw, 1.6rem);
+      font-size: clamp(1.2rem, 3.6vw, 1.5rem);
       font-weight: 800;
-      padding: clamp(12px, 2vh, 18px) clamp(28px, 6vw, 42px);
-      border-radius: 28px;
-      border: 4px solid #6EE7B7;
-      box-shadow: 0 6px 0 #047857, 0 10px 18px rgba(16, 185, 129, 0.4);
+      padding: clamp(14px, 2vh, 18px);
+      border-radius: 24px;
+      border: none;
+      box-shadow: 0 6px 0 var(--duo-green-dark);
       cursor: pointer;
       outline: none;
-      margin-top: 8px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
+      margin-top: 6px;
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
-
-    .btn-claim:active {
+    .btn-continue:active {
       transform: translateY(4px);
-      box-shadow: 0 2px 0 #047857, 0 4px 8px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 2px 0 var(--duo-green-dark);
     }
   </style>
 </head>
 <body>
 
-  <!-- Background decorative elements -->
-  <div class="bg-bubble bubble-1"></div>
-  <div class="bg-bubble bubble-2"></div>
-
   <div id="app">
-    <!-- Minimal Header & Reward Tracker -->
+    <!-- Duolingo Top Header Bar -->
     <header>
       <div class="top-bar">
-        <div class="brand-title" id="brandHeader">
-          <span class="logo-sparkle">✨</span> LumiKids
+        <div class="brand-pill" id="brandBtn">
+          <span class="owl-avatar">🦉</span>
+          <span>LumiKids</span>
         </div>
-        
-        <!-- Reward Bar for Toddler & Parent -->
-        <div class="reward-tracker" id="rewardTracker" title="Reward Chest">
-          <div class="chest-badge" id="chestIcon">🎁</div>
-          <div class="progress-wrapper">
-            <div class="progress-labels">
-              <span>Stars</span>
-              <span class="counter-pill" id="counterText">0 / 10</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" id="progressBar"></div>
-            </div>
+
+        <div class="stats-row">
+          <!-- Daily Streak Flame -->
+          <div class="stat-chip chip-streak" title="Day Streak">
+            <span>🔥</span>
+            <span id="streakCount">3</span>
           </div>
-          <button class="sound-toggle" id="soundToggle" aria-label="Toggle Sound" title="Toggle Speech Sound">🔊</button>
+
+          <!-- Gems / Diamonds -->
+          <div class="stat-chip chip-gems" title="Gems">
+            <span>💎</span>
+            <span id="gemCount">120</span>
+          </div>
+
+          <!-- Audio Sound Toggle -->
+          <button class="sound-toggle-btn" id="soundToggle" aria-label="Toggle Sound">🔊</button>
         </div>
       </div>
     </header>
 
-    <!-- 10 Pictures Grid Container -->
-    <main>
-      <div class="word-grid" id="wordGrid">
-        <!-- 10 Word Cards hydrated dynamically -->
-      </div>
-    </main>
+    <!-- Main View Switcher Container -->
+    <div class="view-container">
+      
+      <!-- SCREEN 1: Winding Stepping-Stone Learning Path -->
+      <section id="pathScreen">
+        
+        <!-- Unit 1 Themed Header Banner -->
+        <div class="unit-banner" id="unitBanner">
+          <div class="unit-info">
+            <h3>Unit 1 • First Words</h3>
+            <h2>Little Explorers 🚀</h2>
+          </div>
+          <div class="unit-badge">⭐</div>
+        </div>
+
+        <!-- The Stepping-Stones Path Container -->
+        <div class="stepping-stones-path" id="stonesPath">
+          <!-- Dynamically populated stepping stone nodes -->
+        </div>
+      </section>
+
+      <!-- SCREEN 2: Interactive Lesson Screen -->
+      <section id="lessonScreen">
+        <!-- Lesson Top Progress -->
+        <div class="lesson-header">
+          <button class="btn-close-lesson" id="closeLessonBtn" aria-label="Close Lesson">✕</button>
+          <div class="lesson-progress-bg">
+            <div class="lesson-progress-fill" id="lessonProgressFill"></div>
+          </div>
+          <div class="lesson-hearts">
+            <span>❤️</span>
+            <span id="heartsCount">5</span>
+          </div>
+        </div>
+
+        <!-- Mascot Instruction -->
+        <div class="lesson-instruction">
+          <span class="lesson-mascot" id="lessonMascot">🦉</span>
+          <div class="instruction-bubble" id="instructionText">
+            Tap and listen to the words!
+          </div>
+        </div>
+
+        <!-- Word Cards Grid (Large chunky buttons) -->
+        <div class="lesson-cards-container" id="lessonCards">
+          <!-- Cards hydrated per lesson -->
+        </div>
+
+        <!-- Lesson Bottom Bar -->
+        <div class="lesson-footer">
+          <button class="speaker-replay-btn" id="replaySoundBtn">
+            <span>🔊</span> Hear Again
+          </button>
+        </div>
+      </section>
+
+    </div>
   </div>
 
-  <!-- Celebration Modal (Reward Chest) -->
+  <!-- Celebration & Reward Chest Modal -->
   <div class="modal-overlay" id="celebrationModal">
-    <div class="modal-card">
-      <div class="treasure-chest-box">
-        <div class="chest-glow"></div>
-        <div class="chest-graphic" id="modalChestGraphic">💎</div>
+    <div class="duo-modal-card">
+      <h2 id="modalTitle">Reward Chest! 🎁</h2>
+      
+      <!-- Interactive 3-Tap Chest Box -->
+      <div class="interactive-chest-box" id="interactiveChest" title="Tap 3 times to open!">
+        <div class="chest-sunburst-glow"></div>
+        <span class="chest-3d-graphic" id="chestGraphic">🎁</span>
       </div>
-      <h2>Super Star! 🌟</h2>
-      <p>Yay! You tapped 10 words!<br>Here is your magic treasure!</p>
-      <button class="btn-claim" id="claimBtn">
-        <span>Play Again!</span> 🎈
+
+      <!-- 3 Tap Indicator Dots -->
+      <div class="chest-tap-indicators" id="tapIndicators">
+        <span class="tap-dot" id="dot1"></span>
+        <span class="tap-dot" id="dot2"></span>
+        <span class="tap-dot" id="dot3"></span>
+      </div>
+
+      <p class="chest-tap-instruction" id="chestInstruction">Tap 3 times to open!</p>
+      
+      <div class="reward-badges-row" id="rewardBadges" style="display: none;">
+        <div class="reward-badge badge-xp">
+          <span>⚡</span> +20 XP
+        </div>
+        <div class="reward-badge badge-gem">
+          <span>💎</span> +10 Gems
+        </div>
+      </div>
+
+      <button class="btn-continue" id="continueBtn" style="display: none;">
+        CONTINUE 🚀
       </button>
     </div>
   </div>
 
   <script>
     /* ============================================================
-       100 COMPLETE TODDLER WORDS (CURATED WITH FAMILIAR EMOJIS & THEMES)
+       1. DUOLINGO CURATED CURRICULUM & STEPPING STONE LESSONS
        ============================================================ */
-    const WORDS = [
-      // Animals (20)
-      { word: 'Cat', emoji: '🐱', theme: 'theme-pink' },
-      { word: 'Dog', emoji: '🐶', theme: 'theme-blue' },
-      { word: 'Bear', emoji: '🐻', theme: 'theme-amber' },
-      { word: 'Lion', emoji: '🦁', theme: 'theme-orange' },
-      { word: 'Tiger', emoji: '🐯', theme: 'theme-yellow' },
-      { word: 'Monkey', emoji: '🐵', theme: 'theme-amber' },
-      { word: 'Duck', emoji: '🦆', theme: 'theme-green' },
-      { word: 'Pig', emoji: '🐷', theme: 'theme-pink' },
-      { word: 'Cow', emoji: '🐮', theme: 'theme-teal' },
-      { word: 'Sheep', emoji: '🐑', theme: 'theme-blue' },
-      { word: 'Horse', emoji: '🐴', theme: 'theme-orange' },
-      { word: 'Rabbit', emoji: '🐰', theme: 'theme-pink' },
-      { word: 'Elephant', emoji: '🐘', theme: 'theme-blue' },
-      { word: 'Giraffe', emoji: '🦒', theme: 'theme-yellow' },
-      { word: 'Panda', emoji: '🐼', theme: 'theme-teal' },
-      { word: 'Frog', emoji: '🐸', theme: 'theme-green' },
-      { word: 'Fish', emoji: '🐟', theme: 'theme-teal' },
-      { word: 'Whale', emoji: '🐳', theme: 'theme-blue' },
-      { word: 'Bird', emoji: '🐦', theme: 'theme-blue' },
-      { word: 'Bee', emoji: '🐝', theme: 'theme-yellow' },
-
-      // Food & Fruits (18)
-      { word: 'Apple', emoji: '🍎', theme: 'theme-red' },
-      { word: 'Banana', emoji: '🍌', theme: 'theme-yellow' },
-      { word: 'Orange', emoji: '🍊', theme: 'theme-orange' },
-      { word: 'Strawberry', emoji: '🍓', theme: 'theme-red' },
-      { word: 'Grapes', emoji: '🍇', theme: 'theme-purple' },
-      { word: 'Watermelon', emoji: '🍉', theme: 'theme-green' },
-      { word: 'Carrot', emoji: '🥕', theme: 'theme-orange' },
-      { word: 'Corn', emoji: '🌽', theme: 'theme-yellow' },
-      { word: 'Tomato', emoji: '🍅', theme: 'theme-red' },
-      { word: 'Bread', emoji: '🍞', theme: 'theme-amber' },
-      { word: 'Cheese', emoji: '🧀', theme: 'theme-yellow' },
-      { word: 'Egg', emoji: '🥚', theme: 'theme-yellow' },
-      { word: 'Milk', emoji: '🥛', theme: 'theme-blue' },
-      { word: 'Water', emoji: '💧', theme: 'theme-teal' },
-      { word: 'Cookie', emoji: '🍪', theme: 'theme-amber' },
-      { word: 'Cake', emoji: '🍰', theme: 'theme-pink' },
-      { word: 'Ice Cream', emoji: '🍦', theme: 'theme-pink' },
-      { word: 'Pizza', emoji: '🍕', theme: 'theme-orange' },
-
-      // Vehicles & Transport (12)
-      { word: 'Car', emoji: '🚗', theme: 'theme-red' },
-      { word: 'Bus', emoji: '🚌', theme: 'theme-yellow' },
-      { word: 'Train', emoji: '🚆', theme: 'theme-blue' },
-      { word: 'Airplane', emoji: '✈️', theme: 'theme-teal' },
-      { word: 'Boat', emoji: '⛵', theme: 'theme-blue' },
-      { word: 'Bicycle', emoji: '🚲', theme: 'theme-green' },
-      { word: 'Helicopter', emoji: '🚁', theme: 'theme-orange' },
-      { word: 'Truck', emoji: '🚚', theme: 'theme-amber' },
-      { word: 'Fire Truck', emoji: '🚒', theme: 'theme-red' },
-      { word: 'Rocket', emoji: '🚀', theme: 'theme-purple' },
-      { word: 'Taxi', emoji: '🚕', theme: 'theme-yellow' },
-      { word: 'Scooter', emoji: '🛴', theme: 'theme-emerald' },
-
-      // Nature & World (14)
-      { word: 'Sun', emoji: '☀️', theme: 'theme-yellow' },
-      { word: 'Moon', emoji: '🌙', theme: 'theme-yellow' },
-      { word: 'Star', emoji: '⭐', theme: 'theme-amber' },
-      { word: 'Cloud', emoji: '☁️', theme: 'theme-blue' },
-      { word: 'Rain', emoji: '🌧️', theme: 'theme-teal' },
-      { word: 'Rainbow', emoji: '🌈', theme: 'theme-pink' },
-      { word: 'Flower', emoji: '🌸', theme: 'theme-pink' },
-      { word: 'Tree', emoji: '🌳', theme: 'theme-green' },
-      { word: 'Leaf', emoji: '🍃', theme: 'theme-emerald' },
-      { word: 'Snow', emoji: '❄️', theme: 'theme-blue' },
-      { word: 'Fire', emoji: '🔥', theme: 'theme-red' },
-      { word: 'Mountain', emoji: '⛰️', theme: 'theme-emerald' },
-      { word: 'Sea', emoji: '🌊', theme: 'theme-teal' },
-      { word: 'Earth', emoji: '🌍', theme: 'theme-blue' },
-
-      // Toys & Play (12)
-      { word: 'Ball', emoji: '⚽', theme: 'theme-green' },
-      { word: 'Doll', emoji: '🪆', theme: 'theme-pink' },
-      { word: 'Balloon', emoji: '🎈', theme: 'theme-red' },
-      { word: 'Kite', emoji: '🪁', theme: 'theme-purple' },
-      { word: 'Teddy Bear', emoji: '🧸', theme: 'theme-amber' },
-      { word: 'Drum', emoji: '🥁', theme: 'theme-orange' },
-      { word: 'Guitar', emoji: '🎸', theme: 'theme-red' },
-      { word: 'Bell', emoji: '🔔', theme: 'theme-yellow' },
-      { word: 'Book', emoji: '📖', theme: 'theme-blue' },
-      { word: 'Crayon', emoji: '🖍️', theme: 'theme-orange' },
-      { word: 'Puzzle', emoji: '🧩', theme: 'theme-teal' },
-      { word: 'Gift', emoji: '🎁', theme: 'theme-pink' },
-
-      // Body & Family (10)
-      { word: 'Eye', emoji: '👁️', theme: 'theme-blue' },
-      { word: 'Nose', emoji: '👃', theme: 'theme-orange' },
-      { word: 'Ear', emoji: '👂', theme: 'theme-amber' },
-      { word: 'Mouth', emoji: '👄', theme: 'theme-pink' },
-      { word: 'Hand', emoji: '🖐️', theme: 'theme-yellow' },
-      { word: 'Foot', emoji: '🦶', theme: 'theme-teal' },
-      { word: 'Baby', emoji: '👶', theme: 'theme-yellow' },
-      { word: 'Mom', emoji: '👩', theme: 'theme-pink' },
-      { word: 'Dad', emoji: '👨', theme: 'theme-blue' },
-      { word: 'Smile', emoji: '😊', theme: 'theme-yellow' },
-
-      // Clothes & Home (14)
-      { word: 'House', emoji: '🏠', theme: 'theme-red' },
-      { word: 'Door', emoji: '🚪', theme: 'theme-amber' },
-      { word: 'Bed', emoji: '🛏️', theme: 'theme-blue' },
-      { word: 'Chair', emoji: '🪑', theme: 'theme-amber' },
-      { word: 'Clock', emoji: '⏰', theme: 'theme-red' },
-      { word: 'Lamp', emoji: '💡', theme: 'theme-yellow' },
-      { word: 'Cup', emoji: '🥤', theme: 'theme-orange' },
-      { word: 'Spoon', emoji: '🥄', theme: 'theme-teal' },
-      { word: 'Shirt', emoji: '👕', theme: 'theme-blue' },
-      { word: 'Pants', emoji: '👖', theme: 'theme-blue' },
-      { word: 'Shoe', emoji: '👟', theme: 'theme-red' },
-      { word: 'Sock', emoji: '🧦', theme: 'theme-pink' },
-      { word: 'Hat', emoji: '🧢', theme: 'theme-blue' },
-      { word: 'Umbrella', emoji: '☂️', theme: 'theme-purple' }
+    const LESSON_LEVELS = [
+      {
+        id: 1,
+        title: 'Puppies & Pets',
+        badge: '🐶',
+        offset: 'offset-center',
+        words: [
+          { word: 'Dog', emoji: '🐶' },
+          { word: 'Cat', emoji: '🐱' },
+          { word: 'Bird', emoji: '🐦' },
+          { word: 'Fish', emoji: '🐟' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Sweet Fruits',
+        badge: '🍎',
+        offset: 'offset-left-sm',
+        words: [
+          { word: 'Apple', emoji: '🍎' },
+          { word: 'Banana', emoji: '🍌' },
+          { word: 'Orange', emoji: '🍊' },
+          { word: 'Strawberry', emoji: '🍓' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Zoom Vehicles',
+        badge: '🚗',
+        offset: 'offset-left-lg',
+        words: [
+          { word: 'Car', emoji: '🚗' },
+          { word: 'Bus', emoji: '🚌' },
+          { word: 'Train', emoji: '🚆' },
+          { word: 'Airplane', emoji: '✈️' }
+        ]
+      },
+      {
+        id: 4,
+        title: 'Reward Chest',
+        badge: '🎁',
+        isChest: true,
+        offset: 'offset-left-sm',
+        words: [
+          { word: 'Star', emoji: '⭐' },
+          { word: 'Gift', emoji: '🎁' },
+          { word: 'Balloon', emoji: '🎈' },
+          { word: 'Rainbow', emoji: '🌈' }
+        ]
+      },
+      {
+        id: 5,
+        title: 'Wild Safari',
+        badge: '🦁',
+        offset: 'offset-center',
+        words: [
+          { word: 'Lion', emoji: '🦁' },
+          { word: 'Tiger', emoji: '🐯' },
+          { word: 'Monkey', emoji: '🐵' },
+          { word: 'Elephant', emoji: '🐘' }
+        ]
+      },
+      {
+        id: 6,
+        title: 'Sunny Sky',
+        badge: '☀️',
+        offset: 'offset-right-sm',
+        words: [
+          { word: 'Sun', emoji: '☀️' },
+          { word: 'Moon', emoji: '🌙' },
+          { word: 'Cloud', emoji: '☁️' },
+          { word: 'Rain', emoji: '🌧️' }
+        ]
+      },
+      {
+        id: 7,
+        title: 'Toy Box',
+        badge: '🧸',
+        offset: 'offset-right-lg',
+        words: [
+          { word: 'Ball', emoji: '⚽' },
+          { word: 'Teddy Bear', emoji: '🧸' },
+          { word: 'Drum', emoji: '🥁' },
+          { word: 'Kite', emoji: '🪁' }
+        ]
+      },
+      {
+        id: 8,
+        title: 'Yummy Snacks',
+        badge: '🍪',
+        offset: 'offset-right-sm',
+        words: [
+          { word: 'Cookie', emoji: '🍪' },
+          { word: 'Cake', emoji: '🍰' },
+          { word: 'Ice Cream', emoji: '🍦' },
+          { word: 'Pizza', emoji: '🍕' }
+        ]
+      },
+      {
+        id: 9,
+        title: 'Farm Friends',
+        badge: '🐮',
+        offset: 'offset-center',
+        words: [
+          { word: 'Cow', emoji: '🐮' },
+          { word: 'Pig', emoji: '🐷' },
+          { word: 'Duck', emoji: '🦆' },
+          { word: 'Sheep', emoji: '🐑' }
+        ]
+      },
+      {
+        id: 10,
+        title: 'Grand Chest',
+        badge: '🏆',
+        isChest: true,
+        offset: 'offset-center',
+        words: [
+          { word: 'Smile', emoji: '😊' },
+          { word: 'Rocket', emoji: '🚀' },
+          { word: 'Earth', emoji: '🌍' },
+          { word: 'Heart', emoji: '💖' }
+        ]
+      }
     ];
 
-    const REWARD_GOAL = 10;
-    const CHEST_REWARDS = ['💎', '👑', '🚀', '🦄', '🦖', '🏆', '🎉', '🌟', '🍭', '🧸'];
-
-    /* State */
-    let tapCount = 0;
+    /* App Persistent State */
+    let currentUnlockedLevel = 1;
+    let streakCount = 3;
+    let gemCount = 120;
     let isSoundEnabled = true;
+
+    // Active lesson tracking
+    let activeLevel = null;
+    let wordsCompletedInLesson = 0;
+    let lastSpokenWord = '';
+
+    // 3-Tap Chest State
+    let chestTapCount = 0;
+    let isChestOpened = false;
+
+    // Audio & Speech
     let audioContext = null;
     let synth = window.speechSynthesis;
     let englishFemaleVoice = null;
     let audioUnlocked = false;
 
-    // Track active 10 pictures and previous 10 pictures to prevent duplicates
-    let activeWords = [];
-    let lastWordNames = new Set();
-
-    /* DOM Elements */
-    const wordGrid = document.getElementById('wordGrid');
-    const counterText = document.getElementById('counterText');
-    const progressBar = document.getElementById('progressBar');
-    const chestIcon = document.getElementById('chestIcon');
+    /* DOM References */
+    const stonesPath = document.getElementById('stonesPath');
+    const pathScreen = document.getElementById('pathScreen');
+    const lessonScreen = document.getElementById('lessonScreen');
+    const closeLessonBtn = document.getElementById('closeLessonBtn');
+    const lessonProgressFill = document.getElementById('lessonProgressFill');
+    const instructionText = document.getElementById('instructionText');
+    const lessonCards = document.getElementById('lessonCards');
+    const replaySoundBtn = document.getElementById('replaySoundBtn');
     const celebrationModal = document.getElementById('celebrationModal');
-    const modalChestGraphic = document.getElementById('modalChestGraphic');
-    const claimBtn = document.getElementById('claimBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    const streakDisplay = document.getElementById('streakCount');
+    const gemDisplay = document.getElementById('gemCount');
     const soundToggle = document.getElementById('soundToggle');
-    const brandHeader = document.getElementById('brandHeader');
+
+    // 3-Tap Chest Modal Elements
+    const interactiveChest = document.getElementById('interactiveChest');
+    const chestGraphic = document.getElementById('chestGraphic');
+    const modalTitle = document.getElementById('modalTitle');
+    const chestInstruction = document.getElementById('chestInstruction');
+    const tapIndicators = document.getElementById('tapIndicators');
+    const dot1 = document.getElementById('dot1');
+    const dot2 = document.getElementById('dot2');
+    const dot3 = document.getElementById('dot3');
+    const rewardBadges = document.getElementById('rewardBadges');
 
     /* ============================================================
-       1. WEB AUDIO API SYNTHESIZER (CUTE CHIMES & POP SOUNDS)
-       Zero external audio dependencies. Instant response.
+       2. AUDIO SYNTHESIS & FEMALE VOICE ENGINE
        ============================================================ */
     function initAudioContext() {
       if (!audioContext) {
@@ -753,7 +1203,6 @@
       }
     }
 
-    // Unlock both Web Audio and SpeechSynthesis on first touch (vital on iOS & Android)
     function unlockAudio() {
       initAudioContext();
       if (synth) {
@@ -764,15 +1213,14 @@
       audioUnlocked = true;
     }
 
+    // Playful synthesized pop chime
     function playChime(freq = 523.25, type = 'sine') {
       if (!isSoundEnabled) return;
       initAudioContext();
       if (!audioContext) return;
 
       try {
-        if (audioContext.state === 'suspended') {
-          audioContext.resume();
-        }
+        if (audioContext.state === 'suspended') audioContext.resume();
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
 
@@ -791,12 +1239,13 @@
       } catch (e) {}
     }
 
+    // Duolingo victory fanfare
     function playVictoryFanfare() {
       if (!isSoundEnabled) return;
       initAudioContext();
       if (!audioContext) return;
 
-      const notes = [440, 554.37, 659.25, 880];
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C Major cheer
       notes.forEach((freq, idx) => {
         setTimeout(() => {
           try {
@@ -806,33 +1255,20 @@
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, audioContext.currentTime);
             gain.gain.setValueAtTime(0.35, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.45);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.35);
             osc.connect(gain);
             gain.connect(audioContext.destination);
             osc.start();
-            osc.stop(audioContext.currentTime + 0.48);
+            osc.stop(audioContext.currentTime + 0.38);
           } catch (e) {}
-        }, idx * 120);
+        }, idx * 110);
       });
     }
 
-    /* ============================================================
-       2. HIGH-QUALITY FEMALE SPEECH SYNTHESIS ENGINE (MOBILE OPTIMIZED)
-       ============================================================ */
+    // Female voice selector
     const FEMALE_VOICE_PREFERENCES = [
-      'Samantha',
-      'Ava',
-      'Allison',
-      'Victoria',
-      'Karen',
-      'Moira',
-      'Google US English',
-      'Jenny',
-      'Aria',
-      'Zira',
-      'en-US-Neural2-F',
-      'en-US-Standard-C',
-      'en-US-Standard-E'
+      'Samantha', 'Ava', 'Allison', 'Victoria', 'Karen', 'Moira',
+      'Google US English', 'Jenny', 'Aria', 'Zira', 'en-US-Neural2-F'
     ];
 
     function selectBestFemaleVoice() {
@@ -842,7 +1278,6 @@
 
       const englishVoices = voices.filter(v => v.lang && (v.lang.startsWith('en') || v.lang.startsWith('en_')));
 
-      // 1. Known top female voices
       for (const pref of FEMALE_VOICE_PREFERENCES) {
         const found = englishVoices.find(v => v.name && v.name.toLowerCase().includes(pref.toLowerCase()));
         if (found) {
@@ -851,7 +1286,6 @@
         }
       }
 
-      // 2. Any voice tagged female / woman
       const genericFemale = englishVoices.find(v => {
         const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
         return n.includes('female') || n.includes('woman') || n.includes('girl');
@@ -861,14 +1295,6 @@
         return;
       }
 
-      // 3. Any en-US voice
-      const usVoice = englishVoices.find(v => v.lang === 'en-US' || v.lang === 'en_US');
-      if (usVoice) {
-        englishFemaleVoice = usVoice;
-        return;
-      }
-
-      // 4. Fallback
       englishFemaleVoice = englishVoices[0] || voices[0];
     }
 
@@ -881,21 +1307,24 @@
 
     function speakWord(text, onFinished) {
       if (!isSoundEnabled || !synth) {
-        if (onFinished) setTimeout(onFinished, 400);
+        if (onFinished) setTimeout(onFinished, 200);
         return;
       }
 
       unlockAudio();
+      lastSpokenWord = text;
+
+      // Cancel previous pending/stuck utterances immediately so sounds don't queue or overlap
+      try {
+        synth.cancel();
+      } catch (e) {}
 
       if (!englishFemaleVoice) {
         selectBestFemaleVoice();
       }
 
-      // Fix mobile iOS/Android: ensure synth is not paused
       try {
-        if (synth.paused) {
-          synth.resume();
-        }
+        if (synth.paused) synth.resume();
       } catch (e) {}
 
       const utterance = new SpeechSynthesisUtterance(text);
@@ -904,8 +1333,8 @@
       }
 
       utterance.lang = 'en-US';
-      utterance.rate = 0.92;   // Natural, clear, friendly female cadence
-      utterance.pitch = 1.3;   // Cheerful, friendly pitch
+      utterance.rate = 1.05;   // Faster, punchy, immediate toddler response (no long lag)
+      utterance.pitch = 1.25;
       utterance.volume = 1.0;
 
       let hasCompleted = false;
@@ -919,252 +1348,322 @@
         }
       };
 
-      utterance.onend = () => {
-        completeOnce();
-      };
+      utterance.onend = () => completeOnce();
+      utterance.onerror = () => completeOnce();
 
-      utterance.onerror = (e) => {
-        completeOnce();
-      };
-
-      // Mobile safeguard timer in case browser ignores onend
-      const maxDuration = Math.max(900, text.length * 120 + 450);
+      // Short safety timer so toddlers are never left waiting
+      const maxDuration = Math.max(500, text.length * 75 + 250);
       safetyTimer = setTimeout(completeOnce, maxDuration);
 
       try {
         synth.speak(utterance);
-        // Mobile iOS Safari bug workaround: trigger resume immediately after speak
-        if (synth.paused) {
-          synth.resume();
-        }
+        if (synth.paused) synth.resume();
       } catch (e) {
         completeOnce();
       }
     }
 
     /* ============================================================
-       3. NON-DUPLICATING 10-PICTURE SELECTION & CARD RENDERING
-       Randomly pick 10 words out of 100 with ZERO duplicate from the last 10
+       3. STEPPING-STONE MAP RENDERING & MASCOT MOVEMENT
        ============================================================ */
-    function getRandom10Words() {
-      let candidates = WORDS.filter(w => !lastWordNames.has(w.word));
+    function renderSteppingStonesMap() {
+      stonesPath.innerHTML = '';
 
-      if (candidates.length < 10) {
-        candidates = [...WORDS];
-      }
+      LESSON_LEVELS.forEach((level) => {
+        const isCompleted = level.id < currentUnlockedLevel;
+        const isCurrent = level.id === currentUnlockedLevel;
+        const isLocked = level.id > currentUnlockedLevel;
 
-      const shuffled = [...candidates];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
+        const node = document.createElement('div');
+        node.className = `stone-node ${level.offset} ${level.isChest ? 'chest-node' : ''}`;
+        if (isCompleted) node.classList.add('completed');
+        if (isCurrent) node.classList.add('current');
+        if (isLocked) node.classList.add('locked');
 
-      const selected = shuffled.slice(0, 10);
-      lastWordNames = new Set(selected.map(w => w.word));
-      activeWords = selected;
+        // Mascot positioning on current level
+        let mascotHtml = '';
+        if (isCurrent) {
+          mascotHtml = `
+            <div class="mascot-follower">
+              <div class="mascot-bubble">START!</div>
+              🦉
+            </div>
+          `;
+        }
 
-      return selected;
-    }
-
-    function renderWordCards() {
-      wordGrid.innerHTML = '';
-      wordGrid.style.pointerEvents = 'auto';
-      const currentBatch = getRandom10Words();
-
-      currentBatch.forEach((item) => {
-        const card = document.createElement('button');
-        card.className = `word-card ${item.theme}`;
-        card.setAttribute('type', 'button');
-        card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', item.word);
-        card.dataset.word = item.word;
-
-        card.innerHTML = `
-          <span class="word-emoji">${item.emoji}</span>
-          <span class="word-label">${item.word}</span>
+        node.innerHTML = `
+          ${mascotHtml}
+          <button class="stone-button" aria-label="${level.title}">
+            ${isCompleted ? '⭐' : level.badge}
+          </button>
+          <div class="stone-title">${level.title}</div>
         `;
 
-        // Direct 'click' event counts as a genuine User Activation Gesture on mobile browsers
-        card.addEventListener('click', (e) => handleCardTap(e, card, item));
+        // Click to launch lesson if unlocked
+        if (!isLocked) {
+          node.addEventListener('click', () => {
+            playChime(580);
+            startLesson(level);
+          });
+        } else {
+          node.addEventListener('click', () => {
+            playChime(300, 'triangle');
+            speakWord('Finish earlier lessons first!');
+          });
+        }
 
-        wordGrid.appendChild(card);
+        stonesPath.appendChild(node);
       });
     }
 
-    function handleCardTap(event, cardElement, wordItem) {
-      if (cardElement.classList.contains('anim-disappear') || cardElement.classList.contains('is-hidden')) {
+    /* ============================================================
+       4. DUOLINGO LESSON SESSION LOGIC
+       ============================================================ */
+    function startLesson(level) {
+      activeLevel = level;
+      wordsCompletedInLesson = 0;
+      updateLessonProgress();
+
+      // Clear any prior speech queue
+      try {
+        if (synth) synth.cancel();
+      } catch (e) {}
+
+      instructionText.textContent = `Tap any picture!`;
+      renderLessonCards(level.words);
+
+      lessonScreen.classList.add('active-lesson');
+      pathScreen.classList.add('hidden-screen');
+    }
+
+    function renderLessonCards(words) {
+      lessonCards.innerHTML = '';
+      lessonCards.style.pointerEvents = 'auto';
+
+      words.forEach((item) => {
+        const card = document.createElement('button');
+        card.className = 'duo-card';
+        card.setAttribute('type', 'button');
+        card.setAttribute('aria-label', item.word);
+
+        card.innerHTML = `
+          <span class="card-emoji">${item.emoji}</span>
+          <span class="card-label">${item.word}</span>
+        `;
+
+        card.addEventListener('click', (e) => handleLessonCardTap(card, item));
+        lessonCards.appendChild(card);
+      });
+    }
+
+    function handleLessonCardTap(cardElement, wordItem) {
+      if (cardElement.classList.contains('anim-poof') || cardElement.classList.contains('is-hidden')) {
         return;
       }
 
-      // Ensure audioContext and SpeechSynthesis are fully unlocked on this user tap
       unlockAudio();
+      lessonCards.style.pointerEvents = 'none';
 
-      // Temporarily pause other cards until current word finishes speaking
-      wordGrid.style.pointerEvents = 'none';
+      cardElement.classList.add('card-success');
+      playChime(440 + Math.random() * 200);
 
-      // Visual ripples & particle stars
-      createRipple(event, cardElement);
-      createFloatingStar(event.clientX, event.clientY);
-
-      // Bounce card animation
-      cardElement.classList.remove('anim-bounce');
-      void cardElement.offsetWidth; // Force reflow
-      cardElement.classList.add('anim-bounce');
-
-      // Audio pop chime
-      playChime(320 + (Math.random() * 220));
-
-      // Speak word, wait for voice to completely finish, then poof and hide the picture
+      // Speak word clearly, wait for speech to finish, then poof and hide
       speakWord(wordItem.word, () => {
-        // Trigger disappear poof animation on current card
-        cardElement.classList.add('anim-disappear');
-
-        // Play gentle pop chime upon disappearance
-        setTimeout(() => playChime(620, 'sine'), 80);
+        cardElement.classList.add('anim-poof');
+        setTimeout(() => playChime(620, 'sine'), 50);
 
         setTimeout(() => {
-          cardElement.classList.remove('anim-disappear');
+          cardElement.classList.remove('anim-poof');
           cardElement.classList.add('is-hidden');
 
-          // Increment progress after word is learned
-          incrementProgress();
+          wordsCompletedInLesson++;
+          updateLessonProgress();
 
-          // Re-enable clicking for remaining cards
-          wordGrid.style.pointerEvents = 'auto';
-        }, 360);
+          lessonCards.style.pointerEvents = 'auto';
+
+          // Check if all 4 words in this stepping stone are finished
+          if (wordsCompletedInLesson >= activeLevel.words.length) {
+            setTimeout(completeLesson, 300);
+          }
+        }, 220);
       });
     }
 
-    function createRipple(e, card) {
-      const rect = card.getBoundingClientRect();
-      const ripple = document.createElement('div');
-      ripple.className = 'touch-ripple';
-
-      const x = (e.clientX || rect.left + rect.width / 2) - rect.left;
-      const y = (e.clientY || rect.top + rect.height / 2) - rect.top;
-      const size = Math.max(rect.width, rect.height) * 1.5;
-
-      ripple.style.width = `${size}px`;
-      ripple.style.height = `${size}px`;
-      ripple.style.left = `${x}px`;
-      ripple.style.top = `${y}px`;
-
-      card.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    }
-
-    function createFloatingStar(x, y) {
-      if (!x || !y) return;
-      const star = document.createElement('div');
-      star.className = 'floating-star';
-      const icons = ['⭐', '✨', '💛', '🌟', '🎈'];
-      star.textContent = icons[Math.floor(Math.random() * icons.length)];
-      star.style.left = `${x}px`;
-      star.style.top = `${y}px`;
-      star.style.setProperty('--dx', `${(Math.random() - 0.5) * 80}px`);
-
-      document.body.appendChild(star);
-      setTimeout(() => star.remove(), 800);
+    function updateLessonProgress() {
+      const total = activeLevel ? activeLevel.words.length : 4;
+      const pct = Math.min((wordsCompletedInLesson / total) * 100, 100);
+      lessonProgressFill.style.width = `${pct}%`;
     }
 
     /* ============================================================
-       4. REWARD CHEST PROGRESSION & 10-WORD ROTATION
+       5. 3-TAP REWARD CHEST SYSTEM (DUOLINGO STYLE)
        ============================================================ */
-    function incrementProgress() {
-      tapCount++;
-      updateProgressUI();
+    const CHEST_TREASURES = ['💎', '👑', '🦄', '🚀', '🦖', '🏆', '🎉', '🌟', '🍭', '🧸'];
 
-      if (tapCount >= REWARD_GOAL) {
-        setTimeout(triggerCelebration, 300);
-      }
-    }
+    function setupChestOpeningModal() {
+      chestTapCount = 0;
+      isChestOpened = false;
 
-    function updateProgressUI() {
-      const progressPercent = Math.min((tapCount / REWARD_GOAL) * 100, 100);
-      progressBar.style.width = `${progressPercent}%`;
-      counterText.textContent = `${tapCount} / ${REWARD_GOAL}`;
+      // Reset modal UI to unopened state
+      interactiveChest.className = 'interactive-chest-box';
+      chestGraphic.textContent = '🎁';
+      modalTitle.textContent = 'Reward Chest! 🎁';
+      chestInstruction.textContent = 'Tap 3 times to open!';
+      chestInstruction.style.display = 'block';
+      tapIndicators.style.display = 'flex';
+      rewardBadges.style.display = 'none';
+      continueBtn.style.display = 'none';
 
-      if (tapCount > 0 && tapCount % 3 === 0) {
-        chestIcon.style.transform = 'scale(1.35) rotate(10deg)';
-        setTimeout(() => {
-          chestIcon.style.transform = '';
-        }, 250);
-      }
-    }
-
-    function triggerCelebration() {
-      const randomPrize = CHEST_REWARDS[Math.floor(Math.random() * CHEST_REWARDS.length)];
-      modalChestGraphic.textContent = randomPrize;
+      // Reset tap dots
+      dot1.className = 'tap-dot';
+      dot2.className = 'tap-dot';
+      dot3.className = 'tap-dot';
 
       celebrationModal.classList.add('active');
-      playVictoryFanfare();
-
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 90,
-          spread: 75,
-          origin: { y: 0.6 },
-          colors: ['#FF5A5F', '#FFD166', '#06D6A0', '#118AB2', '#9B5DE5']
-        });
-
-        const interval = setInterval(() => {
-          if (!celebrationModal.classList.contains('active')) {
-            clearInterval(interval);
-            return;
-          }
-          confetti({ particleCount: 30, angle: 60, spread: 55, origin: { x: 0 } });
-          confetti({ particleCount: 30, angle: 120, spread: 55, origin: { x: 1 } });
-        }, 450);
-
-        setTimeout(() => clearInterval(interval), 3000);
-      }
-
-      setTimeout(() => {
-        speakWord('Awesome job! You did it!');
-      }, 500);
+      playChime(580);
+      speakWord('Tap three times to open the chest!');
     }
 
-    function resetProgress() {
-      tapCount = 0;
-      updateProgressUI();
+    function handleChestTap() {
+      if (isChestOpened) return;
+      unlockAudio();
+
+      chestTapCount++;
+
+      if (chestTapCount === 1) {
+        // Tap 1: First wobble and sound
+        interactiveChest.className = 'interactive-chest-box tap-1';
+        dot1.className = 'tap-dot active';
+        playChime(500, 'triangle');
+        chestInstruction.textContent = 'Keep going! 2 taps left! ⭐';
+
+      } else if (chestTapCount === 2) {
+        // Tap 2: Stronger shake and sound
+        interactiveChest.className = 'interactive-chest-box tap-2';
+        dot2.className = 'tap-dot active';
+        playChime(620, 'triangle');
+        chestInstruction.textContent = 'Almost open! 1 tap left! 🌟';
+
+      } else if (chestTapCount >= 3) {
+        // Tap 3: CHEST BURSTS OPEN!
+        isChestOpened = true;
+        dot3.className = 'tap-dot active';
+        interactiveChest.className = 'interactive-chest-box opened';
+
+        // Reveal random sparkling treasure
+        const prize = CHEST_TREASURES[Math.floor(Math.random() * CHEST_TREASURES.length)];
+        chestGraphic.textContent = prize;
+
+        modalTitle.textContent = 'Super Treasure! 🌟';
+        chestInstruction.style.display = 'none';
+        tapIndicators.style.display = 'none';
+
+        // Play glorious fanfare
+        playVictoryFanfare();
+
+        // Duolingo multi-colored confetti shower
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 110,
+            spread: 90,
+            origin: { y: 0.6 },
+            colors: ['#58CC02', '#FFC800', '#1CB0F6', '#FF4B4B', '#CE82FF']
+          });
+
+          // Second burst for celebratory impact
+          setTimeout(() => {
+            confetti({
+              particleCount: 40,
+              angle: 60,
+              spread: 60,
+              origin: { x: 0.1, y: 0.7 }
+            });
+            confetti({
+              particleCount: 40,
+              angle: 120,
+              spread: 60,
+              origin: { x: 0.9, y: 0.7 }
+            });
+          }, 350);
+        }
+
+        // Voice cheer
+        setTimeout(() => {
+          speakWord('Awesome! You opened the treasure!');
+        }, 350);
+
+        // Show rewards and Continue button
+        setTimeout(() => {
+          rewardBadges.style.display = 'flex';
+          continueBtn.style.display = 'block';
+        }, 600);
+      }
+    }
+
+    function completeLesson() {
+      // Direct to 3-tap interactive chest opening!
+      setupChestOpeningModal();
+    }
+
+    function closeLesson() {
+      lessonScreen.classList.remove('active-lesson');
+      pathScreen.classList.remove('hidden-screen');
+      lessonCards.innerHTML = '';
+      activeLevel = null;
+    }
+
+    function onContinueAfterCelebration() {
       celebrationModal.classList.remove('active');
+      closeLesson();
+
+      // Advance Stepping-Stone Progression
+      if (currentUnlockedLevel < LESSON_LEVELS.length) {
+        currentUnlockedLevel++;
+      }
+      gemCount += 10;
+      gemDisplay.textContent = gemCount;
+
+      renderSteppingStonesMap();
       playChime(650);
 
-      // Randomize the next 10 pictures with ZERO duplicate from the last 10
-      renderWordCards();
+      // Scroll smoothly down to newly unlocked stepping stone
+      setTimeout(() => {
+        const activeNode = document.querySelector('.stone-node.current');
+        if (activeNode) {
+          activeNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
     }
 
     /* ============================================================
-       5. EVENT LISTENERS
+       6. EVENT LISTENERS
        ============================================================ */
-    claimBtn.addEventListener('click', resetProgress);
+    interactiveChest.addEventListener('click', handleChestTap);
+    closeLessonBtn.addEventListener('click', closeLesson);
+    continueBtn.addEventListener('click', onContinueAfterCelebration);
+
+    replaySoundBtn.addEventListener('click', () => {
+      if (lastSpokenWord) {
+        playChime(500);
+        speakWord(lastSpokenWord);
+      }
+    });
 
     soundToggle.addEventListener('click', (e) => {
       e.stopPropagation();
       isSoundEnabled = !isSoundEnabled;
       soundToggle.textContent = isSoundEnabled ? '🔊' : '🔇';
-      soundToggle.style.borderColor = isSoundEnabled ? '#CBD5E0' : '#FF5A5F';
+      soundToggle.style.borderColor = isSoundEnabled ? '#E5E5E5' : '#FF4B4B';
     });
 
-    chestIcon.addEventListener('click', () => {
-      playChime(580);
-      speakWord(`${tapCount} stars`);
-    });
-
-    // Clicking header brand logo randomizes pictures manually anytime
-    brandHeader.addEventListener('click', () => {
-      playChime(520);
-      renderWordCards();
-    });
-
-    // Prevent pinch-to-zoom and rubber-band pull scrolling
+    // Touch and Gesture Unlocking (Satisfies Mobile & Fullscreen Policies)
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('touchmove', (e) => {
-      // Prevent pull-to-refresh & browser bar reveals
-      e.preventDefault();
+      if (!e.target.closest('#pathScreen')) {
+        e.preventDefault();
+      }
     }, { passive: false });
 
-    // Request Immersive Fullscreen Mode on User Gesture
     function triggerFullscreen() {
       const docEl = document.documentElement;
       const requestFS = docEl.requestFullscreen ||
@@ -1182,7 +1681,6 @@
       }
     }
 
-    // Pre-warm audio engine and trigger Fullscreen API on very first user interaction anywhere
     function onFirstUserGesture() {
       unlockAudio();
       triggerFullscreen();
@@ -1193,22 +1691,17 @@
     });
 
     /* ============================================================
-       INITIALIZE & SERVICE WORKER REGISTRATION (PWABUILDER READY)
+       INITIALIZE & SERVICE WORKER
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
-      renderWordCards();
-      updateProgressUI();
+      renderSteppingStonesMap();
+      streakDisplay.textContent = streakCount;
+      gemDisplay.textContent = gemCount;
 
-      // Register Service Worker for PWA installability & offline support
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./sw.js')
-            .then((registration) => {
-              console.log('LumiKids PWA ServiceWorker registered with scope:', registration.scope);
-            })
-            .catch((error) => {
-              console.warn('LumiKids ServiceWorker registration failed:', error);
-            });
+            .catch(() => {});
         });
       }
     });

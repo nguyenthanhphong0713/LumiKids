@@ -1,5 +1,5 @@
 {
-  "name": "LumiKids - Toddler First Words",
+  "name": "LumiKids",
   "short_name": "LumiKids",
   "id": "./index.html",
   "start_url": "./index.html",
@@ -7,8 +7,8 @@
   "display": "fullscreen",
   "display_override": ["fullscreen", "standalone", "window-controls-overlay"],
   "orientation": "any",
-  "background_color": "#FFF9E6",
-  "theme_color": "#FFD166",
+  "background_color": "#F4FBF1",
+  "theme_color": "#58CC02",
   "categories": ["education", "kids", "games"],
   "dir": "ltr",
   "lang": "en-US",
