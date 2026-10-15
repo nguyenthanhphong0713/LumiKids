@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>LumiKids</title>
   
-  <!-- Web App Capabilities & Mobile App Styling -->
+  <!-- Web App Capabilities & Mobile Fullscreen Styling -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="LumiKids">
@@ -17,22 +17,22 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <!-- PWA Manifest & App Icons with Version Query -->
-  <link rel="manifest" href="./manifest.json?v=2.0.0">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.0.0">
-  <link rel="apple-touch-icon" href="./icon-192.png?v=2.0.0">
+  <!-- PWA Manifest & App Icons (Keeping Original Icons) with Cache-Busting Version -->
+  <link rel="manifest" href="./manifest.json?v=2.1.0">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.1.0">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=2.1.0">
 
-  <!-- Google Font Fredoka & Nunito for vibrant Duolingo aesthetic -->
+  <!-- Google Fonts: Fredoka & Nunito for Authentic Duolingo Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.0.0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.1.0" rel="stylesheet">
 
-  <!-- Canvas Confetti CDN with Version Query -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.0.0"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.1.0"></script>
 
   <style>
     /* ============================================================
-       1. DUOLINGO DESIGN SYSTEM & RESET (TODDLER-PROOF TOUCH)
+       1. DUOLINGO DESIGN SYSTEM, TOKENS & RESET
        ============================================================ */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -45,9 +45,10 @@
     }
 
     :root {
-      /* Duolingo signature palette */
+      /* Duolingo Signature Color Palette */
       --duo-green: #58CC02;
       --duo-green-dark: #46A302;
+      --duo-green-light: #D7FFB8;
       --duo-blue: #1CB0F6;
       --duo-blue-dark: #1899D6;
       --duo-yellow: #FFC800;
@@ -62,6 +63,7 @@
       --duo-gray-dark: #AFAFAF;
       --duo-card-bg: #FFFFFF;
       --duo-text: #4B4B4B;
+      --duo-text-muted: #777777;
       --duo-bg: #F7F7F7;
       
       --font-family: 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, cursive, sans-serif;
@@ -83,7 +85,7 @@
       color: var(--duo-text);
     }
 
-    /* Fullscreen app layout */
+    /* Main Container */
     #app {
       position: fixed;
       top: 0;
@@ -99,7 +101,7 @@
     }
 
     /* ============================================================
-       2. DUOLINGO-STYLE HEADER: STREAK, XP, SOUND & MASCOT
+       2. TOP BAR (LumiKids Mascot, Streak, Gems, Hearts, Sound)
        ============================================================ */
     header {
       position: relative;
@@ -127,7 +129,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
       font-weight: 800;
       color: var(--duo-green);
       cursor: pointer;
@@ -135,7 +137,7 @@
 
     .brand-pill .owl-avatar {
       font-size: 1.6rem;
-      animation: cuteWiggle 3s ease-in-out infinite;
+      animation: cuteWiggle 3.2s ease-in-out infinite;
       display: inline-block;
     }
 
@@ -150,7 +152,7 @@
     .stats-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .stat-chip {
@@ -164,6 +166,7 @@
       font-size: clamp(0.85rem, 2.2vw, 1rem);
       border: 2px solid #E5E5E5;
       box-shadow: 0 2px 0 #E5E5E5;
+      cursor: pointer;
     }
 
     .chip-streak {
@@ -178,6 +181,13 @@
       border-color: #D8F2FD;
       background: #F1FAFF;
       box-shadow: 0 2px 0 #B9E6FA;
+    }
+
+    .chip-hearts {
+      color: var(--duo-red);
+      border-color: #FFD2D2;
+      background: #FFF5F5;
+      box-shadow: 0 2px 0 #F5B0B0;
     }
 
     .sound-toggle-btn {
@@ -200,7 +210,7 @@
     }
 
     /* ============================================================
-       3. DUOLINGO WINDING LEARNING PATH (VIEWPORT CONTAINER)
+       3. VIEW CONTAINER & TAB PANELS
        ============================================================ */
     .view-container {
       flex: 1;
@@ -210,28 +220,25 @@
       flex-direction: column;
     }
 
-    /* Section 1: The Winding Stepping-Stone Map */
-    #pathScreen {
+    .tab-screen {
       position: absolute;
       inset: 0;
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
-      display: flex;
+      display: none;
       flex-direction: column;
       align-items: center;
-      padding: 16px 16px 80px 16px;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      padding: 16px 16px 90px 16px;
+      transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
-    #pathScreen.hidden-screen {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.95);
+    .tab-screen.active-tab {
+      display: flex;
     }
 
-    /* Section Banner */
+    /* ---------------- TAB 1: LEARN (PATH) ---------------- */
     .unit-banner {
       width: 100%;
       max-width: 440px;
@@ -248,7 +255,7 @@
     }
 
     .unit-info h3 {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 800;
       letter-spacing: 0.5px;
       text-transform: uppercase;
@@ -265,7 +272,6 @@
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
     }
 
-    /* The Winding Stepping-Stones Path */
     .stepping-stones-path {
       position: relative;
       width: 100%;
@@ -274,18 +280,7 @@
       flex-direction: column;
       align-items: center;
       gap: 32px;
-      margin: 10px 0 40px 0;
-    }
-
-    /* SVG Connecting Curves between stones */
-    .path-svg-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
+      margin: 10px 0 30px 0;
     }
 
     .stone-node {
@@ -298,7 +293,6 @@
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Winding offsets for snake-like stepping path */
     .stone-node.offset-left-lg  { transform: translateX(-80px); }
     .stone-node.offset-left-sm  { transform: translateX(-42px); }
     .stone-node.offset-center   { transform: translateX(0px); }
@@ -327,7 +321,6 @@
       box-shadow: 0 2px 0 var(--node-dark, var(--duo-gray-dark));
     }
 
-    /* Completed state */
     .stone-node.completed .stone-button {
       background: var(--duo-yellow);
       border-color: #FFF3C4;
@@ -335,7 +328,6 @@
       --node-dark: var(--duo-yellow-dark);
     }
 
-    /* Current active unlocked lesson */
     .stone-node.current .stone-button {
       background: var(--duo-green);
       border-color: #D7F5B6;
@@ -349,7 +341,6 @@
       50% { transform: scale(1.08); }
     }
 
-    /* Locked state */
     .stone-node.locked .stone-button {
       background: #E5E5E5;
       border-color: #F0F0F0;
@@ -358,7 +349,6 @@
       cursor: not-allowed;
     }
 
-    /* Animated Mascot Sitting on Current Level */
     .mascot-follower {
       position: absolute;
       top: -38px;
@@ -375,7 +365,6 @@
       50% { transform: translateY(-8px) rotate(6deg); }
     }
 
-    /* Floating Speech Bubble from Mascot */
     .mascot-bubble {
       position: absolute;
       bottom: 100%;
@@ -401,7 +390,6 @@
       border-color: #FFFFFF transparent transparent transparent;
     }
 
-    /* Lesson Label Under Stepping-Stone */
     .stone-title {
       margin-top: 10px;
       font-weight: 800;
@@ -416,7 +404,6 @@
       white-space: nowrap;
     }
 
-    /* Chest Milestone Node */
     .stone-node.chest-node .stone-button {
       background: var(--duo-purple);
       border-color: #F1D9FF;
@@ -424,8 +411,320 @@
       --node-dark: var(--duo-purple-dark);
     }
 
+    /* ---------------- TAB 2: WORDS PRACTICE ---------------- */
+    .words-shelf-header {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .words-shelf-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--duo-blue);
+    }
+
+    .words-shelf-header p {
+      font-size: 0.95rem;
+      color: var(--duo-text-muted);
+      font-weight: 600;
+    }
+
+    .words-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .word-card-tile {
+      background: #FFFFFF;
+      border: 3px solid var(--duo-gray);
+      border-radius: 20px;
+      box-shadow: 0 5px 0 var(--duo-gray-dark);
+      padding: 16px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.1s ease;
+    }
+
+    .word-card-tile:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 var(--duo-gray-dark);
+      border-color: var(--duo-blue);
+    }
+
+    .word-card-tile .tile-emoji {
+      font-size: 3rem;
+    }
+
+    .word-card-tile .tile-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--duo-text);
+      text-transform: capitalize;
+    }
+
+    .word-card-tile .tile-speaker {
+      font-size: 0.95rem;
+      color: var(--duo-blue);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ---------------- TAB 3: CHESTS & QUESTS ---------------- */
+    .quests-header {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .quests-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--duo-purple);
+    }
+
+    .daily-quest-card {
+      width: 100%;
+      max-width: 500px;
+      background: #FFFFFF;
+      border: 3px solid #E5E5E5;
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 5px 0 #E5E5E5;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .quest-icon {
+      font-size: 2.4rem;
+      background: #F7F7F7;
+      border-radius: 16px;
+      padding: 8px;
+    }
+
+    .quest-details {
+      flex: 1;
+    }
+
+    .quest-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--duo-text);
+      margin-bottom: 6px;
+    }
+
+    .quest-bar-bg {
+      height: 12px;
+      background: #E5E5E5;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .quest-bar-fill {
+      height: 100%;
+      background: var(--duo-yellow);
+      border-radius: 10px;
+    }
+
+    .quest-reward-pill {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--duo-yellow-dark);
+      background: #FFFBE6;
+      border: 2px solid #FFE58F;
+      padding: 4px 10px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .open-mystery-chest-card {
+      width: 100%;
+      max-width: 500px;
+      background: linear-gradient(135deg, #FAF0FF 0%, #FFFFFF 100%);
+      border: 3.5px solid var(--duo-purple);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 6px 0 var(--duo-purple-dark);
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    .open-mystery-chest-card:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--duo-purple-dark);
+    }
+
+    .open-mystery-chest-card .big-chest-graphic {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 8px;
+      animation: chestWiggle 3s infinite ease-in-out;
+    }
+
+    @keyframes chestWiggle {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      10% { transform: rotate(-6deg) scale(1.05); }
+      20% { transform: rotate(6deg) scale(1.05); }
+      30% { transform: rotate(0deg) scale(1); }
+    }
+
+    .open-mystery-chest-card h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--duo-purple);
+      margin-bottom: 4px;
+    }
+
+    .open-mystery-chest-card p {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--duo-text-muted);
+    }
+
+    /* ---------------- TAB 4: PROFILE & BADGES ---------------- */
+    .profile-hero {
+      width: 100%;
+      max-width: 500px;
+      background: #FFFFFF;
+      border: 3px solid #E5E5E5;
+      border-radius: 26px;
+      padding: 20px;
+      box-shadow: 0 5px 0 #E5E5E5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .profile-avatar-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #F0F9ED;
+      border: 4px solid var(--duo-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.2rem;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 10px rgba(88, 204, 2, 0.25);
+    }
+
+    .profile-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--duo-text);
+    }
+
+    .profile-joined {
+      font-size: 0.9rem;
+      color: var(--duo-text-muted);
+      font-weight: 700;
+    }
+
+    .profile-stats-grid {
+      width: 100%;
+      max-width: 500px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .profile-stat-box {
+      background: #FFFFFF;
+      border: 2.5px solid #E5E5E5;
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 3px 0 #E5E5E5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-stat-box .box-icon {
+      font-size: 1.8rem;
+    }
+
+    .profile-stat-box .box-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--duo-text);
+      line-height: 1.1;
+    }
+
+    .profile-stat-box .box-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--duo-text-muted);
+      text-transform: uppercase;
+    }
+
+    .badges-section {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .badges-section h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--duo-text);
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .badge-card {
+      background: #FFFFFF;
+      border: 2.5px solid #E5E5E5;
+      border-radius: 18px;
+      padding: 12px 6px;
+      text-align: center;
+      box-shadow: 0 3px 0 #E5E5E5;
+    }
+
+    .badge-card .badge-icon {
+      font-size: 2.2rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .badge-card .badge-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--duo-text);
+    }
+
+    .badge-card.badge-locked {
+      opacity: 0.55;
+      background: #F9F9F9;
+      filter: grayscale(0.8);
+    }
+
     /* ============================================================
-       4. DUOLINGO LESSON SESSION (INTERACTIVE CARDS & WORDS)
+       4. DUOLINGO LESSON SESSION & INTERACTIVE CARDS
        ============================================================ */
     #lessonScreen {
       position: absolute;
@@ -437,7 +736,7 @@
       padding: clamp(10px, 2vh, 18px);
       padding-top: max(clamp(10px, 2vh, 18px), env(safe-area-inset-top));
       padding-bottom: max(clamp(12px, 2.5vh, 20px), env(safe-area-inset-bottom));
-      z-index: 200;
+      z-index: 250;
       transform: translateY(100%);
       transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
     }
@@ -498,7 +797,7 @@
       font-size: 1.2rem;
     }
 
-    /* Lesson Header Instruction & Mascot */
+    /* Mascot Instruction */
     .lesson-instruction {
       display: flex;
       align-items: center;
@@ -536,7 +835,7 @@
       border-color: transparent #E5E5E5 transparent transparent;
     }
 
-    /* Word Cards Grid inside Lesson (2x2 or 2x3 large friendly cards) */
+    /* Word Cards Grid */
     .lesson-cards-container {
       flex: 1;
       display: grid;
@@ -548,10 +847,9 @@
       gap: clamp(10px, 2vh, 16px);
       align-items: stretch;
       min-height: 0;
-      padding: 6px 0;
+      padding: 6px 0 20px 0;
     }
 
-    /* Chunky Duolingo Button Cards */
     .duo-card {
       position: relative;
       display: flex;
@@ -565,7 +863,7 @@
       cursor: pointer;
       outline: none;
       touch-action: manipulation;
-      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
       overflow: hidden;
       padding: 8px;
     }
@@ -575,29 +873,24 @@
       box-shadow: 0 2px 0 var(--duo-gray-dark);
     }
 
-    /* Correct Tapped State */
-    .duo-card.card-success {
+    .duo-card.card-selected {
       border-color: var(--duo-green);
       background: #F2FCED;
       box-shadow: 0 6px 0 var(--duo-green-dark);
+      animation: selectPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Disappear animation after sound finishes */
-    .duo-card.anim-poof {
-      animation: cardPoofOut 0.24s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      pointer-events: none;
+    @keyframes selectPop {
+      0% { transform: scale(0.96); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
-    .duo-card.is-hidden {
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    @keyframes cardPoofOut {
-      0% { transform: scale(1); opacity: 1; }
-      40% { transform: scale(1.12); opacity: 0.9; }
-      100% { transform: scale(0.1) rotate(10deg); opacity: 0; filter: blur(4px); }
+    .duo-card.card-done {
+      border-color: #B8ECA0;
+      background: #F8FDF5;
+      box-shadow: 0 3px 0 #9BD87E;
+      opacity: 0.85;
     }
 
     .duo-card .card-emoji {
@@ -623,39 +916,138 @@
       text-align: center;
     }
 
-    /* Lesson Bottom Bar */
-    .lesson-footer {
-      width: 100%;
-      max-width: 680px;
-      margin: 0 auto;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: center;
-    }
-
-    .speaker-replay-btn {
-      background: var(--duo-blue);
+    .card-check-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      background: var(--duo-green);
       color: #FFFFFF;
-      border: none;
-      border-radius: 20px;
-      padding: 12px 24px;
-      font-family: var(--font-family);
-      font-size: 1.15rem;
-      font-weight: 800;
-      box-shadow: 0 5px 0 var(--duo-blue-dark);
-      cursor: pointer;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 8px;
-      outline: none;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 900;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .speaker-replay-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 var(--duo-blue-dark);
+
+    .duo-card.card-done .card-check-badge {
+      opacity: 1;
+      transform: scale(1);
     }
 
     /* ============================================================
-       5. DUOLINGO VICTORY & REWARD CHEST MODAL
+       5. DUOLINGO BOTTOM FEEDBACK SHEET (SLIDING GREEN BANNER)
+       ============================================================ */
+    .duo-feedback-drawer {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background: var(--duo-green-light);
+      border-top: 3px solid #A4E86C;
+      padding: 16px 20px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(110%);
+      transition: transform 0.3s cubic-bezier(0.34, 1.25, 0.64, 1);
+    }
+
+    .duo-feedback-drawer.active-sheet {
+      transform: translateY(0);
+    }
+
+    .feedback-inner {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .feedback-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .feedback-check-circle {
+      width: clamp(48px, 12vw, 60px);
+      height: clamp(48px, 12vw, 60px);
+      border-radius: 50%;
+      background: var(--duo-green);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+      font-weight: 900;
+      box-shadow: 0 4px 0 var(--duo-green-dark);
+      animation: checkBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes checkBounce {
+      0% { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .feedback-text-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feedback-title {
+      font-size: clamp(1.2rem, 3.8vw, 1.6rem);
+      font-weight: 800;
+      color: var(--duo-green-dark);
+      line-height: 1.1;
+    }
+
+    .feedback-word-label {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 700;
+      color: #2D6B00;
+    }
+
+    .feedback-continue-btn {
+      background: var(--duo-green);
+      color: #FFFFFF;
+      font-family: var(--font-family);
+      font-size: clamp(1.1rem, 3.2vw, 1.35rem);
+      font-weight: 800;
+      padding: clamp(12px, 2vh, 16px) clamp(22px, 5vw, 36px);
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 5px 0 var(--duo-green-dark);
+      cursor: pointer;
+      outline: none;
+      white-space: nowrap;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      animation: pulseBtn 1.8s infinite ease-in-out;
+    }
+
+    .feedback-continue-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--duo-green-dark);
+    }
+
+    @keyframes pulseBtn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    /* ============================================================
+       6. 3-TAP REWARD CHEST MODAL (DUOLINGO 3-PRESS SYSTEM)
        ============================================================ */
     .modal-overlay {
       position: fixed;
@@ -699,58 +1091,11 @@
       transform: scale(1) translateY(0);
     }
 
-    .mascot-celebrate {
-      font-size: 5rem;
-      animation: cheerJump 0.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes cheerJump {
-      0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-16px) scale(1.15); }
-    }
-
     .duo-modal-card h2 {
       font-size: clamp(1.8rem, 5.5vw, 2.3rem);
       font-weight: 800;
       color: var(--duo-green);
       line-height: 1.1;
-    }
-
-    .duo-modal-card p {
-      font-size: clamp(1.05rem, 3.2vw, 1.25rem);
-      font-weight: 700;
-      color: #777777;
-    }
-
-    /* XP & Gem Reward Badges */
-    .reward-badges-row {
-      display: flex;
-      gap: 12px;
-      margin: 6px 0;
-    }
-
-    .reward-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #F7F7F7;
-      border: 3px solid #E5E5E5;
-      border-radius: 18px;
-      padding: 8px 16px;
-      font-size: 1.15rem;
-      font-weight: 800;
-    }
-
-    .badge-xp {
-      color: var(--duo-orange);
-      border-color: #FFE5B4;
-      background: #FFF8EE;
-    }
-
-    .badge-gem {
-      color: var(--duo-blue);
-      border-color: #D8F2FD;
-      background: #F1FAFF;
     }
 
     /* Interactive 3-Tap Duolingo Treasure Chest */
@@ -797,7 +1142,6 @@
       display: inline-block;
     }
 
-    /* Chest tap shaking & cracking animations */
     .interactive-chest-box.tap-1 .chest-3d-graphic {
       animation: chestShake1 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     }
@@ -871,6 +1215,36 @@
       50% { transform: scale(1.08); opacity: 0.85; }
     }
 
+    .reward-badges-row {
+      display: flex;
+      gap: 12px;
+      margin: 6px 0;
+    }
+
+    .reward-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #F7F7F7;
+      border: 3px solid #E5E5E5;
+      border-radius: 18px;
+      padding: 8px 16px;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .badge-xp {
+      color: var(--duo-orange);
+      border-color: #FFE5B4;
+      background: #FFF8EE;
+    }
+
+    .badge-gem {
+      color: var(--duo-blue);
+      border-color: #D8F2FD;
+      background: #F1FAFF;
+    }
+
     .btn-continue {
       width: 100%;
       background: var(--duo-green);
@@ -891,6 +1265,63 @@
       transform: translateY(4px);
       box-shadow: 0 2px 0 var(--duo-green-dark);
     }
+
+    /* ============================================================
+       7. DUOLINGO BOTTOM NAVIGATION BAR (Learn, Words, Chests, Profile)
+       ============================================================ */
+    .duo-bottom-nav {
+      position: relative;
+      z-index: 150;
+      background: #FFFFFF;
+      border-top: 2.5px solid #E5E5E5;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 8px 12px;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+      flex-shrink: 0;
+    }
+
+    .nav-tab {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      color: #AFAFAF;
+      font-family: var(--font-family);
+      outline: none;
+    }
+
+    .nav-tab:active {
+      transform: scale(0.92);
+    }
+
+    .nav-tab .nav-icon {
+      font-size: 1.6rem;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .nav-tab .nav-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .nav-tab.active {
+      color: var(--duo-green);
+    }
+
+    .nav-tab.active .nav-icon {
+      transform: scale(1.2);
+    }
   </style>
 </head>
 <body>
@@ -899,22 +1330,29 @@
     <!-- Duolingo Top Header Bar -->
     <header>
       <div class="top-bar">
-        <div class="brand-pill" id="brandBtn">
+        <!-- Brand / Mascot Title (Strictly LumiKids) -->
+        <div class="brand-pill" id="brandBtn" title="LumiKids Home">
           <span class="owl-avatar">🦉</span>
           <span>LumiKids</span>
         </div>
 
         <div class="stats-row">
           <!-- Daily Streak Flame -->
-          <div class="stat-chip chip-streak" title="Day Streak">
+          <div class="stat-chip chip-streak" id="streakChip" title="Day Streak">
             <span>🔥</span>
             <span id="streakCount">3</span>
           </div>
 
           <!-- Gems / Diamonds -->
-          <div class="stat-chip chip-gems" title="Gems">
+          <div class="stat-chip chip-gems" id="gemsChip" title="Gems">
             <span>💎</span>
             <span id="gemCount">120</span>
+          </div>
+
+          <!-- Hearts -->
+          <div class="stat-chip chip-hearts" id="heartsChip" title="Full Energy Hearts">
+            <span>❤️</span>
+            <span id="heartsCount">5</span>
           </div>
 
           <!-- Audio Sound Toggle -->
@@ -927,8 +1365,7 @@
     <div class="view-container">
       
       <!-- SCREEN 1: Winding Stepping-Stone Learning Path -->
-      <section id="pathScreen">
-        
+      <section class="tab-screen active-tab" id="pathScreen">
         <!-- Unit 1 Themed Header Banner -->
         <div class="unit-banner" id="unitBanner">
           <div class="unit-info">
@@ -944,7 +1381,130 @@
         </div>
       </section>
 
-      <!-- SCREEN 2: Interactive Lesson Screen -->
+      <!-- SCREEN 2: Vocabulary Shelf / Word Cards -->
+      <section class="tab-screen" id="wordsScreen">
+        <div class="words-shelf-header">
+          <h2>Word Library 📚</h2>
+          <p>Tap any picture to hear and practice English!</p>
+        </div>
+        <div class="words-grid" id="wordsGrid">
+          <!-- Populated from vocabulary items -->
+        </div>
+      </section>
+
+      <!-- SCREEN 3: Daily Quests & Reward Chests -->
+      <section class="tab-screen" id="chestsScreen">
+        <div class="quests-header">
+          <h2>Daily Quests & Chests 🎁</h2>
+          <p>Complete challenges to unlock treasure boxes!</p>
+        </div>
+
+        <!-- Daily Quest 1 -->
+        <div class="daily-quest-card">
+          <div class="quest-icon">⚡</div>
+          <div class="quest-details">
+            <div class="quest-title">Explore 5 words today</div>
+            <div class="quest-bar-bg">
+              <div class="quest-bar-fill" style="width: 75%;"></div>
+            </div>
+          </div>
+          <div class="quest-reward-pill">💎 +10</div>
+        </div>
+
+        <!-- Daily Quest 2 -->
+        <div class="daily-quest-card">
+          <div class="quest-icon">🔥</div>
+          <div class="quest-details">
+            <div class="quest-title">Keep your 3-day streak</div>
+            <div class="quest-bar-bg">
+              <div class="quest-bar-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div class="quest-reward-pill">⭐ CLAIM</div>
+        </div>
+
+        <!-- Open Mystery 3-Tap Chest Card -->
+        <div class="open-mystery-chest-card" id="openMysteryChestCard">
+          <span class="big-chest-graphic">🎁</span>
+          <h3>Mystery Treasure Chest</h3>
+          <p>Tap 3 times to crack open and reveal rewards!</p>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: Toddler Profile & Badges -->
+      <section class="tab-screen" id="profileScreen">
+        <div class="profile-hero">
+          <div class="profile-avatar-circle">🦉</div>
+          <div class="profile-name">Little Explorer</div>
+          <div class="profile-joined">Learning English with LumiKids</div>
+        </div>
+
+        <div class="profile-stats-grid">
+          <div class="profile-stat-box">
+            <span class="box-icon">🔥</span>
+            <div>
+              <div class="box-val" id="profileStreakVal">3 Days</div>
+              <div class="box-title">Streak</div>
+            </div>
+          </div>
+
+          <div class="profile-stat-box">
+            <span class="box-icon">💎</span>
+            <div>
+              <div class="box-val" id="profileGemsVal">120</div>
+              <div class="box-title">Gems</div>
+            </div>
+          </div>
+
+          <div class="profile-stat-box">
+            <span class="box-icon">⚡</span>
+            <div>
+              <div class="box-val">150 XP</div>
+              <div class="box-title">Total XP</div>
+            </div>
+          </div>
+
+          <div class="profile-stat-box">
+            <span class="box-icon">⭐</span>
+            <div>
+              <div class="box-val" id="profileWordsCount">12</div>
+              <div class="box-title">Words Learned</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="badges-section">
+          <h3>My Achievements 🏆</h3>
+          <div class="badges-grid">
+            <div class="badge-card">
+              <span class="badge-icon">🐣</span>
+              <span class="badge-label">First Word</span>
+            </div>
+            <div class="badge-card">
+              <span class="badge-icon">🎁</span>
+              <span class="badge-label">Chest Master</span>
+            </div>
+            <div class="badge-card">
+              <span class="badge-icon">🌟</span>
+              <span class="badge-label">Super Star</span>
+            </div>
+            <div class="badge-card">
+              <span class="badge-icon">🚀</span>
+              <span class="badge-label">Explorer</span>
+            </div>
+            <div class="badge-card badge-locked">
+              <span class="badge-icon">🦁</span>
+              <span class="badge-label">Safari Champ</span>
+            </div>
+            <div class="badge-card badge-locked">
+              <span class="badge-icon">👑</span>
+              <span class="badge-label">Word King</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: Interactive Lesson Screen (Full-Screen Overlay) -->
       <section id="lessonScreen">
         <!-- Lesson Top Progress -->
         <div class="lesson-header">
@@ -954,7 +1514,7 @@
           </div>
           <div class="lesson-hearts">
             <span>❤️</span>
-            <span id="heartsCount">5</span>
+            <span>5</span>
           </div>
         </div>
 
@@ -962,7 +1522,7 @@
         <div class="lesson-instruction">
           <span class="lesson-mascot" id="lessonMascot">🦉</span>
           <div class="instruction-bubble" id="instructionText">
-            Tap and listen to the words!
+            Tap any picture!
           </div>
         </div>
 
@@ -971,18 +1531,47 @@
           <!-- Cards hydrated per lesson -->
         </div>
 
-        <!-- Lesson Bottom Bar -->
-        <div class="lesson-footer">
-          <button class="speaker-replay-btn" id="replaySoundBtn">
-            <span>🔊</span> Hear Again
-          </button>
+        <!-- Duolingo Bottom Feedback Sheet -->
+        <div class="duo-feedback-drawer" id="duoFeedbackDrawer">
+          <div class="feedback-inner">
+            <div class="feedback-left">
+              <div class="feedback-check-circle">✓</div>
+              <div class="feedback-text-col">
+                <h3 class="feedback-title" id="feedbackTitle">NICELY DONE!</h3>
+                <p class="feedback-word-label" id="feedbackWord">Dog 🐶</p>
+              </div>
+            </div>
+            <button class="feedback-continue-btn" id="feedbackContinueBtn">
+              CONTINUE ➔
+            </button>
+          </div>
         </div>
       </section>
 
     </div>
+
+    <!-- Duolingo Persistent Bottom Navigation Bar -->
+    <nav class="duo-bottom-nav" id="bottomNav">
+      <button class="nav-tab active" data-tab="pathScreen" aria-label="Learn">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Learn</span>
+      </button>
+      <button class="nav-tab" data-tab="wordsScreen" aria-label="Words">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">Words</span>
+      </button>
+      <button class="nav-tab" data-tab="chestsScreen" aria-label="Chests">
+        <span class="nav-icon">🎁</span>
+        <span class="nav-label">Chests</span>
+      </button>
+      <button class="nav-tab" data-tab="profileScreen" aria-label="Profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </button>
+    </nav>
   </div>
 
-  <!-- Celebration & Reward Chest Modal -->
+  <!-- Celebration & Reward Chest Modal (3-Tap Duolingo System) -->
   <div class="modal-overlay" id="celebrationModal">
     <div class="duo-modal-card">
       <h2 id="modalTitle">Reward Chest! 🎁</h2>
@@ -1156,6 +1745,7 @@
     let activeLevel = null;
     let wordsCompletedInLesson = 0;
     let lastSpokenWord = '';
+    let pendingNextCardTimer = null;
 
     // 3-Tap Chest State
     let chestTapCount = 0;
@@ -1170,17 +1760,37 @@
     /* DOM References */
     const stonesPath = document.getElementById('stonesPath');
     const pathScreen = document.getElementById('pathScreen');
+    const wordsScreen = document.getElementById('wordsScreen');
+    const chestsScreen = document.getElementById('chestsScreen');
+    const profileScreen = document.getElementById('profileScreen');
+    const wordsGrid = document.getElementById('wordsGrid');
+    const openMysteryChestCard = document.getElementById('openMysteryChestCard');
+
     const lessonScreen = document.getElementById('lessonScreen');
     const closeLessonBtn = document.getElementById('closeLessonBtn');
     const lessonProgressFill = document.getElementById('lessonProgressFill');
     const instructionText = document.getElementById('instructionText');
     const lessonCards = document.getElementById('lessonCards');
-    const replaySoundBtn = document.getElementById('replaySoundBtn');
+
+    // Duolingo Bottom Feedback Sheet Elements
+    const duoFeedbackDrawer = document.getElementById('duoFeedbackDrawer');
+    const feedbackTitle = document.getElementById('feedbackTitle');
+    const feedbackWord = document.getElementById('feedbackWord');
+    const feedbackContinueBtn = document.getElementById('feedbackContinueBtn');
+
+    // Modals & Stats
     const celebrationModal = document.getElementById('celebrationModal');
     const continueBtn = document.getElementById('continueBtn');
     const streakDisplay = document.getElementById('streakCount');
     const gemDisplay = document.getElementById('gemCount');
     const soundToggle = document.getElementById('soundToggle');
+    const bottomNav = document.getElementById('bottomNav');
+    const brandBtn = document.getElementById('brandBtn');
+
+    // Profile DOM Elements
+    const profileStreakVal = document.getElementById('profileStreakVal');
+    const profileGemsVal = document.getElementById('profileGemsVal');
+    const profileWordsCount = document.getElementById('profileWordsCount');
 
     // 3-Tap Chest Modal Elements
     const interactiveChest = document.getElementById('interactiveChest');
@@ -1194,7 +1804,7 @@
     const rewardBadges = document.getElementById('rewardBadges');
 
     /* ============================================================
-       2. AUDIO SYNTHESIS & FEMALE VOICE ENGINE
+       2. AUTHENTIC DUOLINGO SOUND SYNTHESIZER (WEB AUDIO API)
        ============================================================ */
     function initAudioContext() {
       if (!audioContext) {
@@ -1218,59 +1828,125 @@
       audioUnlocked = true;
     }
 
-    // Playful synthesized pop chime
-    function playChime(freq = 523.25, type = 'sine') {
+    // Iconic Duolingo Two-Tone Ding: D5 (587.33Hz) -> A5 (880.00Hz)
+    function playDuoDing() {
       if (!isSoundEnabled) return;
       initAudioContext();
       if (!audioContext) return;
 
       try {
         if (audioContext.state === 'suspended') audioContext.resume();
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
+        const now = audioContext.currentTime;
 
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioContext.currentTime + 0.1);
+        // Note 1: D5 (587.33 Hz)
+        const osc1 = audioContext.createOscillator();
+        const gain1 = audioContext.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, now);
+        gain1.gain.setValueAtTime(0.35, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc1.connect(gain1);
+        gain1.connect(audioContext.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.13);
 
-        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.22);
-
-        osc.connect(gain);
-        gain.connect(audioContext.destination);
-
-        osc.start();
-        osc.stop(audioContext.currentTime + 0.24);
+        // Note 2: A5 (880 Hz) - the iconic high chime
+        const osc2 = audioContext.createOscillator();
+        const gain2 = audioContext.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(880, now + 0.08);
+        gain2.gain.setValueAtTime(0.4, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+        osc2.connect(gain2);
+        gain2.connect(audioContext.destination);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.4);
       } catch (e) {}
     }
 
-    // Duolingo victory fanfare
+    // Snappy tactile button tap sound
+    function playDuoTap() {
+      if (!isSoundEnabled) return;
+      initAudioContext();
+      if (!audioContext) return;
+
+      try {
+        if (audioContext.state === 'suspended') audioContext.resume();
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(380, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.06);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start(now);
+        osc.stop(now + 0.07);
+      } catch (e) {}
+    }
+
+    // Chest tap shake sound
+    function playChestWobble(step) {
+      if (!isSoundEnabled) return;
+      initAudioContext();
+      if (!audioContext) return;
+
+      try {
+        if (audioContext.state === 'suspended') audioContext.resume();
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'triangle';
+        const baseFreq = step === 1 ? 260 : 380;
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.4, now + 0.12);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start(now);
+        osc.stop(now + 0.24);
+      } catch (e) {}
+    }
+
+    // Duolingo Victory Fanfare (Celebration Arpeggio)
     function playVictoryFanfare() {
       if (!isSoundEnabled) return;
       initAudioContext();
       if (!audioContext) return;
 
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C Major cheer
-      notes.forEach((freq, idx) => {
+      const notes = [
+        { freq: 523.25, delay: 0 },    // C5
+        { freq: 659.25, delay: 90 },   // E5
+        { freq: 783.99, delay: 180 },  // G5
+        { freq: 1046.50, delay: 280 }  // C6
+      ];
+
+      notes.forEach((item) => {
         setTimeout(() => {
           try {
             if (audioContext.state === 'suspended') audioContext.resume();
+            const now = audioContext.currentTime;
             const osc = audioContext.createOscillator();
             const gain = audioContext.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-            gain.gain.setValueAtTime(0.35, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.35);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(item.freq, now);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
             osc.connect(gain);
             gain.connect(audioContext.destination);
-            osc.start();
-            osc.stop(audioContext.currentTime + 0.38);
+            osc.start(now);
+            osc.stop(now + 0.38);
           } catch (e) {}
-        }, idx * 110);
+        }, item.delay);
       });
     }
 
-    // Female voice selector
+    /* ============================================================
+       3. FAST SPEECH SYNTHESIS ENGINE (ZERO OVERLAP BUG)
+       ============================================================ */
     const FEMALE_VOICE_PREFERENCES = [
       'Samantha', 'Ava', 'Allison', 'Victoria', 'Karen', 'Moira',
       'Google US English', 'Jenny', 'Aria', 'Zira', 'en-US-Neural2-F'
@@ -1312,14 +1988,14 @@
 
     function speakWord(text, onFinished) {
       if (!isSoundEnabled || !synth) {
-        if (onFinished) setTimeout(onFinished, 200);
+        if (onFinished) setTimeout(onFinished, 150);
         return;
       }
 
       unlockAudio();
       lastSpokenWord = text;
 
-      // Cancel previous pending/stuck utterances immediately so sounds don't queue or overlap
+      // IMMEDIATELY CANCEL PREVIOUS UTTERANCE: Completely cures the second tap overlap bug!
       try {
         synth.cancel();
       } catch (e) {}
@@ -1338,7 +2014,7 @@
       }
 
       utterance.lang = 'en-US';
-      utterance.rate = 1.05;   // Faster, punchy, immediate toddler response (no long lag)
+      utterance.rate = 1.1;    // Fast, crisp, immediate response
       utterance.pitch = 1.25;
       utterance.volume = 1.0;
 
@@ -1357,7 +2033,7 @@
       utterance.onerror = () => completeOnce();
 
       // Short safety timer so toddlers are never left waiting
-      const maxDuration = Math.max(500, text.length * 75 + 250);
+      const maxDuration = Math.max(450, text.length * 70 + 200);
       safetyTimer = setTimeout(completeOnce, maxDuration);
 
       try {
@@ -1369,7 +2045,51 @@
     }
 
     /* ============================================================
-       3. STEPPING-STONE MAP RENDERING & MASCOT MOVEMENT
+       4. DUOLINGO BOTTOM NAVIGATION & TAB SWITCHER
+       ============================================================ */
+    function switchTab(targetTabId) {
+      playDuoTap();
+
+      // Update nav buttons
+      document.querySelectorAll('.nav-tab').forEach((tab) => {
+        if (tab.getAttribute('data-tab') === targetTabId) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      // Update screen visibility
+      document.querySelectorAll('.tab-screen').forEach((screen) => {
+        if (screen.id === targetTabId) {
+          screen.classList.add('active-tab');
+        } else {
+          screen.classList.remove('active-tab');
+        }
+      });
+
+      // Special tab hydrations
+      if (targetTabId === 'wordsScreen') {
+        renderWordsShelf();
+      } else if (targetTabId === 'profileScreen') {
+        updateProfileStats();
+      }
+    }
+
+    bottomNav.addEventListener('click', (e) => {
+      const tabBtn = e.target.closest('.nav-tab');
+      if (tabBtn) {
+        const targetTab = tabBtn.getAttribute('data-tab');
+        switchTab(targetTab);
+      }
+    });
+
+    brandBtn.addEventListener('click', () => {
+      switchTab('pathScreen');
+    });
+
+    /* ============================================================
+       5. STEPPING-STONE MAP RENDERING & MASCOT
        ============================================================ */
     function renderSteppingStonesMap() {
       stonesPath.innerHTML = '';
@@ -1404,15 +2124,14 @@
           <div class="stone-title">${level.title}</div>
         `;
 
-        // Click to launch lesson if unlocked
         if (!isLocked) {
           node.addEventListener('click', () => {
-            playChime(580);
+            playDuoTap();
             startLesson(level);
           });
         } else {
           node.addEventListener('click', () => {
-            playChime(300, 'triangle');
+            playDuoTap();
             speakWord('Finish earlier lessons first!');
           });
         }
@@ -1422,28 +2141,27 @@
     }
 
     /* ============================================================
-       4. DUOLINGO LESSON SESSION LOGIC
+       6. DUOLINGO LESSON SESSION & INTERACTIVE CARDS
        ============================================================ */
     function startLesson(level) {
       activeLevel = level;
       wordsCompletedInLesson = 0;
       updateLessonProgress();
 
-      // Clear any prior speech queue
+      // Clear any speech queue
       try {
         if (synth) synth.cancel();
       } catch (e) {}
 
       instructionText.textContent = `Tap any picture!`;
+      hideFeedbackDrawer();
       renderLessonCards(level.words);
 
       lessonScreen.classList.add('active-lesson');
-      pathScreen.classList.add('hidden-screen');
     }
 
     function renderLessonCards(words) {
       lessonCards.innerHTML = '';
-      lessonCards.style.pointerEvents = 'auto';
 
       words.forEach((item) => {
         const card = document.createElement('button');
@@ -1452,46 +2170,78 @@
         card.setAttribute('aria-label', item.word);
 
         card.innerHTML = `
+          <div class="card-check-badge">✓</div>
           <span class="card-emoji">${item.emoji}</span>
           <span class="card-label">${item.word}</span>
         `;
 
-        card.addEventListener('click', (e) => handleLessonCardTap(card, item));
+        card.addEventListener('click', () => handleLessonCardTap(card, item));
         lessonCards.appendChild(card);
       });
     }
 
+    const DUO_PRAISES = [
+      'NICELY DONE!', 'SUPER!', 'GREAT JOB!', 'EXCELLENT!', 'YOU GOT IT!', 'AMAZING!'
+    ];
+
     function handleLessonCardTap(cardElement, wordItem) {
-      if (cardElement.classList.contains('anim-poof') || cardElement.classList.contains('is-hidden')) {
-        return;
-      }
-
       unlockAudio();
-      lessonCards.style.pointerEvents = 'none';
 
-      cardElement.classList.add('card-success');
-      playChime(440 + Math.random() * 200);
+      // Remove selected highlight from other cards
+      document.querySelectorAll('.duo-card').forEach(c => c.classList.remove('card-selected'));
+      cardElement.classList.add('card-selected');
 
-      // Speak word clearly, wait for speech to finish, then poof and hide
-      speakWord(wordItem.word, () => {
-        cardElement.classList.add('anim-poof');
-        setTimeout(() => playChime(620, 'sine'), 50);
+      // Authentic Duolingo ding sound
+      playDuoDing();
 
-        setTimeout(() => {
-          cardElement.classList.remove('anim-poof');
-          cardElement.classList.add('is-hidden');
+      // Speak word immediately with crisp cadence
+      speakWord(wordItem.word);
 
-          wordsCompletedInLesson++;
-          updateLessonProgress();
+      // Show Duolingo sliding bottom feedback banner
+      const randomPraise = DUO_PRAISES[Math.floor(Math.random() * DUO_PRAISES.length)];
+      feedbackTitle.textContent = randomPraise;
+      feedbackWord.textContent = `${wordItem.word} ${wordItem.emoji}`;
+      showFeedbackDrawer();
 
-          lessonCards.style.pointerEvents = 'auto';
+      // Toddler convenience: if not tapped, card completes and advances smoothly
+      if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
+      pendingNextCardTimer = setTimeout(() => {
+        // Auto-advance if toddler just wants to gaze and listen
+        if (cardElement.classList.contains('card-selected') && !cardElement.classList.contains('card-done')) {
+          completeCardAndAdvance(cardElement);
+        }
+      }, 3500);
 
-          // Check if all 4 words in this stepping stone are finished
-          if (wordsCompletedInLesson >= activeLevel.words.length) {
-            setTimeout(completeLesson, 300);
-          }
-        }, 220);
-      });
+      // Hook Continue Button for immediate toddler tap
+      feedbackContinueBtn.onclick = () => {
+        if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
+        completeCardAndAdvance(cardElement);
+      };
+    }
+
+    function completeCardAndAdvance(cardElement) {
+      hideFeedbackDrawer();
+      playDuoTap();
+
+      if (!cardElement.classList.contains('card-done')) {
+        cardElement.classList.remove('card-selected');
+        cardElement.classList.add('card-done');
+        wordsCompletedInLesson++;
+        updateLessonProgress();
+
+        // Check if all cards in lesson finished
+        if (wordsCompletedInLesson >= activeLevel.words.length) {
+          setTimeout(completeLesson, 400);
+        }
+      }
+    }
+
+    function showFeedbackDrawer() {
+      duoFeedbackDrawer.classList.add('active-sheet');
+    }
+
+    function hideFeedbackDrawer() {
+      duoFeedbackDrawer.classList.remove('active-sheet');
     }
 
     function updateLessonProgress() {
@@ -1500,8 +2250,21 @@
       lessonProgressFill.style.width = `${pct}%`;
     }
 
+    function closeLesson() {
+      if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
+      hideFeedbackDrawer();
+      lessonScreen.classList.remove('active-lesson');
+      lessonCards.innerHTML = '';
+      activeLevel = null;
+    }
+
+    function completeLesson() {
+      hideFeedbackDrawer();
+      setupChestOpeningModal();
+    }
+
     /* ============================================================
-       5. 3-TAP REWARD CHEST SYSTEM (DUOLINGO STYLE)
+       7. 3-TAP REWARD CHEST SYSTEM (DUOLINGO 3-TAP FEATURE)
        ============================================================ */
     const CHEST_TREASURES = ['💎', '👑', '🦄', '🚀', '🦖', '🏆', '🎉', '🌟', '🍭', '🧸'];
 
@@ -1509,7 +2272,6 @@
       chestTapCount = 0;
       isChestOpened = false;
 
-      // Reset modal UI to unopened state
       interactiveChest.className = 'interactive-chest-box';
       chestGraphic.textContent = '🎁';
       modalTitle.textContent = 'Reward Chest! 🎁';
@@ -1519,13 +2281,12 @@
       rewardBadges.style.display = 'none';
       continueBtn.style.display = 'none';
 
-      // Reset tap dots
       dot1.className = 'tap-dot';
       dot2.className = 'tap-dot';
       dot3.className = 'tap-dot';
 
       celebrationModal.classList.add('active');
-      playChime(580);
+      playDuoDing();
       speakWord('Tap three times to open the chest!');
     }
 
@@ -1539,14 +2300,14 @@
         // Tap 1: First wobble and sound
         interactiveChest.className = 'interactive-chest-box tap-1';
         dot1.className = 'tap-dot active';
-        playChime(500, 'triangle');
+        playChestWobble(1);
         chestInstruction.textContent = 'Keep going! 2 taps left! ⭐';
 
       } else if (chestTapCount === 2) {
         // Tap 2: Stronger shake and sound
         interactiveChest.className = 'interactive-chest-box tap-2';
         dot2.className = 'tap-dot active';
-        playChime(620, 'triangle');
+        playChestWobble(2);
         chestInstruction.textContent = 'Almost open! 1 tap left! 🌟';
 
       } else if (chestTapCount >= 3) {
@@ -1555,7 +2316,7 @@
         dot3.className = 'tap-dot active';
         interactiveChest.className = 'interactive-chest-box opened';
 
-        // Reveal random sparkling treasure
+        // Pick sparkling prize
         const prize = CHEST_TREASURES[Math.floor(Math.random() * CHEST_TREASURES.length)];
         chestGraphic.textContent = prize;
 
@@ -1563,10 +2324,10 @@
         chestInstruction.style.display = 'none';
         tapIndicators.style.display = 'none';
 
-        // Play glorious fanfare
+        // Play glorious Duolingo celebration fanfare
         playVictoryFanfare();
 
-        // Duolingo multi-colored confetti shower
+        // Multi-colored confetti shower
         if (typeof confetti === 'function') {
           confetti({
             particleCount: 110,
@@ -1575,7 +2336,6 @@
             colors: ['#58CC02', '#FFC800', '#1CB0F6', '#FF4B4B', '#CE82FF']
           });
 
-          // Second burst for celebratory impact
           setTimeout(() => {
             confetti({
               particleCount: 40,
@@ -1605,18 +2365,6 @@
       }
     }
 
-    function completeLesson() {
-      // Direct to 3-tap interactive chest opening!
-      setupChestOpeningModal();
-    }
-
-    function closeLesson() {
-      lessonScreen.classList.remove('active-lesson');
-      pathScreen.classList.remove('hidden-screen');
-      lessonCards.innerHTML = '';
-      activeLevel = null;
-    }
-
     function onContinueAfterCelebration() {
       celebrationModal.classList.remove('active');
       closeLesson();
@@ -1629,7 +2377,7 @@
       gemDisplay.textContent = gemCount;
 
       renderSteppingStonesMap();
-      playChime(650);
+      playDuoDing();
 
       // Scroll smoothly down to newly unlocked stepping stone
       setTimeout(() => {
@@ -1641,17 +2389,52 @@
     }
 
     /* ============================================================
-       6. EVENT LISTENERS
+       8. WORDS SHELF (VOCABULARY COLLECTION)
+       ============================================================ */
+    function renderWordsShelf() {
+      wordsGrid.innerHTML = '';
+      
+      // Collect all words up to current unlocked level
+      const availableLevels = LESSON_LEVELS.filter(lvl => lvl.id <= currentUnlockedLevel);
+      
+      availableLevels.forEach(lvl => {
+        lvl.words.forEach(item => {
+          const tile = document.createElement('div');
+          tile.className = 'word-card-tile';
+          tile.innerHTML = `
+            <span class="tile-emoji">${item.emoji}</span>
+            <span class="tile-name">${item.word}</span>
+            <span class="tile-speaker">🔊 Listen</span>
+          `;
+          tile.addEventListener('click', () => {
+            playDuoDing();
+            speakWord(item.word);
+            tile.style.transform = 'scale(1.08)';
+            setTimeout(() => tile.style.transform = '', 200);
+          });
+          wordsGrid.appendChild(tile);
+        });
+      });
+    }
+
+    function updateProfileStats() {
+      profileStreakVal.textContent = `${streakCount} Days`;
+      profileGemsVal.textContent = gemCount;
+      const count = LESSON_LEVELS
+        .filter(l => l.id <= currentUnlockedLevel)
+        .reduce((sum, l) => sum + l.words.length, 0);
+      profileWordsCount.textContent = count;
+    }
+
+    /* ============================================================
+       9. EVENT LISTENERS
        ============================================================ */
     interactiveChest.addEventListener('click', handleChestTap);
     closeLessonBtn.addEventListener('click', closeLesson);
     continueBtn.addEventListener('click', onContinueAfterCelebration);
 
-    replaySoundBtn.addEventListener('click', () => {
-      if (lastSpokenWord) {
-        playChime(500);
-        speakWord(lastSpokenWord);
-      }
+    openMysteryChestCard.addEventListener('click', () => {
+      setupChestOpeningModal();
     });
 
     soundToggle.addEventListener('click', (e) => {
@@ -1659,12 +2442,13 @@
       isSoundEnabled = !isSoundEnabled;
       soundToggle.textContent = isSoundEnabled ? '🔊' : '🔇';
       soundToggle.style.borderColor = isSoundEnabled ? '#E5E5E5' : '#FF4B4B';
+      playDuoTap();
     });
 
-    // Touch and Gesture Unlocking (Satisfies Mobile & Fullscreen Policies)
+    // Mobile touch and gesture handling (Preserves fullscreen & locks unwanted scroll)
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('touchmove', (e) => {
-      if (!e.target.closest('#pathScreen')) {
+      if (!e.target.closest('.tab-screen')) {
         e.preventDefault();
       }
     }, { passive: false });
@@ -1696,7 +2480,7 @@
     });
 
     /* ============================================================
-       INITIALIZE & SERVICE WORKER (AUTO-PURGE CACHE & VERSIONING)
+       INITIALIZATION & SERVICE WORKER (v2.1.0 CACHE PURGE)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderSteppingStonesMap();
@@ -1705,15 +2489,12 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Register with cache-busting version query
-          navigator.serviceWorker.register('./sw.js?v=2.0.0')
+          navigator.serviceWorker.register('./sw.js?v=2.1.0')
             .then((registration) => {
-              // Immediately check for SW update on server
               registration.update();
             })
             .catch(() => {});
 
-          // When new Service Worker activates and takes control, reload page to get newest assets
           let refreshing = false;
           navigator.serviceWorker.addEventListener('controllerchange', () => {
             if (!refreshing) {
