@@ -18,17 +18,17 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- PWA Manifest & App Icons (Keeping Original Icons) with Cache-Busting Version -->
-  <link rel="manifest" href="./manifest.json?v=2.4.0">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.4.0">
-  <link rel="apple-touch-icon" href="./icon-192.png?v=2.4.0">
+  <link rel="manifest" href="./manifest.json?v=2.5.0">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.5.0">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=2.5.0">
 
   <!-- Google Fonts: Fredoka & Nunito for Authentic Duolingo Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.4.0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.5.0" rel="stylesheet">
 
   <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.4.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.5.0"></script>
 
   <style>
     /* ============================================================
@@ -749,6 +749,288 @@
       display: flex;
       align-items: center;
       gap: 4px;
+    }
+
+    /* Segmented Control for Library (Words vs Numbers 1-10) */
+    .library-segmented-control {
+      display: flex;
+      background: #E5E7EB;
+      border-radius: 20px;
+      padding: 4px;
+      gap: 6px;
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 14px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .seg-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-family: var(--font-family);
+      font-weight: 800;
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      color: #64748B;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .seg-btn.active {
+      background: #FFFFFF;
+      color: var(--duo-text);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08), 0 2px 0 #CBD5E1;
+      transform: scale(1.02);
+    }
+
+    .subview-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Numbers Header & Language Switch */
+    .numbers-shelf-header {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .numbers-shelf-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--duo-orange);
+    }
+
+    .numbers-shelf-header p {
+      font-size: 0.95rem;
+      color: var(--duo-text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .numbers-controls-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 480px;
+      margin: 14px auto 8px auto;
+    }
+
+    .lang-switch-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+      border: 2.5px solid #E5E7EB;
+      border-radius: 20px;
+      padding: 4px 6px;
+      box-shadow: 0 3px 0 #E2E8F0;
+      gap: 6px;
+    }
+
+    .lang-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #64748B;
+      margin-left: 6px;
+    }
+
+    .lang-btn {
+      flex: 1;
+      border: none;
+      background: #F1F5F9;
+      padding: 8px 12px;
+      border-radius: 14px;
+      font-family: var(--font-family);
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .lang-btn.active {
+      background: var(--duo-green);
+      color: #FFFFFF;
+      box-shadow: 0 3px 0 var(--duo-green-dark);
+      transform: scale(1.03);
+    }
+
+    .auto-count-btn {
+      width: 100%;
+      border: none;
+      background: var(--duo-blue);
+      color: #FFFFFF;
+      font-family: var(--font-family);
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding: 10px 16px;
+      border-radius: 18px;
+      box-shadow: 0 4px 0 var(--duo-blue-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .auto-count-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 var(--duo-blue-dark);
+    }
+
+    .auto-count-btn.counting-active {
+      background: var(--duo-orange);
+      box-shadow: 0 4px 0 var(--duo-orange-dark);
+      animation: pulseBtn 1.5s infinite ease-in-out;
+    }
+
+    /* Numbers Grid (1 to 10) */
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 24px;
+    }
+
+    .number-card {
+      background: #FFFFFF;
+      border: 3.5px solid var(--num-color, #58CC02);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--num-shadow, #46A302), 0 8px 16px rgba(0,0,0,0.06);
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      touch-action: manipulation;
+    }
+
+    .number-card:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--num-shadow, #46A302);
+    }
+
+    .number-card.number-speaking {
+      animation: numCardPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: #FFFDF0;
+      border-color: #FFC800;
+      box-shadow: 0 0 18px rgba(255, 200, 0, 0.6), 0 4px 0 #E5A500;
+    }
+
+    @keyframes numCardPop {
+      0% { transform: scale(0.95); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .num-digit {
+      font-size: clamp(2.8rem, 8vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1;
+      color: var(--num-color, #58CC02);
+      text-shadow: 0 2px 0 rgba(0,0,0,0.08);
+    }
+
+    .num-objects {
+      font-size: 1.35rem;
+      letter-spacing: 2px;
+      line-height: 1.2;
+      min-height: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 4px;
+    }
+
+    .num-word-label {
+      font-size: clamp(1.15rem, 3.4vw, 1.4rem);
+      font-weight: 800;
+      color: #334155;
+      text-transform: capitalize;
+    }
+
+    .num-desc-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94A3B8;
+      margin-top: -2px;
+    }
+
+    /* Numbers Banner Callout on Home Screen */
+    .numbers-mode-callout {
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 100%);
+      border: 3px solid #FDBA74;
+      border-radius: 22px;
+      padding: 12px 18px;
+      box-shadow: 0 5px 0 #FB923C;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+      flex-shrink: 0;
+    }
+
+    .numbers-mode-callout:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #FB923C;
+    }
+
+    .numbers-callout-text h4 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #EA580C;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .numbers-callout-text p {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #C2410C;
+      margin-top: 2px;
+    }
+
+    .numbers-callout-btn {
+      background: #EA580C;
+      color: #FFFFFF;
+      font-family: var(--font-family);
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 8px 16px;
+      border-radius: 16px;
+      border: none;
+      box-shadow: 0 3px 0 #C2410C;
+      white-space: nowrap;
+      pointer-events: none;
     }
 
     /* ---------------- TAB 3: CHESTS & QUESTS ---------------- */
@@ -1890,6 +2172,15 @@
           <button class="bubble-callout-btn" type="button">PLAY 🎈</button>
         </div>
 
+        <!-- Numbers 1-10 Mode Shortcut Banner -->
+        <div class="numbers-mode-callout" id="numbersModeCallout" title="Bé Học Đếm Số 1 - 10">
+          <div class="numbers-callout-text">
+            <h4>🔢 Bé Học Đếm Số 1 - 10!</h4>
+            <p>Nghe đọc tiếng Anh & tiếng Việt siêu vui nhộn!</p>
+          </div>
+          <button class="numbers-callout-btn" type="button">ĐẾM SỐ ➔</button>
+        </div>
+
         <!-- The Stepping-Stones Path Container -->
         <div class="stepping-stones-path" id="stonesPath">
           <!-- Dynamically populated stepping stone nodes -->
@@ -1914,14 +2205,58 @@
         </div>
       </section>
 
-      <!-- SCREEN 3: Vocabulary Shelf / Word Cards -->
+      <!-- SCREEN 3: Vocabulary Shelf / Word Cards & Numbers 1-10 -->
       <section class="tab-screen" id="wordsScreen">
-        <div class="words-shelf-header">
-          <h2>Word Library 📚</h2>
-          <p>Tap any picture to hear and practice English!</p>
+        <!-- Segmented Tab Switcher: Words vs Numbers -->
+        <div class="library-segmented-control">
+          <button class="seg-btn" id="segWordsBtn" type="button">
+            <span>📚</span> Từ Vựng (Words)
+          </button>
+          <button class="seg-btn active" id="segNumbersBtn" type="button">
+            <span>🔢</span> Số Đếm 1 - 10 (Numbers)
+          </button>
         </div>
-        <div class="words-grid" id="wordsGrid">
-          <!-- Populated from vocabulary items -->
+
+        <!-- SUBVIEW A: Words Library -->
+        <div class="subview-container" id="wordsSubview" style="display: none;">
+          <div class="words-shelf-header">
+            <h2>Word Library 📚</h2>
+            <p>Tap any picture to hear and practice English!</p>
+          </div>
+          <div class="words-grid" id="wordsGrid">
+            <!-- Populated from vocabulary items -->
+          </div>
+        </div>
+
+        <!-- SUBVIEW B: Numbers 1 to 10 (EN & VI) -->
+        <div class="subview-container" id="numbersSubview">
+          <div class="numbers-shelf-header">
+            <h2>🔢 Bé Học Đếm Số 1 - 10</h2>
+            <p>Chạm vào từng số để nghe đọc tiếng Anh hoặc tiếng Việt!</p>
+
+            <!-- Language Switcher & Auto-Play Controls -->
+            <div class="numbers-controls-bar">
+              <div class="lang-switch-pill">
+                <span class="lang-label">Ngôn ngữ:</span>
+                <button class="lang-btn active" id="langEnBtn" type="button">
+                  <span>🇬🇧</span> English
+                </button>
+                <button class="lang-btn" id="langViBtn" type="button">
+                  <span>🇻🇳</span> Tiếng Việt
+                </button>
+              </div>
+
+              <button class="auto-count-btn" id="autoCountBtn" type="button">
+                <span id="autoCountIcon">▶️</span>
+                <span id="autoCountText">Đọc lần lượt 1 - 10</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Numbers Grid (1 to 10) -->
+          <div class="numbers-grid" id="numbersGrid">
+            <!-- Dynamically populated 1 to 10 cards -->
+          </div>
         </div>
       </section>
 
@@ -2330,6 +2665,19 @@
     const wordsGrid = document.getElementById('wordsGrid');
     const openMysteryChestCard = document.getElementById('openMysteryChestCard');
 
+    // Numbers 1-10 Feature DOM Elements
+    const numbersModeCallout = document.getElementById('numbersModeCallout');
+    const segWordsBtn = document.getElementById('segWordsBtn');
+    const segNumbersBtn = document.getElementById('segNumbersBtn');
+    const wordsSubview = document.getElementById('wordsSubview');
+    const numbersSubview = document.getElementById('numbersSubview');
+    const langEnBtn = document.getElementById('langEnBtn');
+    const langViBtn = document.getElementById('langViBtn');
+    const autoCountBtn = document.getElementById('autoCountBtn');
+    const autoCountIcon = document.getElementById('autoCountIcon');
+    const autoCountText = document.getElementById('autoCountText');
+    const numbersGrid = document.getElementById('numbersGrid');
+
     const lessonScreen = document.getElementById('lessonScreen');
     const closeLessonBtn = document.getElementById('closeLessonBtn');
     const lessonProgressFill = document.getElementById('lessonProgressFill');
@@ -2648,38 +2996,48 @@
     }
 
     /* ============================================================
-       3. FAST SPEECH SYNTHESIS ENGINE (ZERO OVERLAP BUG)
+       3. FAST SPEECH SYNTHESIS ENGINE (ZERO OVERLAP BUG & BILINGUAL)
        ============================================================ */
     const FEMALE_VOICE_PREFERENCES = [
       'Samantha', 'Ava', 'Allison', 'Victoria', 'Karen', 'Moira',
       'Google US English', 'Jenny', 'Aria', 'Zira', 'en-US-Neural2-F'
     ];
 
+    let vietnameseVoice = null;
+
     function selectBestFemaleVoice() {
       if (!synth) return;
       const voices = synth.getVoices();
       if (!voices || voices.length === 0) return;
 
+      // 1. English Female Voice
       const englishVoices = voices.filter(v => v.lang && (v.lang.startsWith('en') || v.lang.startsWith('en_')));
 
       for (const pref of FEMALE_VOICE_PREFERENCES) {
         const found = englishVoices.find(v => v.name && v.name.toLowerCase().includes(pref.toLowerCase()));
         if (found) {
           englishFemaleVoice = found;
-          return;
+          break;
         }
       }
 
-      const genericFemale = englishVoices.find(v => {
-        const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
-        return n.includes('female') || n.includes('woman') || n.includes('girl');
-      });
-      if (genericFemale) {
-        englishFemaleVoice = genericFemale;
-        return;
+      if (!englishFemaleVoice) {
+        const genericFemale = englishVoices.find(v => {
+          const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
+          return n.includes('female') || n.includes('woman') || n.includes('girl');
+        });
+        englishFemaleVoice = genericFemale || englishVoices[0] || voices[0];
       }
 
-      englishFemaleVoice = englishVoices[0] || voices[0];
+      // 2. Vietnamese Voice (Google Tiếng Việt, Microsoft HoaiMy/NamMinh, Apple Linh/Mai, etc.)
+      const viVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().startsWith('vi') || v.lang.toLowerCase().includes('vie')));
+      if (viVoices.length > 0) {
+        const viFemale = viVoices.find(v => {
+          const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
+          return n.includes('female') || n.includes('nu') || n.includes('nữ') || n.includes('mai') || n.includes('linh') || n.includes('an') || n.includes('hoaimy');
+        });
+        vietnameseVoice = viFemale || viVoices[0];
+      }
     }
 
     if (synth) {
@@ -2689,7 +3047,7 @@
       }
     }
 
-    function speakWord(text, onFinished) {
+    function speakWord(text, onFinished, lang = 'en') {
       if (!isSoundEnabled || !synth) {
         if (onFinished) setTimeout(onFinished, 150);
         return;
@@ -2703,7 +3061,7 @@
         synth.cancel();
       } catch (e) {}
 
-      if (!englishFemaleVoice) {
+      if (!englishFemaleVoice || !vietnameseVoice) {
         selectBestFemaleVoice();
       }
 
@@ -2712,13 +3070,23 @@
       } catch (e) {}
 
       const utterance = new SpeechSynthesisUtterance(text);
-      if (englishFemaleVoice) {
-        utterance.voice = englishFemaleVoice;
-      }
+      const isVietnamese = (lang === 'vi' || lang === 'vi-VN');
 
-      utterance.lang = 'en-US';
-      utterance.rate = 1.1;    // Fast, crisp, immediate response
-      utterance.pitch = 1.25;
+      if (isVietnamese) {
+        if (vietnameseVoice) {
+          utterance.voice = vietnameseVoice;
+        }
+        utterance.lang = 'vi-VN';
+        utterance.rate = 0.92;   // Warm, rhythmic, toddler-friendly cadence for Vietnamese
+        utterance.pitch = 1.1;
+      } else {
+        if (englishFemaleVoice) {
+          utterance.voice = englishFemaleVoice;
+        }
+        utterance.lang = 'en-US';
+        utterance.rate = 1.05;   // Fast, crisp, immediate response
+        utterance.pitch = 1.25;
+      }
       utterance.volume = 1.0;
 
       let hasCompleted = false;
@@ -2736,7 +3104,7 @@
       utterance.onerror = () => completeOnce();
 
       // Short safety timer so toddlers are never left waiting
-      const maxDuration = Math.max(450, text.length * 70 + 200);
+      const maxDuration = Math.max(500, text.length * 80 + 300);
       safetyTimer = setTimeout(completeOnce, maxDuration);
 
       try {
@@ -2777,11 +3145,22 @@
 
       // Special tab hydrations
       if (targetTabId === 'bubblesScreen') {
+        stopAutoCount();
         startBubbleMode();
       } else if (targetTabId === 'wordsScreen') {
-        renderWordsShelf();
+        stopBubbleMode();
+        if (segNumbersBtn && segNumbersBtn.classList.contains('active')) {
+          renderNumbersGrid();
+        } else {
+          renderWordsShelf();
+        }
       } else if (targetTabId === 'profileScreen') {
+        stopBubbleMode();
+        stopAutoCount();
         updateProfileStats();
+      } else {
+        stopBubbleMode();
+        stopAutoCount();
       }
     }
 
@@ -3337,6 +3716,311 @@
       });
     }
 
+    /* ============================================================
+       8B. NUMBERS 1 TO 10 INTERACTIVE LEARNING (EN & VI)
+       ============================================================ */
+    const NUMBERS_DATA = [
+      {
+        num: 1,
+        en: 'One',
+        vi: 'Một',
+        emoji: '⭐',
+        color: '#FF4B4B',
+        shadow: '#D32F2F',
+        descEn: '1 Star',
+        descVi: '1 Ngôi sao'
+      },
+      {
+        num: 2,
+        en: 'Two',
+        vi: 'Hai',
+        emoji: '🐱',
+        color: '#FF9600',
+        shadow: '#E67E00',
+        descEn: '2 Cats',
+        descVi: '2 Chú mèo'
+      },
+      {
+        num: 3,
+        en: 'Three',
+        vi: 'Ba',
+        emoji: '🍎',
+        color: '#FFC800',
+        shadow: '#E5A500',
+        descEn: '3 Apples',
+        descVi: '3 Quả táo'
+      },
+      {
+        num: 4,
+        en: 'Four',
+        vi: 'Bốn',
+        emoji: '🚗',
+        color: '#58CC02',
+        shadow: '#46A302',
+        descEn: '4 Cars',
+        descVi: '4 Xe ô tô'
+      },
+      {
+        num: 5,
+        en: 'Five',
+        vi: 'Năm',
+        emoji: '🎈',
+        color: '#1CB0F6',
+        shadow: '#1899D6',
+        descEn: '5 Balloons',
+        descVi: '5 Quả bóng'
+      },
+      {
+        num: 6,
+        en: 'Six',
+        vi: 'Sáu',
+        emoji: '🍦',
+        color: '#CE82FF',
+        shadow: '#B55FE6',
+        descEn: '6 Ice Creams',
+        descVi: '6 Cây kem'
+      },
+      {
+        num: 7,
+        en: 'Seven',
+        vi: 'Bảy',
+        emoji: '🌸',
+        color: '#FF66B2',
+        shadow: '#DE4B94',
+        descEn: '7 Flowers',
+        descVi: '7 Bông hoa'
+      },
+      {
+        num: 8,
+        en: 'Eight',
+        vi: 'Tám',
+        emoji: '🍓',
+        color: '#00CD9C',
+        shadow: '#00A37A',
+        descEn: '8 Strawberries',
+        descVi: '8 Quả dâu'
+      },
+      {
+        num: 9,
+        en: 'Nine',
+        vi: 'Chín',
+        emoji: '🐥',
+        color: '#FF8400',
+        shadow: '#D46B00',
+        descEn: '9 Chicks',
+        descVi: '9 Chú gà con'
+      },
+      {
+        num: 10,
+        en: 'Ten',
+        vi: 'Mười',
+        emoji: '💎',
+        color: '#8549BA',
+        shadow: '#6B3799',
+        descEn: '10 Gems',
+        descVi: '10 Kim cương'
+      }
+    ];
+
+    let numberCurrentLang = 'en';
+    let isAutoCounting = false;
+    let autoCountStepIndex = 0;
+    let autoCountTimer = null;
+
+    function renderNumbersGrid() {
+      if (!numbersGrid) return;
+      numbersGrid.innerHTML = '';
+
+      NUMBERS_DATA.forEach((item, index) => {
+        const card = document.createElement('button');
+        card.className = 'number-card';
+        card.setAttribute('type', 'button');
+        card.setAttribute('data-num', item.num);
+        card.setAttribute('data-index', index);
+        card.style.setProperty('--num-color', item.color);
+        card.style.setProperty('--num-shadow', item.shadow);
+
+        const emojisHtml = Array(item.num).fill(item.emoji).join(' ');
+        const wordLabel = numberCurrentLang === 'vi' ? item.vi : item.en;
+        const descLabel = numberCurrentLang === 'vi' ? item.descVi : item.descEn;
+
+        card.innerHTML = `
+          <div class="num-digit">${item.num}</div>
+          <div class="num-objects">${emojisHtml}</div>
+          <div class="num-word-label">${wordLabel}</div>
+          <div class="num-desc-label">${descLabel}</div>
+        `;
+
+        const onCardTap = (e) => {
+          e.preventDefault();
+          if (isAutoCounting) stopAutoCount();
+          handleNumberTap(item, card);
+        };
+
+        card.addEventListener('click', onCardTap);
+        numbersGrid.appendChild(card);
+      });
+    }
+
+    function handleNumberTap(item, card) {
+      unlockAudio();
+      playDuoDing();
+
+      // Card pop animation
+      card.classList.remove('number-speaking');
+      void card.offsetWidth;
+      card.classList.add('number-speaking');
+      setTimeout(() => card.classList.remove('number-speaking'), 500);
+
+      // Speak number in selected language
+      const wordToSpeak = numberCurrentLang === 'vi' ? item.vi : item.en;
+      speakWord(wordToSpeak, null, numberCurrentLang);
+
+      // Confetti celebration if card is 10!
+      if (item.num === 10 && typeof confetti === 'function') {
+        const rect = card.getBoundingClientRect();
+        confetti({
+          particleCount: 50,
+          spread: 70,
+          origin: {
+            x: (rect.left + rect.width / 2) / window.innerWidth,
+            y: (rect.top + rect.height / 2) / window.innerHeight
+          },
+          colors: [item.color, '#FFC800', '#1CB0F6', '#58CC02']
+        });
+      }
+    }
+
+    function switchLibrarySegment(type) {
+      playDuoTap();
+      if (type === 'numbers') {
+        segNumbersBtn.classList.add('active');
+        segWordsBtn.classList.remove('active');
+        numbersSubview.style.display = 'flex';
+        wordsSubview.style.display = 'none';
+        renderNumbersGrid();
+      } else {
+        stopAutoCount();
+        segWordsBtn.classList.add('active');
+        segNumbersBtn.classList.remove('active');
+        wordsSubview.style.display = 'block';
+        numbersSubview.style.display = 'none';
+        renderWordsShelf();
+      }
+    }
+
+    function setNumbersLanguage(lang) {
+      if (numberCurrentLang === lang) return;
+      playDuoTap();
+      numberCurrentLang = lang;
+
+      if (lang === 'vi') {
+        langViBtn.classList.add('active');
+        langEnBtn.classList.remove('active');
+        if (autoCountText) {
+          autoCountText.textContent = isAutoCounting ? 'Dừng đọc ⏹️' : 'Đọc lần lượt 1 - 10';
+        }
+        speakWord('Tiếng Việt!', null, 'vi');
+      } else {
+        langEnBtn.classList.add('active');
+        langViBtn.classList.remove('active');
+        if (autoCountText) {
+          autoCountText.textContent = isAutoCounting ? 'Stop Counting ⏹️' : 'Count 1 to 10';
+        }
+        speakWord('English!', null, 'en');
+      }
+
+      updateNumberCardLabels();
+    }
+
+    function updateNumberCardLabels() {
+      if (!numbersGrid) return;
+      const cards = numbersGrid.querySelectorAll('.number-card');
+      cards.forEach((card, idx) => {
+        const item = NUMBERS_DATA[idx];
+        if (!item) return;
+        const wordEl = card.querySelector('.num-word-label');
+        const descEl = card.querySelector('.num-desc-label');
+        if (wordEl) wordEl.textContent = numberCurrentLang === 'vi' ? item.vi : item.en;
+        if (descEl) descEl.textContent = numberCurrentLang === 'vi' ? item.descVi : item.descEn;
+      });
+    }
+
+    function toggleAutoCount() {
+      if (isAutoCounting) {
+        stopAutoCount();
+      } else {
+        startAutoCount();
+      }
+    }
+
+    function startAutoCount() {
+      unlockAudio();
+      isAutoCounting = true;
+      autoCountStepIndex = 0;
+      if (autoCountBtn) {
+        autoCountBtn.classList.add('counting-active');
+        autoCountIcon.textContent = '⏹️';
+        autoCountText.textContent = numberCurrentLang === 'vi' ? 'Dừng đọc ⏹️' : 'Stop Counting ⏹️';
+      }
+
+      runAutoCountStep(0);
+    }
+
+    function stopAutoCount() {
+      isAutoCounting = false;
+      if (autoCountTimer) {
+        clearTimeout(autoCountTimer);
+        autoCountTimer = null;
+      }
+      if (autoCountBtn) {
+        autoCountBtn.classList.remove('counting-active');
+        autoCountIcon.textContent = '▶️';
+        autoCountText.textContent = numberCurrentLang === 'vi' ? 'Đọc lần lượt 1 - 10' : 'Count 1 to 10';
+      }
+      if (numbersGrid) {
+        numbersGrid.querySelectorAll('.number-card').forEach(c => c.classList.remove('number-speaking'));
+      }
+    }
+
+    function runAutoCountStep(index) {
+      if (!isAutoCounting) return;
+
+      if (index >= NUMBERS_DATA.length) {
+        stopAutoCount();
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 65,
+            spread: 80,
+            origin: { y: 0.6 }
+          });
+        }
+        playDuoDing();
+        const finishMessage = numberCurrentLang === 'vi' ? 'Tuyệt vời! Bé đã đếm xong 10 số!' : 'Awesome! You counted from one to ten!';
+        speakWord(finishMessage, null, numberCurrentLang);
+        return;
+      }
+
+      const item = NUMBERS_DATA[index];
+      const cards = numbersGrid.querySelectorAll('.number-card');
+      const card = cards[index];
+
+      if (card) {
+        cards.forEach(c => c.classList.remove('number-speaking'));
+        card.classList.add('number-speaking');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      playDuoDing();
+      const wordToSpeak = numberCurrentLang === 'vi' ? item.vi : item.en;
+      speakWord(wordToSpeak, () => {
+        if (!isAutoCounting) return;
+        autoCountTimer = setTimeout(() => {
+          runAutoCountStep(index + 1);
+        }, 550);
+      }, numberCurrentLang);
+    }
+
     function updateProfileStats() {
       profileStreakVal.textContent = `${streakCount} Days`;
       profileGemsVal.textContent = gemCount;
@@ -3572,6 +4256,33 @@
       });
     }
 
+    if (numbersModeCallout) {
+      numbersModeCallout.addEventListener('click', () => {
+        switchTab('wordsScreen');
+        switchLibrarySegment('numbers');
+      });
+    }
+
+    if (segWordsBtn) {
+      segWordsBtn.addEventListener('click', () => switchLibrarySegment('words'));
+    }
+
+    if (segNumbersBtn) {
+      segNumbersBtn.addEventListener('click', () => switchLibrarySegment('numbers'));
+    }
+
+    if (langEnBtn) {
+      langEnBtn.addEventListener('click', () => setNumbersLanguage('en'));
+    }
+
+    if (langViBtn) {
+      langViBtn.addEventListener('click', () => setNumbersLanguage('vi'));
+    }
+
+    if (autoCountBtn) {
+      autoCountBtn.addEventListener('click', toggleAutoCount);
+    }
+
     openMysteryChestCard.addEventListener('click', () => {
       setupChestOpeningModal();
     });
@@ -3601,16 +4312,17 @@
     });
 
     /* ============================================================
-       INITIALIZATION & SERVICE WORKER (v2.4.0 CACHE PURGE)
+       INITIALIZATION & SERVICE WORKER (v2.5.0 CACHE PURGE)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderSteppingStonesMap();
+      renderNumbersGrid();
       streakDisplay.textContent = streakCount;
       gemDisplay.textContent = gemCount;
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=2.4.0')
+          navigator.serviceWorker.register('./sw.js?v=2.5.0')
             .then((registration) => {
               registration.update();
             })
