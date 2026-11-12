@@ -113,11 +113,12 @@
 
 .mascot-follower {
   position: absolute;
-  top: -42px;
-  right: -24px;
-  font-size: 2.5rem;
+  top: -56px;
+  right: -28px;
+  width: 76px;
+  height: 76px;
   pointer-events: none;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
   animation: mascotHover 2.2s ease-in-out infinite;
   z-index: 10;
   display: flex;
@@ -125,15 +126,193 @@
   align-items: center;
 }
 
-.mascot-char {
-  display: inline-block;
-  line-height: 1;
-  transform-origin: bottom center;
+.mascot-svg-main {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
 }
 
+.mascot-svg-mini {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: visible;
+}
+
+.mascot-svg-lesson {
+  width: 52px;
+  height: 52px;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: visible;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.12));
+}
+
+/* ============================================================
+   CAREER MASCOT VECTOR ANIMATIONS (60FPS FLUID MOTION)
+   ============================================================ */
+
+/* 1. Base Mascot Floating & Breathing */
 @keyframes mascotHover {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(6deg); }
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg) scale(1.03);
+  }
+}
+
+/* 2. Realistic Eyes Blinking */
+@keyframes charEyeBlink {
+  0%, 88%, 100% {
+    transform: scaleY(1);
+  }
+  92%, 96% {
+    transform: scaleY(0.12);
+  }
+}
+.char-eye {
+  transform-origin: 50% 43%;
+  animation: charEyeBlink 3.4s infinite ease-in-out;
+}
+
+/* 3. Subtle Playful Head Wobble */
+@keyframes charHeadWobble {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-2.5deg);
+  }
+  75% {
+    transform: rotate(2.5deg);
+  }
+}
+.char-head {
+  transform-origin: 50% 60%;
+  animation: charHeadWobble 2.6s infinite ease-in-out;
+}
+
+/* 4. Cô giáo: Pointer Stick Waving */
+@keyframes teacherPointerWave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-9deg);
+  }
+}
+.char-arm-teacher {
+  transform-origin: 64px 68px;
+  animation: teacherPointerWave 1.8s infinite ease-in-out;
+}
+
+/* 5. Bác sĩ: Stethoscope Bounce & Heart Pulse */
+@keyframes doctorHeartPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.25);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+}
+.char-heart-pulse {
+  transform-origin: 75px 24px;
+  animation: doctorHeartPulse 1.4s infinite ease-in-out;
+}
+
+@keyframes stethoscopeBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+.char-stethoscope-bounce {
+  animation: stethoscopeBounce 1.4s infinite ease-in-out;
+}
+
+@keyframes mirrorGlint {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px #38BDF8);
+  }
+}
+.char-mirror-glint {
+  animation: mirrorGlint 2s infinite ease-in-out;
+}
+
+/* 6. Kĩ sư: Gear Spinning & Wrench Tapping */
+@keyframes engineerGearSpin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.char-gear-spin {
+  transform-origin: 19px 24px;
+  animation: engineerGearSpin 4.5s linear infinite;
+}
+
+@keyframes engineerWrenchTap {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-12deg);
+  }
+}
+.char-arm-engineer {
+  transform-origin: 66px 60px;
+  animation: engineerWrenchTap 1.6s infinite ease-in-out;
+}
+
+@keyframes helmetLightGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px #FEF08A);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px #FBBF24);
+  }
+}
+.char-light-glow {
+  animation: helmetLightGlow 1.8s infinite ease-in-out;
+}
+
+/* 7. Vận động viên: Trophy Gleam & Arm Pump */
+@keyframes athleteTrophyPump {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(6deg);
+  }
+}
+.char-arm-athlete {
+  transform-origin: 66px 68px;
+  animation: athleteTrophyPump 1.1s infinite ease-in-out;
+}
+
+@keyframes sparkleJump {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-3px) scale(1.2);
+    opacity: 1;
+  }
+}
+.char-sparkle-fast, .char-prop-float {
+  animation: sparkleJump 1.3s infinite ease-in-out;
 }
 
 .mascot-bubble {
@@ -166,7 +345,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   background: #FFFFFF;
   padding: 4px 10px;
   border-radius: 14px;
@@ -177,11 +356,14 @@
 }
 
 .stone-mascot-tag {
-  font-size: 0.74rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
   font-weight: 800;
-  color: #64748B;
+  color: #475569;
   background: #F1F5F9;
-  padding: 1px 7px;
+  padding: 2px 8px;
   border-radius: 10px;
   letter-spacing: 0.1px;
 }

@@ -1,5 +1,5 @@
-// LumiKids Service Worker - Version 2.6.4
-const VERSION = 'v2.6.4';
+// LumiKids Service Worker - Version 2.6.5
+const VERSION = 'v2.6.5';
 const CACHE_NAME = `lumikids-${VERSION}`;
 const ASSETS_TO_CACHE = [
   './',
@@ -17,6 +17,7 @@ const ASSETS_TO_CACHE = [
   `./js/core/eventBus.js?v=${VERSION}`,
   `./js/core/state.js?v=${VERSION}`,
   `./js/core/audio.js?v=${VERSION}`,
+  `./js/core/characters.js?v=${VERSION}`,
   `./js/data/curriculum.data.js?v=${VERSION}`,
   `./js/data/bubbles.data.js?v=${VERSION}`,
   `./js/data/numbers.data.js?v=${VERSION}`,

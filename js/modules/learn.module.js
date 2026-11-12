@@ -3,6 +3,7 @@ import { eventBus } from '../core/eventBus.js';
 import { playDuoDing, playDuoTap, speakWord, unlockAudio } from '../core/audio.js';
 import { LESSON_LEVELS, DUO_PRAISES } from '../data/curriculum.data.js';
 import { openChestModal } from './chest.module.js';
+import { CAREER_CHARACTERS, getLevelMascot } from '../core/characters.js';
 
 let activeLevel = null;
 let wordsCompletedInLesson = 0;
@@ -37,55 +38,6 @@ export function initLearnDOM() {
   }
 }
 
-// Career Mascots Pool: Cô giáo, Bác sĩ, Kĩ sư, Vận động viên
-export const CAREER_MASCOTS = [
-  {
-    id: 'teacher',
-    name: 'Cô giáo',
-    emoji: '👩‍🏫',
-    altEmoji: '🧑‍🏫',
-    bubble: 'HỌC THÔI! ⭐',
-    praise: 'Cô khen bé rất giỏi! 🌟'
-  },
-  {
-    id: 'doctor',
-    name: 'Bác sĩ',
-    emoji: '👨‍⚕️',
-    altEmoji: '👩‍⚕️',
-    bubble: 'KHỎE MẠNH! ❤️',
-    praise: 'Bác sĩ chúc mừng bé! 🩺'
-  },
-  {
-    id: 'engineer',
-    name: 'Kĩ sư',
-    emoji: '👷‍♂️',
-    altEmoji: '👷‍♀️',
-    bubble: 'SÁNG TẠO! 🚀',
-    praise: 'Kĩ sư nhí cừ khôi! 🏗️'
-  },
-  {
-    id: 'athlete',
-    name: 'Vận động viên',
-    emoji: '🏃‍♂️',
-    altEmoji: '🏃‍♀️',
-    bubble: 'TIẾN LÊN! 🏆',
-    praise: 'Về đích xuất sắc! 🥇'
-  }
-];
-
-const levelMascotMap = new Map();
-
-export function getLevelMascot(levelId) {
-  if (!levelMascotMap.has(levelId)) {
-    // Pick randomly from the 4 career mascots
-    const randIdx = Math.floor(Math.random() * CAREER_MASCOTS.length);
-    const chosen = CAREER_MASCOTS[randIdx];
-    const emoji = Math.random() > 0.5 ? chosen.emoji : chosen.altEmoji;
-    levelMascotMap.set(levelId, { ...chosen, emoji });
-  }
-  return levelMascotMap.get(levelId);
-}
-
 export function renderSteppingStonesMap() {
   if (!stonesPath) initLearnDOM();
   if (!stonesPath) return;
@@ -109,7 +61,7 @@ export function renderSteppingStonesMap() {
       mascotHtml = `
         <div class="mascot-follower" title="${mascot.name}">
           <div class="mascot-bubble">${mascot.bubble}</div>
-          <span class="mascot-char">${mascot.emoji}</span>
+          ${mascot.renderSvg('mascot-svg-main')}
         </div>
       `;
     }
@@ -120,7 +72,10 @@ export function renderSteppingStonesMap() {
         ${isCompleted ? '⭐' : level.badge}
       </button>
       <div class="stone-title">
-        <span class="stone-mascot-tag" title="${mascot.name}">${mascot.emoji} ${mascot.name}</span>
+        <span class="stone-mascot-tag" title="${mascot.name}">
+          ${mascot.renderSvg('mascot-svg-mini')}
+          <span>${mascot.name}</span>
+        </span>
         <span class="stone-title-text">${level.title}</span>
       </div>
     `;
@@ -154,7 +109,7 @@ export function startLesson(level) {
   const mascot = getLevelMascot(level.id);
   const lessonMascotEl = document.getElementById('lessonMascot');
   if (lessonMascotEl) {
-    lessonMascotEl.textContent = mascot.emoji;
+    lessonMascotEl.innerHTML = mascot.renderSvg('mascot-svg-lesson');
     lessonMascotEl.title = mascot.name;
   }
 
