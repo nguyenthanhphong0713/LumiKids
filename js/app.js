@@ -14,6 +14,10 @@ const streakDisplay = document.getElementById('streakCount');
 const gemDisplay = document.getElementById('gemCount');
 const heartsDisplay = document.getElementById('heartsCount');
 const soundToggle = document.getElementById('soundToggle');
+const clearCacheBtn = document.getElementById('clearCacheBtn');
+const updateToast = document.getElementById('updateToast');
+const updateToastMsg = document.getElementById('updateToastMsg');
+const updateToastBtn = document.getElementById('updateToastBtn');
 const bottomNav = document.getElementById('bottomNav');
 const openMysteryChestCard = document.getElementById('openMysteryChestCard');
 
@@ -93,6 +97,24 @@ function initGlobalEvents() {
     });
   }
 
+  // Clear Cache & Hard Refresh Button
+  if (clearCacheBtn) {
+    clearCacheBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playDuoTap();
+      clearCacheBtn.classList.add('spinning');
+      clearAppCache(true);
+    });
+  }
+
+  // Update Toast Button Click
+  if (updateToastBtn) {
+    updateToastBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearAppCache(true);
+    });
+  }
+
   // Reactive State Subscribers
   eventBus.on('state:gems', (val) => {
     if (gemDisplay) gemDisplay.textContent = val;
@@ -133,12 +155,85 @@ function syncInitialState() {
   updateSoundUI();
 }
 
-// Service Worker Registration
+// User-Facing Update/Cache Toast Notification
+export function showUpdateToast(msg, showButton = false) {
+  if (!updateToast) return;
+  if (updateToastMsg) updateToastMsg.textContent = msg;
+  if (updateToastBtn) updateToastBtn.style.display = showButton ? 'inline-block' : 'none';
+  updateToast.classList.add('visible');
+
+  if (!showButton) {
+    setTimeout(() => {
+      updateToast.classList.remove('visible');
+    }, 2800);
+  }
+}
+
+// Global Force Clear Cache and Hard Reload
+export async function clearAppCache(showToast = true) {
+  if (showToast) {
+    showUpdateToast('🧹 Đang xóa cache và tải bản mới nhất...', false);
+  }
+
+  // 1. Tell active Service Worker to purge cache
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    try {
+      navigator.serviceWorker.controller.postMessage({ action: 'clearCache' });
+    } catch (e) {}
+  }
+
+  // 2. Delete all CacheStorage entries
+  if ('caches' in window) {
+    try {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => caches.delete(k)));
+    } catch (e) {}
+  }
+
+  // 3. Unregister all Service Worker registrations
+  if ('serviceWorker' in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const reg of registrations) {
+        await reg.unregister();
+      }
+    } catch (e) {}
+  }
+
+  // 4. Clear temporary sessionStorage
+  try {
+    sessionStorage.clear();
+  } catch (e) {}
+
+  // 5. Force hard reload with timestamp query to bypass browser HTTP cache
+  const timestamp = Date.now();
+  const cleanUrl = window.location.origin + window.location.pathname + '?nocache=' + timestamp;
+  setTimeout(() => {
+    window.location.replace(cleanUrl);
+  }, 350);
+}
+
+// Service Worker Registration with Update Handling
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.1')
-        .then((reg) => reg.update())
+      navigator.serviceWorker.register('./sw.js?v=2.6.2', { updateViaCache: 'none' })
+        .then((reg) => {
+          // Explicitly check for new version on each launch
+          reg.update().catch(() => {});
+
+          // Detect new update waiting
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  showUpdateToast('✨ Đã có phiên bản mới!', true);
+                }
+              });
+            }
+          });
+        })
         .catch(() => {});
 
       let refreshing = false;

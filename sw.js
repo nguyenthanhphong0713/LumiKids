@@ -1,5 +1,5 @@
-// LumiKids Service Worker - Version 2.6.1
-const VERSION = 'v2.6.1';
+// LumiKids Service Worker - Version 2.6.2
+const VERSION = 'v2.6.2';
 const CACHE_NAME = `lumikids-${VERSION}`;
 const ASSETS_TO_CACHE = [
   './',
@@ -41,7 +41,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate Event - Instantly purge all older cache versions
+// Activate Event - Instantly purge all older cache versions and claim clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -59,43 +59,74 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event - Network-first for HTML & dynamic requests, cache-fallback for offline
+// Message Listener for manual cache clear and update triggers
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+  if (event.data.action === 'clearCache') {
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map((key) => caches.delete(key)));
+    }).then(() => {
+      if (event.ports && event.ports[0]) {
+        event.ports[0].postMessage({ success: true });
+      }
+    });
+  }
+});
+
+// Fetch Event - Network-First for HTML, Scripts & Styles (Zero Stale JS Bug)
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const requestUrl = new URL(event.request.url);
 
-  // For HTML documents and navigation: Always fetch fresh network data first to avoid stale cache
+  // 1. Navigation & HTML: Always Network-First with cache fallback
   if (event.request.mode === 'navigate' || requestUrl.pathname.endsWith('.html') || requestUrl.pathname.endsWith('/')) {
     event.respondWith(
       fetch(event.request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
         }
         return networkResponse;
       }).catch(() => {
-        // Offline fallback
         return caches.match(`./index.html?v=${VERSION}`) || caches.match('./index.html') || caches.match('./');
       })
     );
     return;
   }
 
-  // For static assets: Cache-first with network background revalidation
+  // 2. JavaScript, CSS, JSON: Network-First to guarantee latest code updates
+  if (
+    requestUrl.pathname.endsWith('.js') ||
+    requestUrl.pathname.endsWith('.css') ||
+    requestUrl.pathname.endsWith('.json') ||
+    event.request.destination === 'script' ||
+    event.request.destination === 'style'
+  ) {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      }).catch(() => {
+        // Offline fallback
+        return caches.match(event.request, { ignoreSearch: true });
+      })
+    );
+    return;
+  }
+
+  // 3. Static Media (Images, Fonts, Audio): Cache-First with network fallback
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
+    caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
       if (cachedResponse) {
-        fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
-          }
-        }).catch(() => {});
         return cachedResponse;
       }
-
       return fetch(event.request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const responseClone = networkResponse.clone();
