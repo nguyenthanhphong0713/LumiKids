@@ -18,17 +18,17 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- PWA Manifest & App Icons (Keeping Original Icons) with Cache-Busting Version -->
-  <link rel="manifest" href="./manifest.json?v=2.5.0">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.5.0">
-  <link rel="apple-touch-icon" href="./icon-192.png?v=2.5.0">
+  <link rel="manifest" href="./manifest.json?v=2.5.1">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.5.1">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=2.5.1">
 
-  <!-- Google Fonts: Fredoka & Nunito for Authentic Duolingo Typography -->
+  <!-- Google Fonts: Nunito (Full Vietnamese Diacritics & Duolingo Rounded Style) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.5.0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900;1000&display=swap&v=2.5.1" rel="stylesheet">
 
   <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.5.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.5.1"></script>
 
   <style>
     /* ============================================================
@@ -66,7 +66,7 @@
       --duo-text-muted: #777777;
       --duo-bg: #F7F7F7;
       
-      --font-family: 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, cursive, sans-serif;
+      --font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
     html, body {
@@ -2161,24 +2161,6 @@
             <h2>Little Explorers 🚀</h2>
           </div>
           <div class="unit-badge">⭐</div>
-        </div>
-
-        <!-- Playful Bubble Pop Shortcut Banner -->
-        <div class="bubble-mode-callout" id="bubbleModeCallout" title="Play Bubble Pop Mode">
-          <div class="bubble-callout-text">
-            <h4>🫧 Bubble Pop Mode!</h4>
-            <p>Tap floating bubbles to hear words & pop!</p>
-          </div>
-          <button class="bubble-callout-btn" type="button">PLAY 🎈</button>
-        </div>
-
-        <!-- Numbers 1-10 Mode Shortcut Banner -->
-        <div class="numbers-mode-callout" id="numbersModeCallout" title="Bé Học Đếm Số 1 - 10">
-          <div class="numbers-callout-text">
-            <h4>🔢 Bé Học Đếm Số 1 - 10!</h4>
-            <p>Nghe đọc tiếng Anh & tiếng Việt siêu vui nhộn!</p>
-          </div>
-          <button class="numbers-callout-btn" type="button">ĐẾM SỐ ➔</button>
         </div>
 
         <!-- The Stepping-Stones Path Container -->
@@ -4312,7 +4294,7 @@
     });
 
     /* ============================================================
-       INITIALIZATION & SERVICE WORKER (v2.5.0 CACHE PURGE)
+       INITIALIZATION & SERVICE WORKER (v2.5.1 CACHE PURGE)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderSteppingStonesMap();
@@ -4322,7 +4304,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=2.5.0')
+          navigator.serviceWorker.register('./sw.js?v=2.5.1')
             .then((registration) => {
               registration.update();
             })
