@@ -37,6 +37,55 @@ export function initLearnDOM() {
   }
 }
 
+// Career Mascots Pool: Cô giáo, Bác sĩ, Kĩ sư, Vận động viên
+export const CAREER_MASCOTS = [
+  {
+    id: 'teacher',
+    name: 'Cô giáo',
+    emoji: '👩‍🏫',
+    altEmoji: '🧑‍🏫',
+    bubble: 'HỌC THÔI! ⭐',
+    praise: 'Cô khen bé rất giỏi! 🌟'
+  },
+  {
+    id: 'doctor',
+    name: 'Bác sĩ',
+    emoji: '👨‍⚕️',
+    altEmoji: '👩‍⚕️',
+    bubble: 'KHỎE MẠNH! ❤️',
+    praise: 'Bác sĩ chúc mừng bé! 🩺'
+  },
+  {
+    id: 'engineer',
+    name: 'Kĩ sư',
+    emoji: '👷‍♂️',
+    altEmoji: '👷‍♀️',
+    bubble: 'SÁNG TẠO! 🚀',
+    praise: 'Kĩ sư nhí cừ khôi! 🏗️'
+  },
+  {
+    id: 'athlete',
+    name: 'Vận động viên',
+    emoji: '🏃‍♂️',
+    altEmoji: '🏃‍♀️',
+    bubble: 'TIẾN LÊN! 🏆',
+    praise: 'Về đích xuất sắc! 🥇'
+  }
+];
+
+const levelMascotMap = new Map();
+
+export function getLevelMascot(levelId) {
+  if (!levelMascotMap.has(levelId)) {
+    // Pick randomly from the 4 career mascots
+    const randIdx = Math.floor(Math.random() * CAREER_MASCOTS.length);
+    const chosen = CAREER_MASCOTS[randIdx];
+    const emoji = Math.random() > 0.5 ? chosen.emoji : chosen.altEmoji;
+    levelMascotMap.set(levelId, { ...chosen, emoji });
+  }
+  return levelMascotMap.get(levelId);
+}
+
 export function renderSteppingStonesMap() {
   if (!stonesPath) initLearnDOM();
   if (!stonesPath) return;
@@ -47,6 +96,7 @@ export function renderSteppingStonesMap() {
     const isCompleted = level.id < store.currentUnlockedLevel;
     const isCurrent = level.id === store.currentUnlockedLevel;
     const isLocked = level.id > store.currentUnlockedLevel;
+    const mascot = getLevelMascot(level.id);
 
     const node = document.createElement('div');
     node.className = `stone-node ${level.offset} ${level.isChest ? 'chest-node' : ''}`;
@@ -57,9 +107,9 @@ export function renderSteppingStonesMap() {
     let mascotHtml = '';
     if (isCurrent) {
       mascotHtml = `
-        <div class="mascot-follower">
-          <div class="mascot-bubble">START!</div>
-          🦉
+        <div class="mascot-follower" title="${mascot.name}">
+          <div class="mascot-bubble">${mascot.bubble}</div>
+          <span class="mascot-char">${mascot.emoji}</span>
         </div>
       `;
     }
@@ -69,7 +119,10 @@ export function renderSteppingStonesMap() {
       <button class="stone-button" aria-label="${level.title}">
         ${isCompleted ? '⭐' : level.badge}
       </button>
-      <div class="stone-title">${level.title}</div>
+      <div class="stone-title">
+        <span class="stone-mascot-tag" title="${mascot.name}">${mascot.emoji} ${mascot.name}</span>
+        <span class="stone-title-text">${level.title}</span>
+      </div>
     `;
 
     if (!isLocked) {
@@ -98,7 +151,14 @@ export function startLesson(level) {
   wordsCompletedInLesson = 0;
   updateLessonProgress();
 
-  if (instructionText) instructionText.textContent = `Tap any picture!`;
+  const mascot = getLevelMascot(level.id);
+  const lessonMascotEl = document.getElementById('lessonMascot');
+  if (lessonMascotEl) {
+    lessonMascotEl.textContent = mascot.emoji;
+    lessonMascotEl.title = mascot.name;
+  }
+
+  if (instructionText) instructionText.textContent = `${mascot.name}: Tap any picture!`;
   hideFeedbackDrawer();
   renderLessonCards(level.words);
 
