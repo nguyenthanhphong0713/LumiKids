@@ -117,6 +117,9 @@ export function startLesson(level) {
   hideFeedbackDrawer();
   renderLessonCards(level.words);
 
+  document.body.classList.add('in-lesson');
+  const appEl = document.getElementById('app');
+  if (appEl) appEl.classList.add('in-lesson');
   if (lessonScreen) lessonScreen.classList.add('active-lesson');
 }
 
@@ -204,6 +207,9 @@ function updateLessonProgress() {
 export function closeLesson() {
   if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
   hideFeedbackDrawer();
+  document.body.classList.remove('in-lesson');
+  const appEl = document.getElementById('app');
+  if (appEl) appEl.classList.remove('in-lesson');
   if (lessonScreen) lessonScreen.classList.remove('active-lesson');
   if (lessonCards) lessonCards.innerHTML = '';
   activeLevel = null;

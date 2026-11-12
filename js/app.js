@@ -42,6 +42,9 @@ export function switchTab(targetTabId) {
   const lessonScreen = document.getElementById('lessonScreen');
   if (lessonScreen && lessonScreen.classList.contains('active-lesson')) {
     lessonScreen.classList.remove('active-lesson');
+    document.body.classList.remove('in-lesson');
+    const appEl = document.getElementById('app');
+    if (appEl) appEl.classList.remove('in-lesson');
   }
 
   // 1. Unmount previous active module
@@ -223,7 +226,7 @@ export async function clearAppCache(showToast = true) {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.5', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=2.6.6', { updateViaCache: 'none' })
         .then((reg) => {
           // Explicitly check for new version on each launch
           reg.update().catch(() => {});
