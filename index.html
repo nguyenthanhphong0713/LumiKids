@@ -18,17 +18,17 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- PWA Manifest & App Icons (Keeping Original Icons) with Cache-Busting Version -->
-  <link rel="manifest" href="./manifest.json?v=2.3.0">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.3.0">
-  <link rel="apple-touch-icon" href="./icon-192.png?v=2.3.0">
+  <link rel="manifest" href="./manifest.json?v=2.4.0">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.4.0">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=2.4.0">
 
   <!-- Google Fonts: Fredoka & Nunito for Authentic Duolingo Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.3.0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.4.0" rel="stylesheet">
 
   <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.3.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.4.0"></script>
 
   <style>
     /* ============================================================
@@ -3584,7 +3584,7 @@
       playDuoTap();
     });
 
-    // Mobile touch and gesture handling (Preserves fullscreen & locks unwanted scroll)
+    // Mobile touch and gesture handling (Locks unwanted scroll & pinch)
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('touchmove', (e) => {
       if (!e.target.closest('.tab-screen')) {
@@ -3592,26 +3592,8 @@
       }
     }, { passive: false });
 
-    function triggerFullscreen() {
-      const docEl = document.documentElement;
-      const requestFS = docEl.requestFullscreen ||
-                        docEl.webkitRequestFullscreen ||
-                        docEl.mozRequestFullScreen ||
-                        docEl.msRequestFullscreen;
-
-      if (requestFS && !document.fullscreenElement && !document.webkitFullscreenElement) {
-        try {
-          const promise = requestFS.call(docEl);
-          if (promise && promise.catch) {
-            promise.catch(() => {});
-          }
-        } catch (e) {}
-      }
-    }
-
     function onFirstUserGesture() {
       unlockAudio();
-      triggerFullscreen();
     }
 
     ['click', 'touchstart', 'touchend', 'pointerdown'].forEach((evt) => {
@@ -3619,7 +3601,7 @@
     });
 
     /* ============================================================
-       INITIALIZATION & SERVICE WORKER (v2.3.0 CACHE PURGE)
+       INITIALIZATION & SERVICE WORKER (v2.4.0 CACHE PURGE)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderSteppingStonesMap();
@@ -3628,7 +3610,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=2.3.0')
+          navigator.serviceWorker.register('./sw.js?v=2.4.0')
             .then((registration) => {
               registration.update();
             })
