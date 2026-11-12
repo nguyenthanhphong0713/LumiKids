@@ -18,17 +18,17 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- PWA Manifest & App Icons (Keeping Original Icons) with Cache-Busting Version -->
-  <link rel="manifest" href="./manifest.json?v=2.5.1">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.5.1">
-  <link rel="apple-touch-icon" href="./icon-192.png?v=2.5.1">
+  <link rel="manifest" href="./manifest.json?v=2.5.2">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.5.2">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=2.5.2">
 
   <!-- Google Fonts: Nunito (Full Vietnamese Diacritics & Duolingo Rounded Style) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900;1000&display=swap&v=2.5.1" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900;1000&display=swap&v=2.5.2" rel="stylesheet">
 
   <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.5.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.5.2"></script>
 
   <style>
     /* ============================================================
@@ -2187,62 +2187,49 @@
         </div>
       </section>
 
-      <!-- SCREEN 3: Vocabulary Shelf / Word Cards & Numbers 1-10 -->
+      <!-- SCREEN 3: Vocabulary Shelf / Word Cards -->
       <section class="tab-screen" id="wordsScreen">
-        <!-- Segmented Tab Switcher: Words vs Numbers -->
-        <div class="library-segmented-control">
-          <button class="seg-btn" id="segWordsBtn" type="button">
-            <span>📚</span> Từ Vựng (Words)
-          </button>
-          <button class="seg-btn active" id="segNumbersBtn" type="button">
-            <span>🔢</span> Số Đếm 1 - 10 (Numbers)
-          </button>
+        <div class="words-shelf-header">
+          <h2>Word Library 📚</h2>
+          <p>Tap any picture to hear and practice English!</p>
         </div>
-
-        <!-- SUBVIEW A: Words Library -->
-        <div class="subview-container" id="wordsSubview" style="display: none;">
-          <div class="words-shelf-header">
-            <h2>Word Library 📚</h2>
-            <p>Tap any picture to hear and practice English!</p>
-          </div>
-          <div class="words-grid" id="wordsGrid">
-            <!-- Populated from vocabulary items -->
-          </div>
-        </div>
-
-        <!-- SUBVIEW B: Numbers 1 to 10 (EN & VI) -->
-        <div class="subview-container" id="numbersSubview">
-          <div class="numbers-shelf-header">
-            <h2>🔢 Bé Học Đếm Số 1 - 10</h2>
-            <p>Chạm vào từng số để nghe đọc tiếng Anh hoặc tiếng Việt!</p>
-
-            <!-- Language Switcher & Auto-Play Controls -->
-            <div class="numbers-controls-bar">
-              <div class="lang-switch-pill">
-                <span class="lang-label">Ngôn ngữ:</span>
-                <button class="lang-btn active" id="langEnBtn" type="button">
-                  <span>🇬🇧</span> English
-                </button>
-                <button class="lang-btn" id="langViBtn" type="button">
-                  <span>🇻🇳</span> Tiếng Việt
-                </button>
-              </div>
-
-              <button class="auto-count-btn" id="autoCountBtn" type="button">
-                <span id="autoCountIcon">▶️</span>
-                <span id="autoCountText">Đọc lần lượt 1 - 10</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Numbers Grid (1 to 10) -->
-          <div class="numbers-grid" id="numbersGrid">
-            <!-- Dynamically populated 1 to 10 cards -->
-          </div>
+        <div class="words-grid" id="wordsGrid">
+          <!-- Populated from vocabulary items -->
         </div>
       </section>
 
-      <!-- SCREEN 4: Daily Quests & Reward Chests -->
+      <!-- SCREEN 4: Numbers 1 to 10 (EN & VI) -->
+      <section class="tab-screen" id="numbersScreen">
+        <div class="numbers-shelf-header">
+          <h2>🔢 Bé Học Đếm Số 1 - 10</h2>
+          <p>Chạm vào từng số để nghe đọc tiếng Anh hoặc tiếng Việt!</p>
+
+          <!-- Language Switcher & Auto-Play Controls -->
+          <div class="numbers-controls-bar">
+            <div class="lang-switch-pill">
+              <span class="lang-label">Ngôn ngữ:</span>
+              <button class="lang-btn active" id="langEnBtn" type="button">
+                <span>🇬🇧</span> English
+              </button>
+              <button class="lang-btn" id="langViBtn" type="button">
+                <span>🇻🇳</span> Tiếng Việt
+              </button>
+            </div>
+
+            <button class="auto-count-btn" id="autoCountBtn" type="button">
+              <span id="autoCountIcon">▶️</span>
+              <span id="autoCountText">Đọc lần lượt 1 - 10</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Numbers Grid (1 to 10) -->
+        <div class="numbers-grid" id="numbersGrid">
+          <!-- Dynamically populated 1 to 10 cards -->
+        </div>
+      </section>
+
+      <!-- SCREEN 5: Daily Quests & Reward Chests -->
       <section class="tab-screen" id="chestsScreen">
         <div class="quests-header">
           <h2>Daily Quests & Chests 🎁</h2>
@@ -2281,80 +2268,7 @@
         </div>
       </section>
 
-      <!-- SCREEN 5: Toddler Profile & Badges -->
-      <section class="tab-screen" id="profileScreen">
-        <div class="profile-hero">
-          <div class="profile-avatar-circle">🦉</div>
-          <div class="profile-name">Little Explorer</div>
-          <div class="profile-joined">Learning English with LumiKids</div>
-        </div>
-
-        <div class="profile-stats-grid">
-          <div class="profile-stat-box">
-            <span class="box-icon">🔥</span>
-            <div>
-              <div class="box-val" id="profileStreakVal">3 Days</div>
-              <div class="box-title">Streak</div>
-            </div>
-          </div>
-
-          <div class="profile-stat-box">
-            <span class="box-icon">💎</span>
-            <div>
-              <div class="box-val" id="profileGemsVal">120</div>
-              <div class="box-title">Gems</div>
-            </div>
-          </div>
-
-          <div class="profile-stat-box">
-            <span class="box-icon">⚡</span>
-            <div>
-              <div class="box-val">150 XP</div>
-              <div class="box-title">Total XP</div>
-            </div>
-          </div>
-
-          <div class="profile-stat-box">
-            <span class="box-icon">⭐</span>
-            <div>
-              <div class="box-val" id="profileWordsCount">12</div>
-              <div class="box-title">Words Learned</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="badges-section">
-          <h3>My Achievements 🏆</h3>
-          <div class="badges-grid">
-            <div class="badge-card">
-              <span class="badge-icon">🐣</span>
-              <span class="badge-label">First Word</span>
-            </div>
-            <div class="badge-card">
-              <span class="badge-icon">🎁</span>
-              <span class="badge-label">Chest Master</span>
-            </div>
-            <div class="badge-card">
-              <span class="badge-icon">🌟</span>
-              <span class="badge-label">Super Star</span>
-            </div>
-            <div class="badge-card">
-              <span class="badge-icon">🚀</span>
-              <span class="badge-label">Explorer</span>
-            </div>
-            <div class="badge-card badge-locked">
-              <span class="badge-icon">🦁</span>
-              <span class="badge-label">Safari Champ</span>
-            </div>
-            <div class="badge-card badge-locked">
-              <span class="badge-icon">👑</span>
-              <span class="badge-label">Word King</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SCREEN 5: Interactive Lesson Screen (Full-Screen Overlay) -->
+      <!-- SCREEN 6: Interactive Lesson Screen (Full-Screen Overlay) -->
       <section id="lessonScreen">
         <!-- Lesson Top Progress -->
         <div class="lesson-header">
@@ -2414,13 +2328,13 @@
         <span class="nav-icon">📚</span>
         <span class="nav-label">Words</span>
       </button>
+      <button class="nav-tab" data-tab="numbersScreen" aria-label="Numbers">
+        <span class="nav-icon">🔢</span>
+        <span class="nav-label">Numbers</span>
+      </button>
       <button class="nav-tab" data-tab="chestsScreen" aria-label="Chests">
         <span class="nav-icon">🎁</span>
         <span class="nav-label">Chests</span>
-      </button>
-      <button class="nav-tab" data-tab="profileScreen" aria-label="Profile">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Profile</span>
       </button>
     </nav>
   </div>
@@ -2642,17 +2556,12 @@
     const bubbleScoreDisplay = document.getElementById('bubbleScore');
     const bubbleModeCallout = document.getElementById('bubbleModeCallout');
     const wordsScreen = document.getElementById('wordsScreen');
+    const numbersScreen = document.getElementById('numbersScreen');
     const chestsScreen = document.getElementById('chestsScreen');
-    const profileScreen = document.getElementById('profileScreen');
     const wordsGrid = document.getElementById('wordsGrid');
     const openMysteryChestCard = document.getElementById('openMysteryChestCard');
 
     // Numbers 1-10 Feature DOM Elements
-    const numbersModeCallout = document.getElementById('numbersModeCallout');
-    const segWordsBtn = document.getElementById('segWordsBtn');
-    const segNumbersBtn = document.getElementById('segNumbersBtn');
-    const wordsSubview = document.getElementById('wordsSubview');
-    const numbersSubview = document.getElementById('numbersSubview');
     const langEnBtn = document.getElementById('langEnBtn');
     const langViBtn = document.getElementById('langViBtn');
     const autoCountBtn = document.getElementById('autoCountBtn');
@@ -3131,15 +3040,11 @@
         startBubbleMode();
       } else if (targetTabId === 'wordsScreen') {
         stopBubbleMode();
-        if (segNumbersBtn && segNumbersBtn.classList.contains('active')) {
-          renderNumbersGrid();
-        } else {
-          renderWordsShelf();
-        }
-      } else if (targetTabId === 'profileScreen') {
-        stopBubbleMode();
         stopAutoCount();
-        updateProfileStats();
+        renderWordsShelf();
+      } else if (targetTabId === 'numbersScreen') {
+        stopBubbleMode();
+        renderNumbersGrid();
       } else {
         stopBubbleMode();
         stopAutoCount();
@@ -3873,24 +3778,6 @@
       }
     }
 
-    function switchLibrarySegment(type) {
-      playDuoTap();
-      if (type === 'numbers') {
-        segNumbersBtn.classList.add('active');
-        segWordsBtn.classList.remove('active');
-        numbersSubview.style.display = 'flex';
-        wordsSubview.style.display = 'none';
-        renderNumbersGrid();
-      } else {
-        stopAutoCount();
-        segWordsBtn.classList.add('active');
-        segNumbersBtn.classList.remove('active');
-        wordsSubview.style.display = 'block';
-        numbersSubview.style.display = 'none';
-        renderWordsShelf();
-      }
-    }
-
     function setNumbersLanguage(lang) {
       if (numberCurrentLang === lang) return;
       playDuoTap();
@@ -4232,27 +4119,6 @@
     closeLessonBtn.addEventListener('click', closeLesson);
     continueBtn.addEventListener('click', onContinueAfterCelebration);
 
-    if (bubbleModeCallout) {
-      bubbleModeCallout.addEventListener('click', () => {
-        switchTab('bubblesScreen');
-      });
-    }
-
-    if (numbersModeCallout) {
-      numbersModeCallout.addEventListener('click', () => {
-        switchTab('wordsScreen');
-        switchLibrarySegment('numbers');
-      });
-    }
-
-    if (segWordsBtn) {
-      segWordsBtn.addEventListener('click', () => switchLibrarySegment('words'));
-    }
-
-    if (segNumbersBtn) {
-      segNumbersBtn.addEventListener('click', () => switchLibrarySegment('numbers'));
-    }
-
     if (langEnBtn) {
       langEnBtn.addEventListener('click', () => setNumbersLanguage('en'));
     }
@@ -4294,7 +4160,7 @@
     });
 
     /* ============================================================
-       INITIALIZATION & SERVICE WORKER (v2.5.1 CACHE PURGE)
+       INITIALIZATION & SERVICE WORKER (v2.5.2 CACHE PURGE)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderSteppingStonesMap();
@@ -4304,7 +4170,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=2.5.1')
+          navigator.serviceWorker.register('./sw.js?v=2.5.2')
             .then((registration) => {
               registration.update();
             })
