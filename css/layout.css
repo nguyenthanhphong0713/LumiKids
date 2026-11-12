@@ -56,25 +56,28 @@ header {
   display: inline-block;
 }
 
-/* Top Stat Chips (Streak, Gems, Hearts, Audio Toggle) */
+/* Top Stat Chips (Streak, Gems, Hearts, Cache Refresh) */
 .stats-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(4px, 1.5vw, 8px);
+  flex-shrink: 0;
 }
 
 .stat-chip {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: #FFFFFF;
-  padding: 4px 10px;
+  padding: 4px clamp(6px, 1.5vw, 10px);
   border-radius: 16px;
   font-weight: 800;
-  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  font-size: clamp(0.8rem, 2vw, 0.95rem);
   border: 2px solid #E5E5E5;
   box-shadow: 0 2px 0 #E5E5E5;
   cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .chip-streak {
@@ -98,39 +101,23 @@ header {
   box-shadow: 0 2px 0 #F5B0B0;
 }
 
-.sound-toggle-btn {
-  background: #FFFFFF;
-  border: 2.5px solid #E5E5E5;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  cursor: pointer;
-  box-shadow: 0 3px 0 #D5D5D5;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-.sound-toggle-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #D5D5D5;
-}
-
 .cache-refresh-btn {
   background: #FFFFFF;
   border: 2.5px solid #E5E5E5;
   border-radius: 50%;
   width: 36px;
   height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   cursor: pointer;
   box-shadow: 0 3px 0 #D5D5D5;
   transition: transform 0.2s ease, box-shadow 0.1s ease, border-color 0.2s;
   user-select: none;
+  flex-shrink: 0;
 }
 .cache-refresh-btn:hover {
   border-color: var(--duo-blue);
@@ -194,7 +181,8 @@ header {
 
 /* Central Dynamic View Container */
 .view-container {
-  flex: 1;
+  flex: 1 1 0;
+  min-height: 0;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -212,7 +200,7 @@ header {
   display: none;
   flex-direction: column;
   align-items: center;
-  padding: 16px 16px 90px 16px;
+  padding: 16px 16px calc(76px + env(safe-area-inset-bottom, 8px)) 16px;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
@@ -220,19 +208,24 @@ header {
   display: flex;
 }
 
-/* Duolingo Bottom Navigation Bar */
+/* Duolingo Bottom Navigation Bar - PERSISTENT FIXED ON SCREEN */
 .duo-bottom-nav {
-  position: relative;
-  z-index: 150;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
   background: #FFFFFF;
   border-top: 2.5px solid #E5E5E5;
   display: flex;
   align-items: center;
   justify-content: space-around;
   padding: 6px 4px;
-  padding-bottom: max(6px, env(safe-area-inset-bottom));
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
   flex-shrink: 0;
+  pointer-events: auto;
 }
 
 .nav-tab {

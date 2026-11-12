@@ -38,6 +38,12 @@ let activeTabId = 'pathScreen';
 export function switchTab(targetTabId) {
   playDuoTap();
 
+  // Close any active lesson modal if switching tabs
+  const lessonScreen = document.getElementById('lessonScreen');
+  if (lessonScreen && lessonScreen.classList.contains('active-lesson')) {
+    lessonScreen.classList.remove('active-lesson');
+  }
+
   // 1. Unmount previous active module
   if (MODULES[activeTabId] && typeof MODULES[activeTabId].unmount === 'function') {
     MODULES[activeTabId].unmount();
@@ -217,7 +223,7 @@ export async function clearAppCache(showToast = true) {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.2', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=2.6.3', { updateViaCache: 'none' })
         .then((reg) => {
           // Explicitly check for new version on each launch
           reg.update().catch(() => {});
