@@ -1,0 +1,184 @@
+/* ============================================================
+   LUMIKIDS - NUMBERS TAB (1 TO 10 BILINGUAL LEARNING)
+   ============================================================ */
+.numbers-shelf-header {
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.numbers-shelf-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--duo-orange);
+}
+
+.numbers-shelf-header p {
+  font-size: 0.95rem;
+  color: var(--duo-text-muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.numbers-controls-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 480px;
+  margin: 14px auto 8px auto;
+}
+
+.lang-switch-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border: 2.5px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 4px 6px;
+  box-shadow: 0 3px 0 #E2E8F0;
+  gap: 6px;
+}
+
+.lang-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748B;
+  margin-left: 6px;
+}
+
+.lang-btn {
+  flex: 1;
+  border: none;
+  background: #F1F5F9;
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-family: var(--font-family);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.lang-btn.active {
+  background: var(--duo-green);
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 var(--duo-green-dark);
+  transform: scale(1.03);
+}
+
+.auto-count-btn {
+  width: 100%;
+  border: none;
+  background: var(--duo-blue);
+  color: #FFFFFF;
+  font-family: var(--font-family);
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 10px 16px;
+  border-radius: 18px;
+  box-shadow: 0 4px 0 var(--duo-blue-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.auto-count-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--duo-blue-dark);
+}
+
+.auto-count-btn.counting-active {
+  background: var(--duo-orange);
+  box-shadow: 0 4px 0 var(--duo-orange-dark);
+  animation: pulseBtn 1.5s infinite ease-in-out;
+}
+
+/* Numbers Grid (1 to 10) */
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 24px;
+}
+
+.number-card {
+  background: #FFFFFF;
+  border: 3.5px solid var(--num-color, #58CC02);
+  border-radius: 24px;
+  box-shadow: 0 6px 0 var(--num-shadow, #46A302), 0 8px 16px rgba(0,0,0,0.06);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  touch-action: manipulation;
+}
+
+.number-card:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--num-shadow, #46A302);
+}
+
+.number-card.number-speaking {
+  animation: numCardPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: #FFFDF0;
+  border-color: #FFC800;
+  box-shadow: 0 0 18px rgba(255, 200, 0, 0.6), 0 4px 0 #E5A500;
+}
+
+@keyframes numCardPop {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.num-digit {
+  font-size: clamp(2.8rem, 8vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--num-color, #58CC02);
+  text-shadow: 0 2px 0 rgba(0,0,0,0.08);
+}
+
+.num-objects {
+  font-size: 1.35rem;
+  letter-spacing: 2px;
+  line-height: 1.2;
+  min-height: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 4px;
+}
+
+.num-word-label {
+  font-size: clamp(1.15rem, 3.4vw, 1.4rem);
+  font-weight: 800;
+  color: #334155;
+  text-transform: capitalize;
+}
+
+.num-desc-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94A3B8;
+  margin-top: -2px;
+}

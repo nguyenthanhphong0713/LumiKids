@@ -1,0 +1,214 @@
+/* ============================================================
+   LUMIKIDS - BUBBLES TAB (FLOATING BUBBLE POP GAME)
+   ============================================================ */
+#bubblesScreen {
+  padding: 0;
+  background: linear-gradient(180deg, #E0F2FE 0%, #F0FDF4 45%, #FAF5FF 100%);
+  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  touch-action: manipulation;
+}
+
+#bubblesScreen.active-tab {
+  display: flex;
+}
+
+.bubble-mode-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 2.5px solid rgba(224, 231, 255, 0.8);
+  z-index: 20;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.bubble-coach {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+  color: #1E293B;
+}
+
+.bubble-coach-owl {
+  font-size: 1.8rem;
+  animation: cuteWiggle 3.2s infinite ease-in-out;
+}
+
+.bubble-score-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 2px solid #BAE6FD;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-weight: 800;
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  color: var(--duo-blue);
+  box-shadow: 0 2px 0 #93C5FD;
+}
+
+.bubble-sky-stage {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+/* Floating Bubble Element */
+.floating-bubble {
+  position: absolute;
+  bottom: -130px;
+  width: clamp(94px, 24vw, 116px);
+  height: clamp(94px, 24vw, 116px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.42) 22%, rgba(186, 230, 253, 0.42) 55%, rgba(216, 180, 254, 0.35) 80%, rgba(255, 255, 255, 0.75) 100%);
+  box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.9), inset -4px -6px 12px rgba(147, 197, 253, 0.45), 0 8px 24px rgba(56, 189, 248, 0.22);
+  border: 2.5px solid rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  z-index: 10;
+  will-change: transform, bottom;
+  animation: bubbleRiseUp linear forwards, bubbleWobble 2.6s ease-in-out infinite alternate;
+  touch-action: manipulation;
+}
+
+.floating-bubble::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 18%;
+  width: 32%;
+  height: 20%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  transform: rotate(-35deg);
+  pointer-events: none;
+}
+
+.floating-bubble::after {
+  content: '';
+  position: absolute;
+  top: 26%;
+  left: 12%;
+  width: 10%;
+  height: 10%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+}
+
+@keyframes bubbleRiseUp {
+  0% {
+    bottom: -130px;
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(14px);
+  }
+  50% {
+    transform: translateX(-14px);
+  }
+  75% {
+    transform: translateX(12px);
+  }
+  100% {
+    bottom: calc(100% + 140px);
+    transform: translateX(-8px);
+  }
+}
+
+@keyframes bubbleWobble {
+  0% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+  33% { border-radius: 47% 53% 51% 49% / 53% 48% 52% 47%; }
+  66% { border-radius: 52% 48% 47% 53% / 48% 52% 48% 52%; }
+  100% { border-radius: 50% 50% 53% 47% / 51% 49% 51% 49%; }
+}
+
+.bubble-emoji {
+  font-size: clamp(2.4rem, 6.5vw, 3.2rem);
+  line-height: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
+  transform: translateY(-2px);
+}
+
+.bubble-label {
+  font-size: clamp(0.85rem, 2.4vw, 1.05rem);
+  font-weight: 800;
+  color: #1E293B;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  pointer-events: none;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.floating-bubble.bubble-popping {
+  animation: bubbleBurst 0.22s cubic-bezier(0.1, 0.9, 0.2, 1) forwards !important;
+  pointer-events: none !important;
+}
+
+@keyframes bubbleBurst {
+  0% { transform: scale(1); opacity: 1; }
+  40% { transform: scale(1.42); opacity: 0.9; }
+  100% { transform: scale(1.85); opacity: 0; filter: blur(6px); }
+}
+
+.pop-particle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 25;
+  animation: popFly 0.55s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  line-height: 1;
+}
+
+@keyframes popFly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0);
+    opacity: 0;
+  }
+}
+
+.pop-score-float {
+  position: absolute;
+  font-family: var(--font-family);
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--duo-green-dark);
+  text-shadow: 0 2px 4px rgba(255,255,255,0.9);
+  pointer-events: none;
+  z-index: 30;
+  animation: floatUpScore 0.75s ease-out forwards;
+}
+
+@keyframes floatUpScore {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  25% { transform: translateY(-12px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(-55px) scale(1); opacity: 0; }
+}

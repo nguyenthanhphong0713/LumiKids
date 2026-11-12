@@ -1,10 +1,30 @@
-// LumiKids Service Worker - Version 2.5.2
-const VERSION = 'v2.5.2';
+// LumiKids Service Worker - Version 2.6.0
+const VERSION = 'v2.6.0';
 const CACHE_NAME = `lumikids-${VERSION}`;
 const ASSETS_TO_CACHE = [
   './',
   `./index.html?v=${VERSION}`,
   `./manifest.json?v=${VERSION}`,
+  `./css/base.css?v=${VERSION}`,
+  `./css/layout.css?v=${VERSION}`,
+  `./css/components.css?v=${VERSION}`,
+  `./css/views/learn.css?v=${VERSION}`,
+  `./css/views/bubbles.css?v=${VERSION}`,
+  `./css/views/words.css?v=${VERSION}`,
+  `./css/views/numbers.css?v=${VERSION}`,
+  `./css/views/chests.css?v=${VERSION}`,
+  `./js/app.js?v=${VERSION}`,
+  `./js/core/eventBus.js?v=${VERSION}`,
+  `./js/core/state.js?v=${VERSION}`,
+  `./js/core/audio.js?v=${VERSION}`,
+  `./js/data/curriculum.data.js?v=${VERSION}`,
+  `./js/data/bubbles.data.js?v=${VERSION}`,
+  `./js/data/numbers.data.js?v=${VERSION}`,
+  `./js/modules/learn.module.js?v=${VERSION}`,
+  `./js/modules/bubbles.module.js?v=${VERSION}`,
+  `./js/modules/words.module.js?v=${VERSION}`,
+  `./js/modules/numbers.module.js?v=${VERSION}`,
+  `./js/modules/chest.module.js?v=${VERSION}`,
   './icon-192.png',
   './icon-512.png',
   './icon-maskable-512.png',
@@ -13,7 +33,7 @@ const ASSETS_TO_CACHE = [
 
 // Install Event - Pre-cache new assets and immediately activate
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // Force active immediately without waiting for browser restart
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
@@ -34,7 +54,7 @@ self.addEventListener('activate', (event) => {
         })
       );
     }).then(() => {
-      return self.clients.claim(); // Take control of all open pages immediately
+      return self.clients.claim();
     })
   );
 });
@@ -64,11 +84,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For static assets (images, fonts, scripts): Cache-first with network background revalidation
+  // For static assets: Cache-first with network background revalidation
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Revalidate in background
         fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));

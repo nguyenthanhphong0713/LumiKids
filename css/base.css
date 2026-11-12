@@ -1,0 +1,72 @@
+/* ============================================================
+   LUMIKIDS - BASE DESIGN TOKENS & RESET
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+:root {
+  /* Duolingo Signature Color Palette */
+  --duo-green: #58CC02;
+  --duo-green-dark: #46A302;
+  --duo-green-light: #D7FFB8;
+  --duo-blue: #1CB0F6;
+  --duo-blue-dark: #1899D6;
+  --duo-yellow: #FFC800;
+  --duo-yellow-dark: #E5A500;
+  --duo-orange: #FF9600;
+  --duo-orange-dark: #E08500;
+  --duo-red: #FF4B4B;
+  --duo-red-dark: #EA2B2B;
+  --duo-purple: #CE82FF;
+  --duo-purple-dark: #A55EEA;
+  --duo-gray: #E5E5E5;
+  --duo-gray-dark: #AFAFAF;
+  --duo-card-bg: #FFFFFF;
+  --duo-text: #4B4B4B;
+  --duo-text-muted: #777777;
+  --duo-bg: #F7F7F7;
+  
+  --font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html, body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+  touch-action: manipulation;
+  font-family: var(--font-family);
+  background: #F4FBF1;
+  color: var(--duo-text);
+}
+
+/* Animations */
+@keyframes cuteWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  15% { transform: rotate(-8deg) scale(1.1); }
+  30% { transform: rotate(8deg) scale(1.1); }
+  45% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes pulseBtn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@keyframes selectPop {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}

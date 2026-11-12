@@ -1,0 +1,119 @@
+/* ============================================================
+   LUMIKIDS - CHESTS TAB (DAILY QUESTS & MYSTERY CHEST)
+   ============================================================ */
+.quests-header {
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.quests-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--duo-purple);
+}
+
+.daily-quest-card {
+  width: 100%;
+  max-width: 500px;
+  background: #FFFFFF;
+  border: 3px solid #E5E5E5;
+  border-radius: 22px;
+  padding: 16px;
+  box-shadow: 0 5px 0 #E5E5E5;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.quest-icon {
+  font-size: 2.4rem;
+  background: #F7F7F7;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.quest-details {
+  flex: 1;
+}
+
+.quest-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--duo-text);
+  margin-bottom: 6px;
+}
+
+.quest-bar-bg {
+  height: 12px;
+  background: #E5E5E5;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.quest-bar-fill {
+  height: 100%;
+  background: var(--duo-yellow);
+  border-radius: 10px;
+}
+
+.quest-reward-pill {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--duo-yellow-dark);
+  background: #FFFBE6;
+  border: 2px solid #FFE58F;
+  padding: 4px 10px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.open-mystery-chest-card {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(135deg, #FAF0FF 0%, #FFFFFF 100%);
+  border: 3.5px solid var(--duo-purple);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 6px 0 var(--duo-purple-dark);
+  text-align: center;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.open-mystery-chest-card:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--duo-purple-dark);
+}
+
+.open-mystery-chest-card .big-chest-graphic {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 8px;
+  animation: chestWiggle 3s infinite ease-in-out;
+}
+
+@keyframes chestWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  10% { transform: rotate(-6deg) scale(1.05); }
+  20% { transform: rotate(6deg) scale(1.05); }
+  30% { transform: rotate(0deg) scale(1); }
+}
+
+.open-mystery-chest-card h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--duo-purple);
+  margin-bottom: 4px;
+}
+
+.open-mystery-chest-card p {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--duo-text-muted);
+}
