@@ -148,6 +148,39 @@ export function playRarityUpgrade(tier) {
   });
 }
 
+// Victory fanfare chime played upon chest opening
+export function playVictoryFanfare() {
+  if (!store.soundEnabled) return;
+  initAudioContext();
+  if (!audioContext) return;
+
+  const notes = [
+    { freq: 523.25, delay: 0 },    // C5
+    { freq: 659.25, delay: 90 },   // E5
+    { freq: 783.99, delay: 180 },  // G5
+    { freq: 1046.50, delay: 280 }  // C6
+  ];
+
+  notes.forEach((item) => {
+    setTimeout(() => {
+      try {
+        if (audioContext.state === 'suspended') audioContext.resume();
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(item.freq, now);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start(now);
+        osc.stop(now + 0.38);
+      } catch (e) {}
+    }, item.delay);
+  });
+}
+
 // High crystalline ping when bouncing gem strikes top counter
 export function playGemPing() {
   if (!store.soundEnabled) return;

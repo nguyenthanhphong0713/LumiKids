@@ -137,7 +137,7 @@ function syncInitialState() {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.0')
+      navigator.serviceWorker.register('./sw.js?v=2.6.1')
         .then((reg) => reg.update())
         .catch(() => {});
 
