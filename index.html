@@ -18,17 +18,17 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- PWA Manifest & App Icons (Keeping Original Icons) with Cache-Busting Version -->
-  <link rel="manifest" href="./manifest.json?v=2.1.0">
-  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.1.0">
-  <link rel="apple-touch-icon" href="./icon-192.png?v=2.1.0">
+  <link rel="manifest" href="./manifest.json?v=2.2.0">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg?v=2.2.0">
+  <link rel="apple-touch-icon" href="./icon-192.png?v=2.2.0">
 
   <!-- Google Fonts: Fredoka & Nunito for Authentic Duolingo Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.1.0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap&v=2.2.0" rel="stylesheet">
 
   <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.2.0"></script>
 
   <style>
     /* ============================================================
@@ -409,6 +409,277 @@
       border-color: #F1D9FF;
       box-shadow: 0 8px 0 var(--duo-purple-dark), 0 10px 20px rgba(206, 130, 255, 0.35);
       --node-dark: var(--duo-purple-dark);
+    }
+
+    /* Bubble Mode Callout Banner on Learn Screen */
+    .bubble-mode-callout {
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(135deg, #E0F2FE 0%, #F0FDF4 100%);
+      border: 3px solid #7DD3FC;
+      border-radius: 22px;
+      padding: 12px 18px;
+      box-shadow: 0 5px 0 #38BDF8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+      flex-shrink: 0;
+    }
+
+    .bubble-mode-callout:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #38BDF8;
+    }
+
+    .bubble-callout-text h4 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0284C7;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bubble-callout-text p {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #0369A1;
+      margin-top: 2px;
+    }
+
+    .bubble-callout-btn {
+      background: #0284C7;
+      color: #FFFFFF;
+      font-family: var(--font-family);
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 8px 16px;
+      border-radius: 16px;
+      border: none;
+      box-shadow: 0 3px 0 #0369A1;
+      white-space: nowrap;
+      pointer-events: none;
+      animation: pulseBtn 2s infinite ease-in-out;
+    }
+
+    /* ---------------- TAB: BUBBLE POP MODE ---------------- */
+    #bubblesScreen {
+      padding: 0;
+      background: linear-gradient(180deg, #E0F2FE 0%, #F0FDF4 45%, #FAF5FF 100%);
+      overflow: hidden;
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      touch-action: manipulation;
+    }
+
+    #bubblesScreen.active-tab {
+      display: flex;
+    }
+
+    .bubble-mode-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 2.5px solid rgba(224, 231, 255, 0.8);
+      z-index: 20;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .bubble-coach {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+      color: #1E293B;
+    }
+
+    .bubble-coach-owl {
+      font-size: 1.8rem;
+      animation: cuteWiggle 3.2s infinite ease-in-out;
+    }
+
+    .bubble-score-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFFFFF;
+      border: 2px solid #BAE6FD;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-weight: 800;
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      color: var(--duo-blue);
+      box-shadow: 0 2px 0 #93C5FD;
+    }
+
+    .bubble-sky-stage {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    /* Floating Bubble Element */
+    .floating-bubble {
+      position: absolute;
+      bottom: -130px;
+      width: clamp(94px, 24vw, 116px);
+      height: clamp(94px, 24vw, 116px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.42) 22%, rgba(186, 230, 253, 0.42) 55%, rgba(216, 180, 254, 0.35) 80%, rgba(255, 255, 255, 0.75) 100%);
+      box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.9), inset -4px -6px 12px rgba(147, 197, 253, 0.45), 0 8px 24px rgba(56, 189, 248, 0.22);
+      border: 2.5px solid rgba(255, 255, 255, 0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      z-index: 10;
+      will-change: transform, bottom;
+      animation: bubbleRiseUp linear forwards, bubbleWobble 2.6s ease-in-out infinite alternate;
+      touch-action: manipulation;
+    }
+
+    /* Specular highlight arcs */
+    .floating-bubble::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 18%;
+      width: 32%;
+      height: 20%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.88);
+      transform: rotate(-35deg);
+      pointer-events: none;
+    }
+
+    .floating-bubble::after {
+      content: '';
+      position: absolute;
+      top: 26%;
+      left: 12%;
+      width: 10%;
+      height: 10%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.75);
+      pointer-events: none;
+    }
+
+    @keyframes bubbleRiseUp {
+      0% {
+        bottom: -130px;
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(14px);
+      }
+      50% {
+        transform: translateX(-14px);
+      }
+      75% {
+        transform: translateX(12px);
+      }
+      100% {
+        bottom: calc(100% + 140px);
+        transform: translateX(-8px);
+      }
+    }
+
+    @keyframes bubbleWobble {
+      0% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+      33% { border-radius: 47% 53% 51% 49% / 53% 48% 52% 47%; }
+      66% { border-radius: 52% 48% 47% 53% / 48% 52% 48% 52%; }
+      100% { border-radius: 50% 50% 53% 47% / 51% 49% 51% 49%; }
+    }
+
+    .bubble-emoji {
+      font-size: clamp(2.4rem, 6.5vw, 3.2rem);
+      line-height: 1;
+      pointer-events: none;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
+      transform: translateY(-2px);
+    }
+
+    .bubble-label {
+      font-size: clamp(0.85rem, 2.4vw, 1.05rem);
+      font-weight: 800;
+      color: #1E293B;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2px 8px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      pointer-events: none;
+      letter-spacing: 0.3px;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    /* Pop Animation */
+    .floating-bubble.bubble-popping {
+      animation: bubbleBurst 0.22s cubic-bezier(0.1, 0.9, 0.2, 1) forwards !important;
+      pointer-events: none !important;
+    }
+
+    @keyframes bubbleBurst {
+      0% { transform: scale(1); opacity: 1; }
+      40% { transform: scale(1.42); opacity: 0.9; }
+      100% { transform: scale(1.85); opacity: 0; filter: blur(6px); }
+    }
+
+    /* Cute burst droplets & star sparkles */
+    .pop-particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 25;
+      animation: popFly 0.55s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+      line-height: 1;
+    }
+
+    @keyframes popFly {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    .pop-score-float {
+      position: absolute;
+      font-family: var(--font-family);
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--duo-green-dark);
+      text-shadow: 0 2px 4px rgba(255,255,255,0.9);
+      pointer-events: none;
+      z-index: 30;
+      animation: floatUpScore 0.75s ease-out forwards;
+    }
+
+    @keyframes floatUpScore {
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      25% { transform: translateY(-12px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(-55px) scale(1); opacity: 0; }
     }
 
     /* ---------------- TAB 2: WORDS PRACTICE ---------------- */
@@ -1267,7 +1538,7 @@
     }
 
     /* ============================================================
-       7. DUOLINGO BOTTOM NAVIGATION BAR (Learn, Words, Chests, Profile)
+       7. DUOLINGO BOTTOM NAVIGATION BAR (Learn, Bubbles, Words, Chests, Profile)
        ============================================================ */
     .duo-bottom-nav {
       position: relative;
@@ -1277,8 +1548,8 @@
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 8px 12px;
-      padding-bottom: max(8px, env(safe-area-inset-bottom));
+      padding: 6px 4px;
+      padding-bottom: max(6px, env(safe-area-inset-bottom));
       box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
       flex-shrink: 0;
     }
@@ -1289,14 +1560,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
-      padding: 6px 14px;
-      border-radius: 16px;
+      gap: 2px;
+      padding: 4px 4px;
+      border-radius: 14px;
       cursor: pointer;
       transition: transform 0.1s ease;
       color: #AFAFAF;
       font-family: var(--font-family);
       outline: none;
+      flex: 1;
+      min-width: 0;
     }
 
     .nav-tab:active {
@@ -1304,15 +1577,17 @@
     }
 
     .nav-tab .nav-icon {
-      font-size: 1.6rem;
+      font-size: 1.55rem;
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      line-height: 1;
     }
 
     .nav-tab .nav-label {
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 800;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .nav-tab.active {
@@ -1320,7 +1595,7 @@
     }
 
     .nav-tab.active .nav-icon {
-      transform: scale(1.2);
+      transform: scale(1.18);
     }
   </style>
 </head>
@@ -1375,13 +1650,40 @@
           <div class="unit-badge">⭐</div>
         </div>
 
+        <!-- Playful Bubble Pop Shortcut Banner -->
+        <div class="bubble-mode-callout" id="bubbleModeCallout" title="Play Bubble Pop Mode">
+          <div class="bubble-callout-text">
+            <h4>🫧 Bubble Pop Mode!</h4>
+            <p>Tap floating bubbles to hear words & pop!</p>
+          </div>
+          <button class="bubble-callout-btn" type="button">PLAY 🎈</button>
+        </div>
+
         <!-- The Stepping-Stones Path Container -->
         <div class="stepping-stones-path" id="stonesPath">
           <!-- Dynamically populated stepping stone nodes -->
         </div>
       </section>
 
-      <!-- SCREEN 2: Vocabulary Shelf / Word Cards -->
+      <!-- SCREEN 2: Floating Bubble Pop Mode (Bong Bóng Nổ) -->
+      <section class="tab-screen" id="bubblesScreen">
+        <div class="bubble-mode-header">
+          <div class="bubble-coach">
+            <span class="bubble-coach-owl">🦉</span>
+            <span>Pop the bubbles! 🎈</span>
+          </div>
+          <div class="bubble-score-pill">
+            <span>🫧</span>
+            <span id="bubbleScore">0</span>
+            <span>Popped</span>
+          </div>
+        </div>
+        <div class="bubble-sky-stage" id="bubbleSky">
+          <!-- Floating bubbles dynamically spawned here -->
+        </div>
+      </section>
+
+      <!-- SCREEN 3: Vocabulary Shelf / Word Cards -->
       <section class="tab-screen" id="wordsScreen">
         <div class="words-shelf-header">
           <h2>Word Library 📚</h2>
@@ -1392,7 +1694,7 @@
         </div>
       </section>
 
-      <!-- SCREEN 3: Daily Quests & Reward Chests -->
+      <!-- SCREEN 4: Daily Quests & Reward Chests -->
       <section class="tab-screen" id="chestsScreen">
         <div class="quests-header">
           <h2>Daily Quests & Chests 🎁</h2>
@@ -1431,7 +1733,7 @@
         </div>
       </section>
 
-      <!-- SCREEN 4: Toddler Profile & Badges -->
+      <!-- SCREEN 5: Toddler Profile & Badges -->
       <section class="tab-screen" id="profileScreen">
         <div class="profile-hero">
           <div class="profile-avatar-circle">🦉</div>
@@ -1555,6 +1857,10 @@
       <button class="nav-tab active" data-tab="pathScreen" aria-label="Learn">
         <span class="nav-icon">🏠</span>
         <span class="nav-label">Learn</span>
+      </button>
+      <button class="nav-tab" data-tab="bubblesScreen" aria-label="Bubbles">
+        <span class="nav-icon">🫧</span>
+        <span class="nav-label">Bubbles</span>
       </button>
       <button class="nav-tab" data-tab="wordsScreen" aria-label="Words">
         <span class="nav-icon">📚</span>
@@ -1760,6 +2066,10 @@
     /* DOM References */
     const stonesPath = document.getElementById('stonesPath');
     const pathScreen = document.getElementById('pathScreen');
+    const bubblesScreen = document.getElementById('bubblesScreen');
+    const bubbleSky = document.getElementById('bubbleSky');
+    const bubbleScoreDisplay = document.getElementById('bubbleScore');
+    const bubbleModeCallout = document.getElementById('bubbleModeCallout');
     const wordsScreen = document.getElementById('wordsScreen');
     const chestsScreen = document.getElementById('chestsScreen');
     const profileScreen = document.getElementById('profileScreen');
@@ -1944,6 +2254,50 @@
       });
     }
 
+    // Cute Soap Bubble Pop Synthesizer (Sweet pop + sparkle chime)
+    function playCuteBubblePop() {
+      if (!isSoundEnabled) return;
+      initAudioContext();
+      if (!audioContext) return;
+
+      try {
+        if (audioContext.state === 'suspended') audioContext.resume();
+        const now = audioContext.currentTime;
+
+        // Note 1: Fast ascending soapy bubble "bloop/pop"
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(860, now + 0.08);
+
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.13);
+
+        // Note 2: Tiny cute sparkle harmonic
+        const osc2 = audioContext.createOscillator();
+        const gain2 = audioContext.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(1250, now + 0.02);
+        osc2.frequency.exponentialRampToValueAtTime(1600, now + 0.09);
+
+        gain2.gain.setValueAtTime(0.2, now + 0.02);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+        osc2.connect(gain2);
+        gain2.connect(audioContext.destination);
+
+        osc2.start(now + 0.02);
+        osc2.stop(now + 0.15);
+      } catch (e) {}
+    }
+
     /* ============================================================
        3. FAST SPEECH SYNTHESIS ENGINE (ZERO OVERLAP BUG)
        ============================================================ */
@@ -2050,6 +2404,10 @@
     function switchTab(targetTabId) {
       playDuoTap();
 
+      if (targetTabId !== 'bubblesScreen') {
+        stopBubbleMode();
+      }
+
       // Update nav buttons
       document.querySelectorAll('.nav-tab').forEach((tab) => {
         if (tab.getAttribute('data-tab') === targetTabId) {
@@ -2069,7 +2427,9 @@
       });
 
       // Special tab hydrations
-      if (targetTabId === 'wordsScreen') {
+      if (targetTabId === 'bubblesScreen') {
+        startBubbleMode();
+      } else if (targetTabId === 'wordsScreen') {
         renderWordsShelf();
       } else if (targetTabId === 'profileScreen') {
         updateProfileStats();
@@ -2427,11 +2787,230 @@
     }
 
     /* ============================================================
+       8. BUBBLE POP GAMEPLAY ENGINE (CONTINUOUS FLOATING BUBBLES)
+       ============================================================ */
+    let bubbleSpawnInterval = null;
+    let bubbleScore = 0;
+    let isBubbleModeActive = false;
+
+    // Collect words across all lesson categories for endless cute bubble pops
+    const BUBBLE_WORDS_POOL = [
+      { word: 'Dog', emoji: '🐶' },
+      { word: 'Cat', emoji: '🐱' },
+      { word: 'Bird', emoji: '🐦' },
+      { word: 'Fish', emoji: '🐟' },
+      { word: 'Apple', emoji: '🍎' },
+      { word: 'Banana', emoji: '🍌' },
+      { word: 'Orange', emoji: '🍊' },
+      { word: 'Strawberry', emoji: '🍓' },
+      { word: 'Car', emoji: '🚗' },
+      { word: 'Bus', emoji: '🚌' },
+      { word: 'Train', emoji: '🚆' },
+      { word: 'Airplane', emoji: '✈️' },
+      { word: 'Star', emoji: '⭐' },
+      { word: 'Gift', emoji: '🎁' },
+      { word: 'Balloon', emoji: '🎈' },
+      { word: 'Rainbow', emoji: '🌈' },
+      { word: 'Lion', emoji: '🦁' },
+      { word: 'Tiger', emoji: '🐯' },
+      { word: 'Monkey', emoji: '🐵' },
+      { word: 'Elephant', emoji: '🐘' },
+      { word: 'Sun', emoji: '☀️' },
+      { word: 'Moon', emoji: '🌙' },
+      { word: 'Cloud', emoji: '☁️' },
+      { word: 'Rain', emoji: '🌧️' },
+      { word: 'Ball', emoji: '⚽' },
+      { word: 'Teddy Bear', emoji: '🧸' },
+      { word: 'Drum', emoji: '🥁' },
+      { word: 'Cookie', emoji: '🍪' },
+      { word: 'Cake', emoji: '🍰' },
+      { word: 'Ice Cream', emoji: '🍦' },
+      { word: 'Pizza', emoji: '🍕' },
+      { word: 'Cow', emoji: '🐮' },
+      { word: 'Duck', emoji: '🦆' },
+      { word: 'Rocket', emoji: '🚀' },
+      { word: 'Heart', emoji: '💖' }
+    ];
+
+    function startBubbleMode() {
+      isBubbleModeActive = true;
+      if (!bubbleSky) return;
+
+      if (bubbleSpawnInterval) clearInterval(bubbleSpawnInterval);
+
+      // Pre-spawn bubbles at staggered vertical positions so screen is instantly fun
+      const existing = bubbleSky.querySelectorAll('.floating-bubble:not(.bubble-popping)');
+      if (existing.length < 3) {
+        spawnBubble(-2.5); // 2.5s into rising
+        spawnBubble(-5.0); // 5.0s into rising
+        spawnBubble(0);
+      }
+
+      // Continuous spawner: runs non-stop with fresh words!
+      bubbleSpawnInterval = setInterval(() => {
+        if (!isBubbleModeActive) return;
+        const current = bubbleSky.querySelectorAll('.floating-bubble:not(.bubble-popping)');
+        if (current.length < 7) {
+          spawnBubble(0);
+        }
+      }, 1500);
+    }
+
+    function stopBubbleMode() {
+      isBubbleModeActive = false;
+      if (bubbleSpawnInterval) {
+        clearInterval(bubbleSpawnInterval);
+        bubbleSpawnInterval = null;
+      }
+    }
+
+    function spawnBubble(preDelaySec = 0) {
+      if (!bubbleSky) return;
+
+      const item = BUBBLE_WORDS_POOL[Math.floor(Math.random() * BUBBLE_WORDS_POOL.length)];
+      const bubble = document.createElement('div');
+      bubble.className = 'floating-bubble';
+
+      bubble.innerHTML = `
+        <span class="bubble-emoji">${item.emoji}</span>
+        <span class="bubble-label">${item.word}</span>
+      `;
+
+      // Random horizontal position (6% to 70% to stay completely inside viewport)
+      const leftPct = 6 + Math.random() * 66;
+      bubble.style.left = `${leftPct}%`;
+
+      // Float duration: 7.5s to 9.5s (gentle, relaxing for 2-year-olds)
+      const duration = 7.5 + Math.random() * 2.0;
+      bubble.style.animationDuration = `${duration}s, 2.6s`;
+
+      if (preDelaySec < 0) {
+        bubble.style.animationDelay = `${preDelaySec}s, 0s`;
+      }
+
+      // Handle pop on both pointerdown (instant mobile touch) and click
+      let popped = false;
+      const onPop = (e) => {
+        if (popped) return;
+        popped = true;
+        e.stopPropagation();
+        e.preventDefault();
+        popBubble(bubble, item);
+      };
+
+      bubble.addEventListener('pointerdown', onPop);
+      bubble.addEventListener('click', onPop);
+
+      // Clean up after it floats beyond the top of the screen
+      bubble.addEventListener('animationend', (e) => {
+        if (e.animationName === 'bubbleRiseUp') {
+          bubble.remove();
+        }
+      });
+
+      bubbleSky.appendChild(bubble);
+    }
+
+    const CUTE_BURST_SYMBOLS = ['✨', '⭐', '💫', '🫧', '💧', '🎉', '🌟'];
+
+    function popBubble(bubble, item) {
+      if (bubble.classList.contains('bubble-popping')) return;
+      bubble.classList.add('bubble-popping');
+
+      // 1. Cute bubble pop synthesizer sound
+      playCuteBubblePop();
+
+      // 2. Speak English word clearly
+      speakWord(item.word);
+
+      // 3. Compute position for burst sparkles
+      const rect = bubble.getBoundingClientRect();
+      const skyRect = bubbleSky.getBoundingClientRect();
+      const x = (rect.left + rect.width / 2) - skyRect.left;
+      const y = (rect.top + rect.height / 2) - skyRect.top;
+
+      // 4. Create cute burst particles
+      createPopParticles(x, y);
+
+      // 5. Floating score chip
+      createPopScoreFloat(x, y);
+
+      // 6. Update score & gems
+      bubbleScore++;
+      if (bubbleScoreDisplay) {
+        bubbleScoreDisplay.textContent = bubbleScore;
+      }
+      gemCount += 1;
+      gemDisplay.textContent = gemCount;
+
+      // Milestone confetti every 10 popped bubbles
+      if (bubbleScore % 10 === 0 && typeof confetti === 'function') {
+        confetti({
+          particleCount: 55,
+          spread: 75,
+          origin: {
+            x: (rect.left + rect.width / 2) / window.innerWidth,
+            y: (rect.top + rect.height / 2) / window.innerHeight
+          },
+          colors: ['#58CC02', '#FFC800', '#1CB0F6', '#FF4B4B', '#CE82FF']
+        });
+        setTimeout(() => {
+          speakWord(`Awesome! ${bubbleScore} bubbles!`);
+        }, 320);
+      }
+
+      // Remove bubble element from DOM
+      setTimeout(() => {
+        bubble.remove();
+      }, 230);
+    }
+
+    function createPopParticles(x, y) {
+      const count = 7;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'pop-particle';
+        const symbol = CUTE_BURST_SYMBOLS[Math.floor(Math.random() * CUTE_BURST_SYMBOLS.length)];
+        p.textContent = symbol;
+        p.style.fontSize = `${1.2 + Math.random() * 0.7}rem`;
+
+        const angle = (i / count) * 2 * Math.PI + (Math.random() - 0.5) * 0.4;
+        const dist = 38 + Math.random() * 45;
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist;
+
+        p.style.left = `${x}px`;
+        p.style.top = `${y}px`;
+        p.style.setProperty('--dx', `${dx}px`);
+        p.style.setProperty('--dy', `${dy}px`);
+
+        bubbleSky.appendChild(p);
+        setTimeout(() => p.remove(), 580);
+      }
+    }
+
+    function createPopScoreFloat(x, y) {
+      const f = document.createElement('div');
+      f.className = 'pop-score-float';
+      f.textContent = '+1 ⭐';
+      f.style.left = `${x - 18}px`;
+      f.style.top = `${y - 15}px`;
+      bubbleSky.appendChild(f);
+      setTimeout(() => f.remove(), 750);
+    }
+
+    /* ============================================================
        9. EVENT LISTENERS
        ============================================================ */
     interactiveChest.addEventListener('click', handleChestTap);
     closeLessonBtn.addEventListener('click', closeLesson);
     continueBtn.addEventListener('click', onContinueAfterCelebration);
+
+    if (bubbleModeCallout) {
+      bubbleModeCallout.addEventListener('click', () => {
+        switchTab('bubblesScreen');
+      });
+    }
 
     openMysteryChestCard.addEventListener('click', () => {
       setupChestOpeningModal();
@@ -2480,7 +3059,7 @@
     });
 
     /* ============================================================
-       INITIALIZATION & SERVICE WORKER (v2.1.0 CACHE PURGE)
+       INITIALIZATION & SERVICE WORKER (v2.2.0 CACHE PURGE)
        ============================================================ */
     window.addEventListener('DOMContentLoaded', () => {
       renderSteppingStonesMap();
@@ -2489,7 +3068,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=2.1.0')
+          navigator.serviceWorker.register('./sw.js?v=2.2.0')
             .then((registration) => {
               registration.update();
             })
