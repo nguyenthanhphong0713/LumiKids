@@ -145,9 +145,11 @@ function initGlobalEvents() {
     }
   }, { passive: false });
 
-  // First interaction audio unlock
+  // Continuous interaction audio unlock for iOS Safari and Android PWAs
   ['click', 'touchstart', 'touchend', 'pointerdown'].forEach((evt) => {
-    window.addEventListener(evt, unlockAudio, { once: true, passive: true });
+    window.addEventListener(evt, () => {
+      unlockAudio();
+    }, { passive: true });
   });
 }
 
@@ -226,7 +228,7 @@ export async function clearAppCache(showToast = true) {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.6', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=2.6.7', { updateViaCache: 'none' })
         .then((reg) => {
           // Explicitly check for new version on each launch
           reg.update().catch(() => {});

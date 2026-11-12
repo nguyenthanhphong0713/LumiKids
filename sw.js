@@ -1,5 +1,5 @@
-// LumiKids Service Worker - Version 2.6.6
-const VERSION = 'v2.6.6';
+// LumiKids Service Worker - Version 2.6.7
+const VERSION = 'v2.6.7';
 const CACHE_NAME = `lumikids-${VERSION}`;
 const ASSETS_TO_CACHE = [
   './',

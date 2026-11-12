@@ -8,24 +8,47 @@ const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
 let englishFemaleVoice = null;
 let vietnameseVoice = null;
 let audioUnlocked = false;
+let activeUtterance = null; // Guard against WebKit / Chromium Garbage Collection bug
 
 export function initAudioContext() {
-  if (!audioContext) {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (AudioCtx) {
-      audioContext = new AudioCtx();
+  try {
+    if (!audioContext) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        audioContext = new AudioCtx();
+      }
     }
-  }
-  if (audioContext && audioContext.state === 'suspended') {
-    audioContext.resume();
-  }
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume().catch(() => {});
+    }
+  } catch (e) {}
 }
 
 export function unlockAudio() {
   initAudioContext();
+  if (audioContext) {
+    if (audioContext.state === 'suspended') {
+      audioContext.resume().catch(() => {});
+    }
+    // WebKit mobile audio unlock: play 1-sample silent buffer
+    try {
+      const buffer = audioContext.createBuffer(1, 1, 22050);
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContext.destination);
+      source.start(0);
+    } catch (e) {}
+  }
+
+  // Mobile SpeechSynthesis unlock
   if (synth) {
     try {
       if (synth.paused) synth.resume();
+      if (!audioUnlocked) {
+        const dummy = new SpeechSynthesisUtterance(' ');
+        dummy.volume = 0.01;
+        synth.speak(dummy);
+      }
     } catch (e) {}
   }
   audioUnlocked = true;
@@ -251,37 +274,39 @@ const FEMALE_VOICE_PREFERENCES = [
 
 export function selectBestFemaleVoice() {
   if (!synth) return;
-  const voices = synth.getVoices();
-  if (!voices || voices.length === 0) return;
+  try {
+    const voices = synth.getVoices();
+    if (!voices || voices.length === 0) return;
 
-  // 1. English Female Voice
-  const englishVoices = voices.filter(v => v.lang && (v.lang.startsWith('en') || v.lang.startsWith('en_')));
+    // 1. English Female Voice
+    const englishVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().startsWith('en')));
 
-  for (const pref of FEMALE_VOICE_PREFERENCES) {
-    const found = englishVoices.find(v => v.name && v.name.toLowerCase().includes(pref.toLowerCase()));
-    if (found) {
-      englishFemaleVoice = found;
-      break;
+    for (const pref of FEMALE_VOICE_PREFERENCES) {
+      const found = englishVoices.find(v => v.name && v.name.toLowerCase().includes(pref.toLowerCase()));
+      if (found) {
+        englishFemaleVoice = found;
+        break;
+      }
     }
-  }
 
-  if (!englishFemaleVoice) {
-    const genericFemale = englishVoices.find(v => {
-      const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
-      return n.includes('female') || n.includes('woman') || n.includes('girl');
-    });
-    englishFemaleVoice = genericFemale || englishVoices[0] || voices[0];
-  }
+    if (!englishFemaleVoice) {
+      const genericFemale = englishVoices.find(v => {
+        const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
+        return n.includes('female') || n.includes('woman') || n.includes('girl');
+      });
+      englishFemaleVoice = genericFemale || englishVoices[0] || voices[0];
+    }
 
-  // 2. Vietnamese Voice
-  const viVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().startsWith('vi') || v.lang.toLowerCase().includes('vie')));
-  if (viVoices.length > 0) {
-    const viFemale = viVoices.find(v => {
-      const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
-      return n.includes('female') || n.includes('nu') || n.includes('nữ') || n.includes('mai') || n.includes('linh') || n.includes('an') || n.includes('hoaimy');
-    });
-    vietnameseVoice = viFemale || viVoices[0];
-  }
+    // 2. Vietnamese Voice
+    const viVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().startsWith('vi') || v.lang.toLowerCase().includes('vie')));
+    if (viVoices.length > 0) {
+      const viFemale = viVoices.find(v => {
+        const n = (v.name + ' ' + (v.gender || '')).toLowerCase();
+        return n.includes('female') || n.includes('nu') || n.includes('nữ') || n.includes('mai') || n.includes('linh') || n.includes('an') || n.includes('hoaimy');
+      });
+      vietnameseVoice = viFemale || viVoices[0];
+    }
+  } catch (e) {}
 }
 
 if (synth) {
@@ -289,66 +314,80 @@ if (synth) {
   if (synth.onvoiceschanged !== undefined) {
     synth.onvoiceschanged = selectBestFemaleVoice;
   }
+  // Mobile browsers often load voices asynchronously without triggering onvoiceschanged
+  setTimeout(selectBestFemaleVoice, 300);
+  setTimeout(selectBestFemaleVoice, 1200);
 }
 
 export function speakWord(text, onFinished, lang = 'en') {
-  if (!store.soundEnabled || !synth) {
-    if (onFinished) setTimeout(onFinished, 150);
+  if (!store.soundEnabled) {
+    if (onFinished) setTimeout(onFinished, 100);
     return;
   }
 
   unlockAudio();
 
-  // Immediately cancel previous utterance
-  try {
-    synth.cancel();
-  } catch (e) {}
-
-  if (!englishFemaleVoice || !vietnameseVoice) {
-    selectBestFemaleVoice();
+  if (!synth) {
+    if (onFinished) setTimeout(onFinished, 150);
+    return;
   }
 
+  // Cancel prior utterances safely
   try {
-    if (synth.paused) synth.resume();
+    if (synth.speaking || synth.pending) {
+      synth.cancel();
+    }
   } catch (e) {}
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  const isVietnamese = (lang === 'vi' || lang === 'vi-VN');
+  // 40ms timeout prevents iOS Safari cancel() race condition
+  setTimeout(() => {
+    try {
+      if (synth.paused) synth.resume();
 
-  if (isVietnamese) {
-    if (vietnameseVoice) utterance.voice = vietnameseVoice;
-    utterance.lang = 'vi-VN';
-    utterance.rate = 0.92;
-    utterance.pitch = 1.1;
-  } else {
-    if (englishFemaleVoice) utterance.voice = englishFemaleVoice;
-    utterance.lang = 'en-US';
-    utterance.rate = 1.05;
-    utterance.pitch = 1.25;
-  }
-  utterance.volume = 1.0;
+      if (!englishFemaleVoice || !vietnameseVoice) {
+        selectBestFemaleVoice();
+      }
 
-  let hasCompleted = false;
-  let safetyTimer = null;
+      const utterance = new SpeechSynthesisUtterance(text);
+      activeUtterance = utterance; // Keep active reference to prevent Garbage Collection bug
 
-  const completeOnce = () => {
-    if (!hasCompleted) {
-      hasCompleted = true;
-      if (safetyTimer) clearTimeout(safetyTimer);
+      const isVietnamese = (lang === 'vi' || lang === 'vi-VN');
+
+      if (isVietnamese) {
+        if (vietnameseVoice) utterance.voice = vietnameseVoice;
+        utterance.lang = 'vi-VN';
+        utterance.rate = 0.92;
+        utterance.pitch = 1.05;
+      } else {
+        if (englishFemaleVoice) utterance.voice = englishFemaleVoice;
+        utterance.lang = 'en-US';
+        utterance.rate = 0.95;
+        utterance.pitch = 1.15;
+      }
+      utterance.volume = 1.0;
+
+      let hasCompleted = false;
+      let safetyTimer = null;
+
+      const completeOnce = () => {
+        if (!hasCompleted) {
+          hasCompleted = true;
+          activeUtterance = null;
+          if (safetyTimer) clearTimeout(safetyTimer);
+          if (onFinished) onFinished();
+        }
+      };
+
+      utterance.onend = () => completeOnce();
+      utterance.onerror = () => completeOnce();
+
+      const maxDuration = Math.max(600, text.length * 90 + 400);
+      safetyTimer = setTimeout(completeOnce, maxDuration);
+
+      synth.speak(utterance);
+      if (synth.paused) synth.resume();
+    } catch (e) {
       if (onFinished) onFinished();
     }
-  };
-
-  utterance.onend = () => completeOnce();
-  utterance.onerror = () => completeOnce();
-
-  const maxDuration = Math.max(500, text.length * 80 + 300);
-  safetyTimer = setTimeout(completeOnce, maxDuration);
-
-  try {
-    synth.speak(utterance);
-    if (synth.paused) synth.resume();
-  } catch (e) {
-    completeOnce();
-  }
+  }, 40);
 }

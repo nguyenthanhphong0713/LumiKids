@@ -3,12 +3,19 @@ import { eventBus } from './eventBus.js';
 /**
  * LumiKids Reactive Global Store with LocalStorage Persistence
  */
+// Ensure sound is active by default
+try {
+  if (localStorage.getItem('lumikids_sound') === 'false') {
+    localStorage.setItem('lumikids_sound', 'true');
+  }
+} catch (e) {}
+
 const initialData = {
   currentUnlockedLevel: parseInt(localStorage.getItem('lumikids_level') || '1', 10),
   streak: parseInt(localStorage.getItem('lumikids_streak') || '3', 10),
   gems: parseInt(localStorage.getItem('lumikids_gems') || '120', 10),
   hearts: 5,
-  soundEnabled: localStorage.getItem('lumikids_sound') !== 'false',
+  soundEnabled: true,
   currentTab: 'pathScreen'
 };
 
