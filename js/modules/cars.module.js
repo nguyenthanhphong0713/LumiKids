@@ -3,8 +3,8 @@ import { playCuteBubblePop, speakWord } from '../core/audio.js';
 import { CAR_WORDS_POOL, CAR_COLOR_PALETTES, CAR_BURST_COLORS } from '../data/cars.data.js';
 
 const LANE_COUNT = 5;
-const MAX_ACTIVE_CARS = 7;
-const SPAWN_INTERVAL_MS = 1250;
+const MAX_ACTIVE_CARS = 8;
+const SPAWN_INTERVAL_MS = 900;
 
 let pixiApp = null;
 let roadLayer = null;
@@ -199,12 +199,13 @@ function spawnCar(initialProgress = 0) {
 
   carContainer.eventMode = 'static';
   carContainer.cursor = 'pointer';
+  carContainer.hitArea = new PIXI.Rectangle(-65, -45, 130, 88);
 
   const carEntity = {
     container: carContainer,
     laneIndex: chosenLane,
     direction,
-    speed: (75 + Math.random() * 55) * direction,
+    speed: (125 + Math.random() * 75) * direction,
     item,
     popped: false,
     popElapsed: 0
@@ -375,6 +376,12 @@ export async function startCarsMode() {
   if (!carsStage || !window.PIXI) return;
 
   isCarsModeActive = true;
+
+  // Ensure layout has non-zero dimensions on mobile before initializing PixiJS
+  if (carsStage.clientWidth === 0 || carsStage.clientHeight === 0) {
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    if (!isCarsModeActive) return;
+  }
 
   if (!pixiApp) {
     const app = new window.PIXI.Application();

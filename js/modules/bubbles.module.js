@@ -34,10 +34,10 @@ export function startBubbleMode() {
   bubbleSpawnInterval = setInterval(() => {
     if (!isBubbleModeActive || !bubbleSky) return;
     const current = bubbleSky.querySelectorAll('.floating-bubble:not(.bubble-popping)');
-    if (current.length < 7) {
+    if (current.length < 8) {
       spawnBubble(0);
     }
-  }, 1500);
+  }, 1100);
 }
 
 export function stopBubbleMode() {
@@ -64,7 +64,7 @@ function spawnBubble(preDelaySec = 0) {
   const leftPct = 6 + Math.random() * 66;
   bubble.style.left = `${leftPct}%`;
 
-  const duration = 7.5 + Math.random() * 2.0;
+  const duration = 4.5 + Math.random() * 1.5;
   bubble.style.animationDuration = `${duration}s, 2.6s`;
 
   if (preDelaySec < 0) {
