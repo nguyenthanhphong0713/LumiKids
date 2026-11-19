@@ -237,6 +237,64 @@ body.in-lesson .duo-bottom-nav,
   opacity: 0;
 }
 
+/* Fullscreen Kid-Friendly Game Mode (Bubbles & Cars): hide top & bottom bars for maximum play area */
+body.in-game-fullscreen header,
+#app.in-game-fullscreen header {
+  display: none;
+}
+
+body.in-game-fullscreen:not(.show-game-nav) .duo-bottom-nav,
+#app.in-game-fullscreen:not(.show-game-nav) .duo-bottom-nav {
+  transform: translateY(120%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Toddler-Friendly Chunky Menu Toggle Button inside Game Tabs */
+.game-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.game-nav-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #38BDF8;
+  color: #FFFFFF;
+  border: 2.5px solid #0284C7;
+  border-radius: 20px;
+  padding: 6px 12px;
+  min-height: 40px;
+  font-family: var(--font-family);
+  font-weight: 900;
+  font-size: clamp(0.85rem, 2.4vw, 0.98rem);
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0284C7;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.game-nav-toggle-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0284C7;
+}
+
+body.show-game-nav .game-nav-toggle-btn,
+#app.show-game-nav .game-nav-toggle-btn {
+  background: var(--duo-green);
+  border-color: var(--duo-green-dark);
+  box-shadow: 0 4px 0 var(--duo-green-dark);
+}
+
+.game-nav-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
 .nav-tab {
   background: none;
   border: none;

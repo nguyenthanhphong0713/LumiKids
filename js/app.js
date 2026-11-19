@@ -64,7 +64,17 @@ export function switchTab(targetTabId) {
     screen.classList.toggle('active-tab', screen.id === targetTabId);
   });
 
-  // 4. Mount target module
+  // 4. Fullscreen game mode for Bubbles & Cars tabs
+  const isGameTab = targetTabId === 'bubblesScreen' || targetTabId === 'carsScreen';
+  document.body.classList.toggle('in-game-fullscreen', isGameTab);
+  document.body.classList.remove('show-game-nav');
+  const appEl = document.getElementById('app');
+  if (appEl) {
+    appEl.classList.toggle('in-game-fullscreen', isGameTab);
+    appEl.classList.remove('show-game-nav');
+  }
+
+  // 5. Mount target module
   activeTabId = targetTabId;
   store.currentTab = targetTabId;
 
@@ -90,6 +100,17 @@ function initGlobalEvents() {
       }
     });
   }
+
+  // Toddler-friendly Menu toggle buttons inside fullscreen game tabs
+  document.querySelectorAll('.game-nav-toggle-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playDuoTap();
+      const isShowing = document.body.classList.toggle('show-game-nav');
+      const appEl = document.getElementById('app');
+      if (appEl) appEl.classList.toggle('show-game-nav', isShowing);
+    });
+  });
 
   // Mystery Chest card in chests tab
   if (openMysteryChestCard) {
@@ -230,7 +251,7 @@ export async function clearAppCache(showToast = true) {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.8', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=2.6.9', { updateViaCache: 'none' })
         .then((reg) => {
           // Explicitly check for new version on each launch
           reg.update().catch(() => {});
