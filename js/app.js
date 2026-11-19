@@ -1,6 +1,7 @@
 import { store } from './core/state.js';
 import { eventBus } from './core/eventBus.js';
 import { playDuoTap, unlockAudio } from './core/audio.js';
+import { PixiBackdrop } from './core/pixiBackdrop.js';
 
 import { LearnModule } from './modules/learn.module.js';
 import { BubblesModule } from './modules/bubbles.module.js';
@@ -64,7 +65,7 @@ export function switchTab(targetTabId) {
     screen.classList.toggle('active-tab', screen.id === targetTabId);
   });
 
-  // 4. Fullscreen game mode for Bubbles & Cars tabs
+  // 4. Fullscreen game mode for Bubbles & Cars tabs + PixiJS backdrop management
   const isGameTab = targetTabId === 'bubblesScreen' || targetTabId === 'carsScreen';
   document.body.classList.toggle('in-game-fullscreen', isGameTab);
   document.body.classList.remove('show-game-nav');
@@ -72,6 +73,12 @@ export function switchTab(targetTabId) {
   if (appEl) {
     appEl.classList.toggle('in-game-fullscreen', isGameTab);
     appEl.classList.remove('show-game-nav');
+  }
+
+  if (isGameTab) {
+    PixiBackdrop.unmount();
+  } else {
+    PixiBackdrop.mount(targetTabId);
   }
 
   // 5. Mount target module
@@ -168,10 +175,16 @@ function initGlobalEvents() {
     }
   }, { passive: false });
 
-  // Continuous interaction audio unlock for iOS Safari and Android PWAs
+  // Continuous interaction audio unlock + PixiJS tap sparkles on interactive cards
   ['click', 'touchstart', 'touchend', 'pointerdown'].forEach((evt) => {
-    window.addEventListener(evt, () => {
+    window.addEventListener(evt, (e) => {
       unlockAudio();
+      if (evt === 'pointerdown' && e.target && e.target.closest) {
+        const interactive = e.target.closest('.stone-button, .word-card-tile, .number-card, .daily-quest-card, .open-mystery-chest-card, .duo-card');
+        if (interactive) {
+          PixiBackdrop.emitSparkles(e.clientX, e.clientY);
+        }
+      }
     }, { passive: true });
   });
 }
@@ -251,7 +264,7 @@ export async function clearAppCache(showToast = true) {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.10', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=2.6.11', { updateViaCache: 'none' })
         .then((reg) => {
           // Explicitly check for new version on each launch
           reg.update().catch(() => {});
@@ -287,8 +300,9 @@ window.addEventListener('DOMContentLoaded', () => {
   initGlobalEvents();
   syncInitialState();
 
-  // Initialize and mount default tab (Learn Path)
+  // Initialize and mount default tab (Learn Path) + PixiJS ambient backdrop
   LearnModule.mount();
+  PixiBackdrop.mount('pathScreen');
 
   initServiceWorker();
 });

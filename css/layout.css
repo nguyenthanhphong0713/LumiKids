@@ -189,10 +189,26 @@ header {
   flex-direction: column;
 }
 
+/* Shared PixiJS Ambient Scene Layer */
+.pixi-backdrop-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.pixi-backdrop-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* Tab Screen Base */
 .tab-screen {
   position: absolute;
   inset: 0;
+  z-index: 1;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
