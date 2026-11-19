@@ -31,8 +31,12 @@ const MODULES = {
   wordsScreen: WordsModule,
   numbersScreen: NumbersModule,
   chestsScreen: {
-    mount() {},
-    unmount() {}
+    mount() {
+      ChestModule.mountTab();
+    },
+    unmount() {
+      ChestModule.unmountTab();
+    }
   }
 };
 
@@ -264,7 +268,7 @@ export async function clearAppCache(showToast = true) {
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6.12', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=2.6.13', { updateViaCache: 'none' })
         .then((reg) => {
           // Explicitly check for new version on each launch
           reg.update().catch(() => {});

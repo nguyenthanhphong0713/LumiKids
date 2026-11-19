@@ -1,19 +1,22 @@
 import { store } from '../core/state.js';
 import { eventBus } from '../core/eventBus.js';
-import { 
-  unlockAudio, 
-  playDuoDing, 
-  playSquishSpring, 
-  playRarityUpgrade, 
-  playVictoryFanfare, 
-  playGemPing, 
-  speakWord 
+import {
+  unlockAudio,
+  playDuoDing,
+  playSquishSpring,
+  playRarityUpgrade,
+  playVictoryFanfare,
+  playGemPing,
+  speakWord
 } from '../core/audio.js';
 import { CHEST_TREASURES } from '../data/curriculum.data.js';
+import { mountPixiChest, launchPixiGemsPhysics } from '../core/pixiChest.js';
 
 let chestTapCount = 0;
 let isChestOpened = false;
-let physicsAnimationId = null;
+let pixiChestController = null;
+let pixiGemsController = null;
+let tabChestController = null;
 
 // DOM references for chest modal elements
 let celebrationModal = null;
@@ -75,19 +78,24 @@ function triggerFullscreenShockwave(gradientStyle) {
   chestShockwave.classList.add('trigger-wave');
 }
 
+function destroyActivePixiEffects() {
+  if (pixiGemsController) {
+    pixiGemsController.destroy();
+    pixiGemsController = null;
+  }
+  if (pixiChestController) {
+    pixiChestController.destroy();
+    pixiChestController = null;
+  }
+}
+
 export function openChestModal() {
   initChestModalElements();
   chestTapCount = 0;
   isChestOpened = false;
 
-  if (physicsAnimationId) {
-    cancelAnimationFrame(physicsAnimationId);
-    physicsAnimationId = null;
-  }
-  if (chestPhysicsCanvas) {
-    const ctx = chestPhysicsCanvas.getContext('2d');
-    ctx.clearRect(0, 0, chestPhysicsCanvas.width, chestPhysicsCanvas.height);
-  }
+  destroyActivePixiEffects();
+  if (chestPhysicsCanvas) chestPhysicsCanvas.innerHTML = '';
 
   if (modalGemCount) {
     modalGemCount.textContent = store.gems;
@@ -102,7 +110,12 @@ export function openChestModal() {
   if (interactiveChest) interactiveChest.className = 'interactive-chest-box';
   if (chestGraphic) {
     chestGraphic.className = 'chest-3d-graphic';
-    chestGraphic.textContent = '🎁';
+    if (window.PIXI) {
+      pixiChestController = mountPixiChest(chestGraphic, 140);
+      pixiChestController.setTier('common');
+    } else {
+      chestGraphic.textContent = '🎁';
+    }
   }
   if (modalTitle) modalTitle.textContent = 'Reward Chest! 🎁';
   if (chestInstruction) {
@@ -140,6 +153,10 @@ function handleChestTap() {
 
     dot2.className = 'tap-dot active';
 
+    if (pixiChestController) {
+      pixiChestController.playSquish('rare');
+    }
+
     playSquishSpring(1);
     playRarityUpgrade(1);
 
@@ -159,6 +176,10 @@ function handleChestTap() {
 
     dot3.className = 'tap-dot dot-epic';
 
+    if (pixiChestController) {
+      pixiChestController.playSquish('epic');
+    }
+
     playSquishSpring(2);
     playRarityUpgrade(2);
 
@@ -168,11 +189,11 @@ function handleChestTap() {
     speakWord('Epic Chest!');
 
   } else if (chestTapCount >= 3) {
-    // TAP 3: SCALE UP, DISSOLVE & PHYSICS GEMS BURST
+    // TAP 3: SCALE UP, DISSOLVE & PIXIJS GEMS BURST
     isChestOpened = true;
 
     interactiveChest.className = 'interactive-chest-box burst-dissolve';
-    
+
     if (chestBloomFlash) {
       chestBloomFlash.classList.remove('active-flash');
       void chestBloomFlash.offsetWidth;
@@ -185,7 +206,11 @@ function handleChestTap() {
 
     setTimeout(() => {
       const prize = CHEST_TREASURES[Math.floor(Math.random() * CHEST_TREASURES.length)];
-      chestGraphic.textContent = prize;
+      if (pixiChestController) {
+        pixiChestController.playBurstOpen(prize);
+      } else if (chestGraphic) {
+        chestGraphic.textContent = prize;
+      }
       chestGraphic.className = 'chest-3d-graphic prize-revealed';
       interactiveChest.className = 'interactive-chest-box opened';
 
@@ -193,7 +218,7 @@ function handleChestTap() {
       chestInstruction.style.display = 'none';
       tapIndicators.style.display = 'none';
 
-      launchPhysicsBouncingGems();
+      launchBouncingGems();
 
       if (typeof confetti === 'function') {
         confetti({
@@ -225,16 +250,12 @@ function handleChestTap() {
         rewardBadges.style.display = 'flex';
         continueBtn.style.display = 'block';
       }, 800);
-    }, 550);
+    }, 350);
   }
 }
 
-function launchPhysicsBouncingGems() {
+function launchBouncingGems() {
   if (!chestPhysicsCanvas) return;
-  const canvas = chestPhysicsCanvas;
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
 
   const chestRect = interactiveChest.getBoundingClientRect();
   const startX = chestRect.left + chestRect.width / 2;
@@ -248,112 +269,43 @@ function launchPhysicsBouncingGems() {
   const targetY = targetRect.top + targetRect.height / 2;
 
   const gemsCount = 18;
-  const particles = [];
-
-  for (let i = 0; i < gemsCount; i++) {
-    const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
-    const speed = 9 + Math.random() * 11;
-    particles.push({
-      x: startX + (Math.random() - 0.5) * 20,
-      y: startY + (Math.random() - 0.5) * 20,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
-      gravity: 0.68,
-      bounceCount: 0,
-      maxBounces: 2 + Math.floor(Math.random() * 2),
-      state: 'bounce',
-      pauseUntil: 0,
-      size: 26 + Math.random() * 8,
-      rotation: Math.random() * Math.PI * 2,
-      vRot: (Math.random() - 0.5) * 0.25
-    });
-  }
-
-  let arrivedCount = 0;
-  let startGemNum = store.gems;
+  const startGemNum = store.gems;
   const totalBonusGems = 20;
 
-  function updateGemsPhysics() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const now = Date.now();
-    let allFinished = true;
-
-    particles.forEach((p, idx) => {
-      if (p.state === 'arrived') return;
-      allFinished = false;
-
-      if (p.state === 'bounce') {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += p.gravity;
-        p.rotation += p.vRot;
-
-        if (p.y >= floorY) {
-          p.y = floorY;
-          p.vy = -p.vy * 0.54;
-          p.vx *= 0.75;
-          p.bounceCount++;
-
-          if (p.bounceCount >= p.maxBounces || Math.abs(p.vy) < 2) {
-            p.state = 'pause';
-            p.pauseUntil = now + 120 + idx * 45;
-          }
-        }
-      } else if (p.state === 'pause') {
-        if (now >= p.pauseUntil) {
-          p.state = 'fly';
-        }
-      } else if (p.state === 'fly') {
-        const dx = targetX - p.x;
-        const dy = targetY - p.y;
-        const dist = Math.hypot(dx, dy);
-
-        p.x += dx * 0.2;
-        p.y += dy * 0.2;
-        p.rotation += 0.3;
-
-        if (dist < 32) {
-          p.state = 'arrived';
-          arrivedCount++;
-
-          playGemPing();
-
-          modalTopGems.classList.add('counter-bump');
-          setTimeout(() => modalTopGems.classList.remove('counter-bump'), 120);
-
-          const currentVal = Math.min(startGemNum + totalBonusGems, startGemNum + Math.round((arrivedCount / gemsCount) * totalBonusGems));
-          modalGemCount.textContent = currentVal;
-          store.gems = currentVal;
-        }
-      }
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-      ctx.font = `${p.size}px "Apple Color Emoji", "Segoe UI Emoji", sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('💎', 0, 0);
-      ctx.restore();
-    });
-
-    if (!allFinished) {
-      physicsAnimationId = requestAnimationFrame(updateGemsPhysics);
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      physicsAnimationId = null;
-    }
+  if (pixiGemsController) {
+    pixiGemsController.destroy();
+    pixiGemsController = null;
   }
 
-  physicsAnimationId = requestAnimationFrame(updateGemsPhysics);
+  pixiGemsController = launchPixiGemsPhysics(chestPhysicsCanvas, {
+    startX,
+    startY,
+    floorY,
+    targetX,
+    targetY,
+    count: gemsCount,
+    onGemArrived: (arrivedCount) => {
+      playGemPing();
+      if (modalTopGems) {
+        modalTopGems.classList.add('counter-bump');
+        setTimeout(() => modalTopGems.classList.remove('counter-bump'), 120);
+      }
+      const currentVal = Math.min(
+        startGemNum + totalBonusGems,
+        startGemNum + Math.round((arrivedCount / gemsCount) * totalBonusGems)
+      );
+      if (modalGemCount) modalGemCount.textContent = currentVal;
+      store.gems = currentVal;
+    },
+    onAllDone: () => {
+      pixiGemsController = null;
+    }
+  });
 }
 
 function onContinueAfterCelebration() {
-  if (physicsAnimationId) {
-    cancelAnimationFrame(physicsAnimationId);
-    physicsAnimationId = null;
-  }
-  celebrationModal.classList.remove('active');
+  destroyActivePixiEffects();
+  if (celebrationModal) celebrationModal.classList.remove('active');
 
   // Advance level & award gems
   store.currentUnlockedLevel = Math.min(10, store.currentUnlockedLevel + 1);
@@ -368,9 +320,20 @@ export const ChestModule = {
     initChestModalElements();
   },
   unmount() {
-    if (physicsAnimationId) {
-      cancelAnimationFrame(physicsAnimationId);
-      physicsAnimationId = null;
+    destroyActivePixiEffects();
+  },
+  mountTab() {
+    const tabChestEl = document.querySelector('#openMysteryChestCard .big-chest-graphic');
+    if (tabChestEl && window.PIXI) {
+      if (tabChestController) tabChestController.destroy();
+      tabChestController = mountPixiChest(tabChestEl, 96);
+      tabChestController.setTier('rare');
+    }
+  },
+  unmountTab() {
+    if (tabChestController) {
+      tabChestController.destroy();
+      tabChestController = null;
     }
   },
   open: openChestModal
