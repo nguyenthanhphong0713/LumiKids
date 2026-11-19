@@ -3,8 +3,8 @@ import { playCuteBubblePop, speakWord } from '../core/audio.js';
 import { CAR_WORDS_POOL, CAR_COLOR_PALETTES, CAR_BURST_COLORS } from '../data/cars.data.js';
 
 const LANE_COUNT = 5;
-const MAX_ACTIVE_CARS = 8;
-const SPAWN_INTERVAL_MS = 900;
+const MAX_ACTIVE_CARS = 9;
+const SPAWN_INTERVAL_MS = 680;
 
 let pixiApp = null;
 let roadLayer = null;
@@ -205,7 +205,7 @@ function spawnCar(initialProgress = 0) {
     container: carContainer,
     laneIndex: chosenLane,
     direction,
-    speed: (125 + Math.random() * 75) * direction,
+    speed: (190 + Math.random() * 100) * direction,
     item,
     popped: false,
     popElapsed: 0

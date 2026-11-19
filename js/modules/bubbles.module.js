@@ -2,8 +2,8 @@ import { store } from '../core/state.js';
 import { playCuteBubblePop, speakWord } from '../core/audio.js';
 import { BUBBLE_WORDS_POOL } from '../data/bubbles.data.js';
 
-const MAX_ACTIVE_BUBBLES = 8;
-const SPAWN_INTERVAL_MS = 1050;
+const MAX_ACTIVE_BUBBLES = 9;
+const SPAWN_INTERVAL_MS = 780;
 
 const BUBBLE_TINTS = [
   { fill: 0xBAE6FD, rim: 0x38BDF8 },
@@ -171,7 +171,7 @@ function spawnBubble(initialProgress = 0) {
     container,
     baseX,
     radius,
-    speedY: 115 + Math.random() * 55, // Fast & lively upward rise
+    speedY: 175 + Math.random() * 75, // Fast & lively upward rise
     wobblePhase: Math.random() * Math.PI * 2,
     wobbleSpeed: 2.2 + Math.random() * 1.2,
     wobbleAmp: 12 + Math.random() * 10,
