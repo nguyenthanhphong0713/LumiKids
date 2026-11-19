@@ -4,6 +4,7 @@ import { playDuoTap, unlockAudio } from './core/audio.js';
 
 import { LearnModule } from './modules/learn.module.js';
 import { BubblesModule } from './modules/bubbles.module.js';
+import { CarsModule } from './modules/cars.module.js';
 import { WordsModule } from './modules/words.module.js';
 import { NumbersModule } from './modules/numbers.module.js';
 import { ChestModule } from './modules/chest.module.js';
@@ -25,6 +26,7 @@ const openMysteryChestCard = document.getElementById('openMysteryChestCard');
 const MODULES = {
   pathScreen: LearnModule,
   bubblesScreen: BubblesModule,
+  carsScreen: CarsModule,
   wordsScreen: WordsModule,
   numbersScreen: NumbersModule,
   chestsScreen: {

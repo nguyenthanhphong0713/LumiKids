@@ -1,0 +1,77 @@
+/* ============================================================
+   LUMIKIDS - CARS TAB (PIXIJS 5-LANE HIGHWAY GAME)
+   ============================================================ */
+#carsScreen {
+  padding: 0;
+  padding-bottom: calc(64px + env(safe-area-inset-bottom, 8px));
+  background: linear-gradient(180deg, #D9F99D 0%, #BBF7D0 100%);
+  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  touch-action: manipulation;
+}
+
+#carsScreen.active-tab {
+  display: flex;
+}
+
+.cars-mode-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 2.5px solid rgba(203, 213, 225, 0.85);
+  z-index: 20;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.cars-coach {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+  color: #1E293B;
+}
+
+.cars-coach-owl {
+  font-size: 1.8rem;
+  animation: cuteWiggle 3.2s infinite ease-in-out;
+}
+
+.cars-score-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 2px solid #FDE68A;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-weight: 800;
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  color: var(--duo-orange-dark);
+  box-shadow: 0 2px 0 #FCD34D;
+}
+
+.cars-road-stage {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.cars-road-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}

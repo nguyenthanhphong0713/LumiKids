@@ -1,5 +1,5 @@
-// LumiKids Service Worker - Version 2.6.7
-const VERSION = 'v2.6.7';
+// LumiKids Service Worker - Version 2.6.8
+const VERSION = 'v2.6.8';
 const CACHE_NAME = `lumikids-${VERSION}`;
 const ASSETS_TO_CACHE = [
   './',
@@ -10,6 +10,7 @@ const ASSETS_TO_CACHE = [
   `./css/components.css?v=${VERSION}`,
   `./css/views/learn.css?v=${VERSION}`,
   `./css/views/bubbles.css?v=${VERSION}`,
+  `./css/views/cars.css?v=${VERSION}`,
   `./css/views/words.css?v=${VERSION}`,
   `./css/views/numbers.css?v=${VERSION}`,
   `./css/views/chests.css?v=${VERSION}`,
@@ -20,9 +21,11 @@ const ASSETS_TO_CACHE = [
   `./js/core/characters.js?v=${VERSION}`,
   `./js/data/curriculum.data.js?v=${VERSION}`,
   `./js/data/bubbles.data.js?v=${VERSION}`,
+  `./js/data/cars.data.js?v=${VERSION}`,
   `./js/data/numbers.data.js?v=${VERSION}`,
   `./js/modules/learn.module.js?v=${VERSION}`,
   `./js/modules/bubbles.module.js?v=${VERSION}`,
+  `./js/modules/cars.module.js?v=${VERSION}`,
   `./js/modules/words.module.js?v=${VERSION}`,
   `./js/modules/numbers.module.js?v=${VERSION}`,
   `./js/modules/chest.module.js?v=${VERSION}`,

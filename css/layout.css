@@ -266,7 +266,7 @@ body.in-lesson .duo-bottom-nav,
 }
 
 .nav-tab .nav-label {
-  font-size: 0.72rem;
+  font-size: clamp(0.62rem, 2vw, 0.72rem);
   font-weight: 800;
   letter-spacing: 0.2px;
   text-transform: uppercase;

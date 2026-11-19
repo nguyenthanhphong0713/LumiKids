@@ -57,8 +57,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900;1000&display=swap&v=2.6.7" rel="stylesheet">
 
-  <!-- Canvas Confetti CDN -->
+  <!-- Canvas Confetti & PixiJS v8 CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js?v=2.6.7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.js"></script>
 
   <!-- Modular CSS Architecture -->
   <link rel="stylesheet" href="./css/base.css?v=2.6.7">
@@ -66,6 +67,7 @@
   <link rel="stylesheet" href="./css/components.css?v=2.6.7">
   <link rel="stylesheet" href="./css/views/learn.css?v=2.6.7">
   <link rel="stylesheet" href="./css/views/bubbles.css?v=2.6.7">
+  <link rel="stylesheet" href="./css/views/cars.css?v=2.6.8">
   <link rel="stylesheet" href="./css/views/words.css?v=2.6.7">
   <link rel="stylesheet" href="./css/views/numbers.css?v=2.6.7">
   <link rel="stylesheet" href="./css/views/chests.css?v=2.6.7">
@@ -132,6 +134,22 @@
           </div>
         </div>
         <div class="bubble-sky-stage" id="bubbleSky"></div>
+      </section>
+
+      <!-- SCREEN 2B: PixiJS 5-Lane Car Road Mode (Đường Đua Học Chữ) -->
+      <section class="tab-screen" id="carsScreen">
+        <div class="cars-mode-header">
+          <div class="cars-coach">
+            <span class="cars-coach-owl">🦉</span>
+            <span>Tap the cars! 🚗</span>
+          </div>
+          <div class="cars-score-pill">
+            <span>🚗</span>
+            <span id="carsScore">0</span>
+            <span>Tapped</span>
+          </div>
+        </div>
+        <div class="cars-road-stage" id="carsStage"></div>
       </section>
 
       <!-- SCREEN 3: Vocabulary Shelf / Word Cards -->
@@ -255,6 +273,10 @@
       <button class="nav-tab" data-tab="bubblesScreen" aria-label="Bubbles">
         <span class="nav-icon">🫧</span>
         <span class="nav-label">Bubbles</span>
+      </button>
+      <button class="nav-tab" data-tab="carsScreen" aria-label="Cars">
+        <span class="nav-icon">🚗</span>
+        <span class="nav-label">Cars</span>
       </button>
       <button class="nav-tab" data-tab="wordsScreen" aria-label="Words">
         <span class="nav-icon">📚</span>
