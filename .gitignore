@@ -1,0 +1,17 @@
+# Playwright MCP artifacts
+.playwright-mcp/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+
+# Logs & Environment
+*.log
+.env
+.env.*
+
+# Dependencies (if added later)
+node_modules/
