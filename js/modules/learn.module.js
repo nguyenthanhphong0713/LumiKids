@@ -4,10 +4,13 @@ import { playDuoDing, playDuoTap, speakWord, unlockAudio } from '../core/audio.j
 import { LESSON_LEVELS, DUO_PRAISES } from '../data/curriculum.data.js';
 import { openChestModal } from './chest.module.js';
 import { CAREER_CHARACTERS, getLevelMascot } from '../core/characters.js';
+import { mountPixiCharacter } from '../core/pixiCharacters.js';
 
 let activeLevel = null;
 let wordsCompletedInLesson = 0;
 let pendingNextCardTimer = null;
+let pathMascotController = null;
+let lessonMascotController = null;
 
 // DOM references
 let stonesPath = null;
@@ -42,6 +45,11 @@ export function renderSteppingStonesMap() {
   if (!stonesPath) initLearnDOM();
   if (!stonesPath) return;
 
+  if (pathMascotController) {
+    pathMascotController.destroy();
+    pathMascotController = null;
+  }
+
   stonesPath.innerHTML = '';
 
   LESSON_LEVELS.forEach((level) => {
@@ -61,7 +69,7 @@ export function renderSteppingStonesMap() {
       mascotHtml = `
         <div class="mascot-follower" title="${mascot.name}">
           <div class="mascot-bubble">${mascot.bubble}</div>
-          ${mascot.renderSvg('mascot-svg-main')}
+          <div class="pixi-mascot-host" data-char-id="${mascot.id}"></div>
         </div>
       `;
     }
@@ -97,6 +105,17 @@ export function renderSteppingStonesMap() {
     }
 
     stonesPath.appendChild(node);
+
+    if (isCurrent) {
+      const host = node.querySelector('.pixi-mascot-host');
+      if (host) {
+        if (window.PIXI) {
+          pathMascotController = mountPixiCharacter(host, mascot.id, 76);
+        } else {
+          host.innerHTML = mascot.renderSvg('mascot-svg-main');
+        }
+      }
+    }
   });
 }
 
@@ -108,9 +127,17 @@ export function startLesson(level) {
 
   const mascot = getLevelMascot(level.id);
   const lessonMascotEl = document.getElementById('lessonMascot');
+  if (lessonMascotController) {
+    lessonMascotController.destroy();
+    lessonMascotController = null;
+  }
   if (lessonMascotEl) {
-    lessonMascotEl.innerHTML = mascot.renderSvg('mascot-svg-lesson');
     lessonMascotEl.title = mascot.name;
+    if (window.PIXI) {
+      lessonMascotController = mountPixiCharacter(lessonMascotEl, mascot.id, 52);
+    } else {
+      lessonMascotEl.innerHTML = mascot.renderSvg('mascot-svg-lesson');
+    }
   }
 
   if (instructionText) instructionText.textContent = `${mascot.name}: Tap any picture!`;
@@ -145,46 +172,38 @@ function renderLessonCards(words) {
 }
 
 function handleLessonCardTap(cardElement, wordItem) {
+  if (!activeLevel || cardElement.classList.contains('card-done')) return;
   unlockAudio();
 
-  document.querySelectorAll('.duo-card').forEach(c => c.classList.remove('card-selected'));
-  cardElement.classList.add('card-selected');
-
+  cardElement.classList.add('card-done', 'card-disappearing');
   playDuoDing();
   speakWord(wordItem.word);
 
-  const randomPraise = DUO_PRAISES[Math.floor(Math.random() * DUO_PRAISES.length)];
-  if (feedbackTitle) feedbackTitle.textContent = randomPraise;
-  if (feedbackWord) feedbackWord.textContent = `${wordItem.word} ${wordItem.emoji}`;
-  showFeedbackDrawer();
-
-  if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
-  pendingNextCardTimer = setTimeout(() => {
-    if (cardElement.classList.contains('card-selected') && !cardElement.classList.contains('card-done')) {
-      completeCardAndAdvance(cardElement);
-    }
-  }, 3500);
-
-  if (feedbackContinueBtn) {
-    feedbackContinueBtn.onclick = () => {
-      if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
-      completeCardAndAdvance(cardElement);
-    };
+  const mascot = getLevelMascot(activeLevel.id);
+  if (instructionText) {
+    instructionText.textContent = `${mascot.name}: ${wordItem.word}! ${wordItem.emoji}`;
   }
-}
 
-function completeCardAndAdvance(cardElement) {
-  hideFeedbackDrawer();
-  playDuoTap();
+  wordsCompletedInLesson++;
+  updateLessonProgress();
 
-  if (!cardElement.classList.contains('card-done')) {
-    cardElement.classList.remove('card-selected');
-    cardElement.classList.add('card-done');
-    wordsCompletedInLesson++;
-    updateLessonProgress();
+  // Only show the Continue / Next Level button once all 4 cards are tapped
+  if (wordsCompletedInLesson >= activeLevel.words.length) {
+    const randomPraise = DUO_PRAISES[Math.floor(Math.random() * DUO_PRAISES.length)];
+    if (feedbackTitle) feedbackTitle.textContent = randomPraise;
+    if (feedbackWord) feedbackWord.textContent = `${mascot.praise}`;
 
-    if (wordsCompletedInLesson >= activeLevel.words.length) {
-      setTimeout(completeLesson, 400);
+    if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
+    pendingNextCardTimer = setTimeout(() => {
+      showFeedbackDrawer();
+    }, 380);
+
+    if (feedbackContinueBtn) {
+      feedbackContinueBtn.onclick = () => {
+        if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
+        playDuoTap();
+        completeLesson();
+      };
     }
   }
 }
@@ -206,6 +225,10 @@ function updateLessonProgress() {
 
 export function closeLesson() {
   if (pendingNextCardTimer) clearTimeout(pendingNextCardTimer);
+  if (lessonMascotController) {
+    lessonMascotController.destroy();
+    lessonMascotController = null;
+  }
   hideFeedbackDrawer();
   document.body.classList.remove('in-lesson');
   const appEl = document.getElementById('app');
@@ -238,6 +261,10 @@ export const LearnModule = {
     renderSteppingStonesMap();
   },
   unmount() {
+    if (pathMascotController) {
+      pathMascotController.destroy();
+      pathMascotController = null;
+    }
     closeLesson();
   }
 };

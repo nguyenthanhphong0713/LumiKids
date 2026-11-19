@@ -164,6 +164,27 @@
   opacity: 0.85;
 }
 
+.duo-card.card-disappearing {
+  pointer-events: none;
+  animation: cardPopDisappear 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes cardPopDisappear {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  35% {
+    transform: scale(1.12);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 .duo-card .card-emoji {
   font-size: clamp(3.2rem, 9.5vw, 4.8rem);
   line-height: 1.1;
