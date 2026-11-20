@@ -24,14 +24,12 @@ let carsScreenEl = null;
 let carsStage = null;
 let carsScoreDisplay = null;
 let carsRotateBtn = null;
-let carsRotateLabel = null;
 
 export function initCarsDOM() {
   carsScreenEl = document.getElementById('carsScreen');
   carsStage = document.getElementById('carsStage');
   carsScoreDisplay = document.getElementById('carsScore');
   carsRotateBtn = document.getElementById('carsRotateBtn');
-  carsRotateLabel = document.getElementById('carsRotateLabel');
 
   if (carsRotateBtn) {
     carsRotateBtn.onclick = (e) => {
@@ -46,8 +44,8 @@ function applyLandscapeState(enabled) {
   if (carsScreenEl) {
     carsScreenEl.classList.toggle('cars-landscape-mode', enabled);
   }
-  if (carsRotateLabel) {
-    carsRotateLabel.textContent = enabled ? 'Xoay dọc' : 'Xoay ngang';
+  if (carsRotateBtn) {
+    carsRotateBtn.setAttribute('aria-label', enabled ? 'Xoay dọc màn hình' : 'Xoay ngang màn hình');
   }
   if (pixiApp) {
     requestAnimationFrame(() => {
