@@ -46,6 +46,69 @@
   animation: cuteWiggle 3.2s infinite ease-in-out;
 }
 
+.cars-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cars-rotate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFBEB;
+  border: 2px solid #FDE68A;
+  border-radius: 18px;
+  padding: 5px 10px;
+  font-family: var(--font-family);
+  font-weight: 800;
+  font-size: clamp(0.78rem, 2.2vw, 0.92rem);
+  color: #B45309;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #F59E0B;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+
+.cars-rotate-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #F59E0B;
+}
+
+#carsScreen.cars-landscape-mode .cars-rotate-btn {
+  background: #DCFCE7;
+  border-color: #86EFAC;
+  color: #15803D;
+  box-shadow: 0 3px 0 #22C55E;
+}
+
+#carsScreen.cars-landscape-mode {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  width: 100dvh;
+  height: 100dvw;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+  z-index: 950;
+  padding-bottom: 0;
+}
+
+#carsScreen.cars-landscape-mode .cars-mode-header {
+  padding: 6px 14px;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .cars-mode-header {
+    padding: 6px 14px;
+  }
+}
+
 .cars-score-pill {
   display: flex;
   align-items: center;

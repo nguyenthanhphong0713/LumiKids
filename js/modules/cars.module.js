@@ -1,5 +1,5 @@
 import { store } from '../core/state.js';
-import { playCuteBubblePop, speakWord } from '../core/audio.js';
+import { playCuteBubblePop, playDuoTap, speakWord } from '../core/audio.js';
 import { CAR_WORDS_POOL, CAR_COLOR_PALETTES, CAR_BURST_COLORS } from '../data/cars.data.js';
 
 const LANE_COUNT = 5;
@@ -14,17 +14,65 @@ let fxLayer = null;
 let carSpawnInterval = null;
 let carsScore = 0;
 let isCarsModeActive = false;
+let isLandscapeRotated = false;
 
 let activeCars = [];
 let activeParticles = [];
 let activeFloatTexts = [];
 
+let carsScreenEl = null;
 let carsStage = null;
 let carsScoreDisplay = null;
+let carsRotateBtn = null;
+let carsRotateLabel = null;
 
 export function initCarsDOM() {
+  carsScreenEl = document.getElementById('carsScreen');
   carsStage = document.getElementById('carsStage');
   carsScoreDisplay = document.getElementById('carsScore');
+  carsRotateBtn = document.getElementById('carsRotateBtn');
+  carsRotateLabel = document.getElementById('carsRotateLabel');
+
+  if (carsRotateBtn) {
+    carsRotateBtn.onclick = (e) => {
+      e.stopPropagation();
+      toggleCarsLandscape();
+    };
+  }
+}
+
+function applyLandscapeState(enabled) {
+  isLandscapeRotated = enabled;
+  if (carsScreenEl) {
+    carsScreenEl.classList.toggle('cars-landscape-mode', enabled);
+  }
+  if (carsRotateLabel) {
+    carsRotateLabel.textContent = enabled ? 'Xoay dọc' : 'Xoay ngang';
+  }
+  if (pixiApp) {
+    requestAnimationFrame(() => {
+      if (pixiApp) {
+        pixiApp.resize();
+      }
+    });
+  }
+}
+
+export function toggleCarsLandscape() {
+  playDuoTap();
+  const nextState = !isLandscapeRotated;
+  applyLandscapeState(nextState);
+
+  // Also hint native orientation lock if supported (e.g. Android PWA fullscreen)
+  if (screen.orientation && typeof screen.orientation.lock === 'function') {
+    if (nextState) {
+      screen.orientation.lock('landscape').catch(() => {});
+    } else if (typeof screen.orientation.unlock === 'function') {
+      try {
+        screen.orientation.unlock();
+      } catch (e) {}
+    }
+  }
 }
 
 function getRoadMetrics(width, height) {
@@ -175,7 +223,7 @@ function spawnCar(initialProgress = 0) {
   const palette = CAR_COLOR_PALETTES[Math.floor(Math.random() * CAR_COLOR_PALETTES.length)];
 
   const carContainer = new PIXI.Container();
-  const carScale = Math.min(1.05, Math.max(0.68, laneHeight / 92));
+  const carScale = Math.min(1.0, Math.max(0.54, laneHeight / 88));
   carContainer.scale.set(carScale);
 
   const carArt = createCarGraphic(palette);
@@ -321,7 +369,7 @@ function updateTick(ticker) {
     if (car.popped) {
       car.popElapsed += dt;
       const progress = Math.min(1, car.popElapsed / 0.22);
-      const baseScale = Math.min(1.05, Math.max(0.68, laneHeight / 92));
+      const baseScale = Math.min(1.0, Math.max(0.54, laneHeight / 88));
       car.container.scale.set(baseScale * (1 + progress * 0.45));
       car.container.alpha = 1 - progress;
       if (progress >= 1) {
@@ -403,6 +451,21 @@ export async function startCarsMode() {
     carsStage.innerHTML = '';
     carsStage.appendChild(pixiApp.canvas);
 
+    // Map pointer coordinates accurately when #carsScreen is CSS-rotated 90deg
+    const eventsSys = pixiApp.renderer.events;
+    const defaultMapPos = eventsSys.mapPositionToPoint.bind(eventsSys);
+    eventsSys.mapPositionToPoint = (point, x, y) => {
+      if (!isLandscapeRotated || !pixiApp) {
+        return defaultMapPos(point, x, y);
+      }
+      const rect = pixiApp.canvas.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        point.x = ((y - rect.top) / rect.height) * pixiApp.screen.width;
+        point.y = ((rect.right - x) / rect.width) * pixiApp.screen.height;
+      }
+      return point;
+    };
+
     roadLayer = new window.PIXI.Container();
     carsLayer = new window.PIXI.Container();
     fxLayer = new window.PIXI.Container();
@@ -438,6 +501,7 @@ export async function startCarsMode() {
 
 export function stopCarsMode() {
   isCarsModeActive = false;
+  applyLandscapeState(false);
   if (carSpawnInterval) {
     clearInterval(carSpawnInterval);
     carSpawnInterval = null;
